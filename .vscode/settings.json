@@ -1,0 +1,13 @@
+{
+  "editor.codeActionsOnSave": {
+    // "source.fixAll": "always"
+  },
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "jest.jestCommandLine": "yarn jest",
+  "eslint.nodePath": ".yarn/sdks",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

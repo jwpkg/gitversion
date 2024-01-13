@@ -1,0 +1,24 @@
+{
+  "name": "gitversion",
+  "packageManager": "yarn@4.0.2",
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cp-utils/gitversion",
+    "directory": "workspaces/packages/gitversion"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "gitlog": "^4.0.8"
+  }
+}
