@@ -1,5 +1,7 @@
-describe('testing', () => {
-  test('hello', () => {
+import { logs } from './log-analyser';
 
+describe('testing', () => {
+  test('hello', async () => {
+    await logs();
   });
 });

@@ -18,7 +18,12 @@
   "files": [
     "lib"
   ],
+  "main": "src/index.ts",
   "dependencies": {
-    "gitlog": "^4.0.8"
+    "@esm2cjs/execa": "^6.1.1-cjs.1",
+    "cross-spawn": "^7.0.3",
+    "cross-spawn-extra": "^2.1.0",
+    "execa": "^8.0.1",
+    "git-log": "^1.0.0-rc.3"
   }
 }

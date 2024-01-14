@@ -32,6 +32,25 @@
   "jest": {
     "testMatch": [
       "**/*._test_.ts"
-    ]
+    ],
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "diagnostics": {
+            "ignoreCodes": [
+              151001
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "dependenciesMeta": {
+    "execa@8.0.1": {
+      "unplugged": true
+    }
   }
 }
