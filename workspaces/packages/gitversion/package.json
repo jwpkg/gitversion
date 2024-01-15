@@ -1,6 +1,8 @@
 {
   "name": "gitversion",
   "packageManager": "yarn@4.0.2",
+  "bin": "bin/index.js",
+  "type": "commonjs",
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.0",
@@ -20,10 +22,13 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@esm2cjs/execa": "^6.1.1-cjs.1",
+    "@yarnpkg/cli": "^4.0.2",
+    "@yarnpkg/core": "^4.0.2",
+    "@yarnpkg/fslib": "^3.0.1",
+    "clipanion": "^4.0.0-rc.2",
     "cross-spawn": "^7.0.3",
     "cross-spawn-extra": "^2.1.0",
-    "execa": "^8.0.1",
-    "git-log": "^1.0.0-rc.3"
-  }
+    "glob": "^10.3.10"
+  },
+  "version": "0.0.0"
 }

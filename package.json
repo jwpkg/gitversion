@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -52,5 +52,8 @@
     "execa@8.0.1": {
       "unplugged": true
     }
+  },
+  "dependencies": {
+    "gitversion": "workspace:^"
   }
 }
