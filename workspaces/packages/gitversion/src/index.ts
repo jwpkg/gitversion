@@ -1,5 +1,6 @@
 import { runExit } from 'clipanion';
 
+import { BumpCommand } from './commands/bump';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
 
@@ -22,6 +23,7 @@ import { RestoreCommand } from './commands/restore';
 // });
 
 runExit([
+  BumpCommand,
   ResetCommand,
   RestoreCommand,
 ]);

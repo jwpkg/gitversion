@@ -1305,7 +1305,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.1.0, @types/semver@npm:^7.3.12":
+"@types/semver@npm:^7.1.0, @types/semver@npm:^7.3.12, @types/semver@npm:^7.5.6":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 196dc32db5f68cbcde2e6a42bb4aa5cbb100fa2b7bd9c8c82faaaf3e03fbe063e205dbb4f03c7cdf53da2edb70a0d34c9f2e601b54281b377eb8dc1743226acd
@@ -3768,6 +3768,7 @@ __metadata:
   dependencies:
     "@types/jest": "npm:^29.5.11"
     "@types/node": "npm:^20.11.0"
+    "@types/semver": "npm:^7.5.6"
     "@yarnpkg/cli": "npm:^4.0.2"
     "@yarnpkg/core": "npm:^4.0.2"
     "@yarnpkg/fslib": "npm:^3.0.1"
@@ -3775,6 +3776,7 @@ __metadata:
     cross-spawn: "npm:^7.0.3"
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
+    semver: "npm:^7.5.4"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
   bin:

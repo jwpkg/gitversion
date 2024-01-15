@@ -1,10 +1,12 @@
+import { SemVer, parse } from 'semver';
+
 import { BranchType, VersionBranch } from '../config';
 
 import { GitTag } from './git';
 
 export type GitSemverTag = {
   hash: string;
-  version: string;
+  version: SemVer;
 };
 
 export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, prefix: string): GitSemverTag {
@@ -33,12 +35,16 @@ export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, p
   } else {
     latestTag = {
       hash: '',
-      tagName: '0.0.0',
+      tagName: 'v0.0.0',
     };
   }
   const regexReplace = new RegExp(`^${escapeRegExp(prefix)}`);
-  return {
-    hash: latestTag.hash,
-    version: latestTag.tagName.replace(regexReplace, ''),
-  };
+  const version = parse(latestTag.tagName.replace(regexReplace, ''));
+  if (version) {
+    return {
+      hash: latestTag.hash,
+      version,
+    };
+  }
+  throw new Error(`Oops something went wrong parsing version ${version}`);
 }

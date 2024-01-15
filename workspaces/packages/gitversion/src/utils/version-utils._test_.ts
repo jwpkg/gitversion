@@ -1,3 +1,5 @@
+import { parse } from 'semver';
+
 import { VersionBranchMock } from '../test/version-branch';
 
 import { tagPrefix } from './git-utils';
@@ -28,7 +30,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: '',
-        tagName: '0.0.0',
+        version: parse('0.0.0'),
       });
     });
 
@@ -37,7 +39,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'a',
-        tagName: '0.1.0',
+        version: parse('0.1.0'),
       });
     });
 
@@ -46,7 +48,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'b',
-        tagName: '0.1.0',
+        version: parse('0.1.0'),
       });
     });
 
@@ -61,7 +63,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'k',
-        tagName: '0.0.2',
+        version: parse('0.0.2'),
       });
     });
 
@@ -70,7 +72,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'g',
-        tagName: '0.0.3-feature2.1',
+        version: parse('0.0.3-feature2.1'),
       });
     });
 
@@ -79,7 +81,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'c',
-        tagName: '0.0.2-alpha.1',
+        version: parse('0.0.2-alpha.1'),
       });
     });
 
@@ -88,7 +90,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'h',
-        tagName: '0.0.3-feature2.1',
+        version: parse('0.0.3-feature2.1'),
       });
     });
 
@@ -97,7 +99,7 @@ describe('Version utils', () => {
 
       expect(result).toEqual({
         hash: 'd',
-        tagName: '0.0.2-alpha.1',
+        version: parse('0.0.2-alpha.1'),
       });
     });
 

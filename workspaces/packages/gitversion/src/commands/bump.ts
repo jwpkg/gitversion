@@ -6,9 +6,9 @@ import { Git, gitRoot } from '../utils/git';
 import { determineCurrentVersion } from '../utils/version-utils';
 import { Project } from '../utils/workspace-utils';
 
-export class RestoreCommand extends Command {
+export class BumpCommand extends Command {
   static paths = [
-    ['restore'],
+    ['bump'],
   ];
 
   async execute() {
@@ -21,5 +21,7 @@ export class RestoreCommand extends Command {
     console.log('VERSION FOUND:', version);
 
     await Promise.all(project.workspaces.map(w => w.updateVersion(version.version.format())));
+
+    console.log(await git.logs(version.hash));
   }
 }
