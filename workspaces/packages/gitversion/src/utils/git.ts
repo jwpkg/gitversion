@@ -1,5 +1,7 @@
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 
+import { Generic, Github, IGitPlatform } from './git-platform';
+
 const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3';
 const delim2 = '25B7DA41-228B-4679-B2A2-86E328D3C3DE';
 const endRegex = new RegExp(`${delim2}\\r?\\n?$`);
@@ -121,5 +123,16 @@ export class Git {
 
     // get from git
     return output.replace(/\n*$/, '');
+  }
+
+  async platform(): Promise<IGitPlatform> {
+    const branchOutput = await gitExec(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'], this.cwd);
+    const [origin] = branchOutput.trim().split('/');
+
+    const gitUrl = await gitExec(['config', '--get', `remote.${origin}.url`], this.cwd);
+    if (gitUrl.includes('github.com')) {
+      return new Github();
+    }
+    return new Generic();
   }
 }

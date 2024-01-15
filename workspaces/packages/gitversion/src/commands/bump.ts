@@ -21,7 +21,8 @@ export class BumpCommand extends Command {
     console.log('VERSION FOUND:', version);
 
     await Promise.all(project.workspaces.map(w => w.updateVersion(version.version.format())));
+    const platform = await git.platform();
 
-    console.log(await git.logs(version.hash));
+    console.log((await git.logs(version.hash)).map(platform.stripMergeMessage));
   }
 }
