@@ -2687,6 +2687,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ci-info@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "ci-info@npm:4.0.0"
+  checksum: ecc003e5b60580bd081d83dd61d398ddb8607537f916313e40af4667f9c92a1243bd8e8a591a5aa78e418afec245dbe8e90a0e26e39ca0825129a99b978dd3f9
+  languageName: node
+  linkType: hard
+
 "cjs-module-lexer@npm:^1.0.0":
   version: 1.2.3
   resolution: "cjs-module-lexer@npm:1.2.3"
@@ -2817,6 +2824,13 @@ __metadata:
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: a1a3f914156960902f46f7f56bc62effc6c94e84b2cae157a526b1c1f74b677a47ec602bf68a61abfa2b42d15b7c5651c6dbe72a43af720bc588dff885b10f95
+  languageName: node
+  linkType: hard
+
+"colorize-node@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "colorize-node@npm:0.5.0"
+  checksum: 7bc349169a64c587afab7872fb79677ef2b1b8b603e6dc7900aa15d5ed7697794642253ab1fc15b66ca464c0a503003b6b8fdb15a2d6e10c41c7ff90027285a7
   languageName: node
   linkType: hard
 
@@ -3772,12 +3786,15 @@ __metadata:
     "@yarnpkg/cli": "npm:^4.0.2"
     "@yarnpkg/core": "npm:^4.0.2"
     "@yarnpkg/fslib": "npm:^3.0.1"
+    ci-info: "npm:^4.0.0"
     clipanion: "npm:^4.0.0-rc.2"
+    colorize-node: "npm:^0.5.0"
     cross-spawn: "npm:^7.0.3"
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
     semver: "npm:^7.5.4"
     ts-node: "npm:^10.9.2"
+    typanion: "npm:^3.14.0"
     typescript: "npm:^5.3.3"
   bin:
     gitversion: bin/index.js

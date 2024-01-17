@@ -1,11 +1,23 @@
-import { Git } from './utils/git';
+import { colorize } from 'colorize-node';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import * as t from 'typanion';
 
-export interface ConfigurationOptions {
-  featureBranchPatterns?: string[];
-  releaseBranchPatterns?: string[];
-  mainBranch?: string;
-  independentVersioning?: boolean;
-  versionTagPrefix?: string;
+import { Git } from './utils/git';
+import { logger } from './utils/log-reporter';
+
+export const isConfigurationOptions = t.isObject({
+  featureBranchPatterns: t.isOptional(t.isArray(t.isString())),
+  releaseBranchPatterns: t.isOptional(t.isArray(t.isString())),
+  mainBranch: t.isOptional(t.isString()),
+  independentVersioning: t.isOptional(t.isBoolean()),
+  versionTagPrefix: t.isOptional(t.isString()),
+});
+
+export type ConfigurationOptions = t.InferType<typeof isConfigurationOptions>;
+
+export function defineConfig(config: ConfigurationOptions): ConfigurationOptions {
+  return config;
 }
 
 export enum BranchType {
@@ -21,7 +33,7 @@ export interface VersionBranch {
 }
 
 export class Configuration {
-  constructor(public options: ConfigurationOptions, public branch: VersionBranch) { }
+  private constructor(public options: Required<ConfigurationOptions>, public branch: VersionBranch) { }
 
   static detectVersionBranch(configOptions: Required<ConfigurationOptions>, branchName: string): VersionBranch {
     if (configOptions.mainBranch === branchName) {
@@ -69,8 +81,8 @@ export class Configuration {
     };
   }
 
-  static async load(cwd: string): Promise<Configuration> {
-    const options: Required<ConfigurationOptions> = {
+  static async load(cwd: string): Promise<Configuration | null> {
+    const defaultOptions: Required<ConfigurationOptions> = {
       featureBranchPatterns: [
         '^feature/(.*)$',
       ],
@@ -81,6 +93,20 @@ export class Configuration {
       independentVersioning: false,
       versionTagPrefix: 'v',
     };
+    let options = defaultOptions;
+
+    if (existsSync(join(cwd, '.gitversion.js'))) {
+      const config = require(join(cwd, '.gitversion.js'));
+      if (isConfigurationOptions(config)) {
+        options = {
+          ...options,
+          ...config,
+        };
+      } else {
+        logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitversion.js'))}`, true);
+        return null;
+      }
+    }
 
     const git = new Git(cwd);
     const branch = this.detectVersionBranch(options, await git.currentBranch());

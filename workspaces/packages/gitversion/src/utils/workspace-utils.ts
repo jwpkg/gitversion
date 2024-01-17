@@ -4,6 +4,8 @@ import { glob } from 'glob';
 import { join } from 'path';
 
 import { DEFAULT_PACKAGE_VERSION } from './constants';
+import { formatPackageName, formatVersion } from './format-utils';
+import { logger } from './log-reporter';
 
 export class Workspace {
   cwd: string;
@@ -43,6 +45,7 @@ export class Workspace {
       version,
     };
     const content = JSON.stringify(newManifest, null, 2);
+    logger.reportInfo(`Update package ${formatPackageName(this.packageName)} to version ${formatVersion(version)}`);
     return writeFile(join(this.cwd, 'package.json'), content, {
       encoding: 'utf-8',
     });
