@@ -5,6 +5,7 @@ import { resolve } from 'path';
 import { BumpCommand } from './commands/bump';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
+import { TagCommand } from './commands/tag';
 import { formatDuration } from './utils/format-utils';
 import { logger } from './utils/log-reporter';
 
@@ -20,6 +21,7 @@ run([
   BumpCommand,
   ResetCommand,
   RestoreCommand,
+  TagCommand,
 ], {
   logger,
 }).then(result => {

@@ -4,8 +4,8 @@ import { Writable } from 'stream';
 import { formatDuration } from './format-utils';
 import { PLATFORM } from './log-reporter-platform';
 
-export type SyncSectionRunner = (logger: Logger) => void;
-export type AsyncSectionRunner = (logger: Logger) => Promise<void>;
+export type SyncSectionRunner = (logger: LogReporter) => void;
+export type AsyncSectionRunner = (logger: LogReporter) => Promise<void>;
 
 export enum CarotColor {
   White,
@@ -15,12 +15,9 @@ export enum CarotColor {
   Red,
 }
 
-export interface Logger {
-
-}
-
 export interface LogReporterOptions {
   stdout?: Writable;
+  level?: number;
 }
 
 export const SINGLE_LINE_CHAR = '·';
@@ -34,12 +31,17 @@ export interface PlatformLogging {
   error?: (message: string) => string;
 }
 
-export class LogReporter implements Logger {
+export class LogReporter {
   stdout: Writable;
   level = 0;
   indent = 0;
   constructor(private options?: LogReporterOptions) {
     this.stdout = this.options?.stdout ?? process.stdout;
+
+    if (options?.level) {
+      this.level = options.level;
+      this.indent = options.level;
+    }
   }
 
   runSectionSync(title: string, runner: SyncSectionRunner) {
@@ -49,8 +51,22 @@ export class LogReporter implements Logger {
   }
 
   async runSection(title: string, runner: AsyncSectionRunner) {
+    let buffer = '';
+    const logger = new LogReporter({
+      level: this.level + 1,
+      stdout: new Writable({
+        write: (chunk, _encoding, next) => {
+          buffer = buffer + chunk.toString();
+          next();
+        },
+      }),
+    });
+
+    await runner(logger);
     const section = this.beginSection(title);
-    await runner(this);
+
+    this.stdout.write(buffer);
+
     this.endSection(section);
   }
 

@@ -5,7 +5,7 @@ import { BranchType, VersionBranch } from '../config';
 import { GitTag } from './git';
 
 export type GitSemverTag = {
-  hash: string;
+  hash?: string;
   version: SemVer;
 };
 
@@ -20,7 +20,7 @@ export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, p
   } else if (branch.type === BranchType.UNKNOWN) {
     throw new Error('Can\'t determine current version on branch type "UNKNOWN". Please check your settings and current branch');
   } else {
-    const preReleaseTags = tags.filter(x => new RegExp(`${prefix}[0-9]+\\.[0-9]+\\.[0-9]+-${escapeRegExp(branch.name)}\\.[0-9]+$`).test(x.tagName));
+    const preReleaseTags = tags.filter(x => new RegExp(`${escapeRegExp(prefix)}[0-9]+\\.[0-9]+\\.[0-9]+-${escapeRegExp(branch.name)}\\.[0-9]+$`).test(x.tagName));
     if (preReleaseTags.length > 0) {
       tags = preReleaseTags;
     } else {
@@ -34,7 +34,7 @@ export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, p
     latestTag = tags[0];
   } else {
     latestTag = {
-      hash: '',
+      hash: undefined,
       tagName: 'v0.0.0',
     };
   }

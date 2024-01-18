@@ -10,26 +10,26 @@ describe('Version utils', () => {
   describe('determineCurrentVersion', () => {
     const tagList: GitTag[] = [
       { hash: 'a', tagName: 'v0.1.0' },
-      { hash: 'b', tagName: 'v@scope/package-0.1.0' },
+      { hash: 'b', tagName: 'v@scope/package@0.1.0' },
       { hash: 'c', tagName: 'v0.0.2-alpha.1' },
-      { hash: 'd', tagName: 'v@scope/package-0.0.2-alpha.1' },
+      { hash: 'd', tagName: 'v@scope/package@0.0.2-alpha.1' },
       { hash: 'e', tagName: 'v0.0.2-alpha.0' },
-      { hash: 'f', tagName: 'v@scope/package-0.0.2-alpha.0' },
+      { hash: 'f', tagName: 'v@scope/package@0.0.2-alpha.0' },
       { hash: 'g', tagName: 'v0.0.3-feature2.1' },
-      { hash: 'h', tagName: 'v@scope/package-0.0.3-feature2.1' },
+      { hash: 'h', tagName: 'v@scope/package@0.0.3-feature2.1' },
       { hash: 'i', tagName: 'v0.0.3-feature2.0' },
-      { hash: 'j', tagName: 'v@scope/package-0.0.3-feature2.0' },
+      { hash: 'j', tagName: 'v@scope/package@0.0.3-feature2.0' },
       { hash: 'k', tagName: 'v0.0.2' },
-      { hash: 'l', tagName: 'v@scope/package-0.0.2' },
+      { hash: 'l', tagName: 'v@scope/package@0.0.2' },
       { hash: 'm', tagName: 'v0.0.1' },
-      { hash: 'n', tagName: 'v@scope/package-0.0.1' },
+      { hash: 'n', tagName: 'v@scope/package@0.0.1' },
     ];
 
     test('No version', () => {
       const result = determineCurrentVersion([], VersionBranchMock.main(), 'v');
 
       expect(result).toEqual({
-        hash: '',
+        hash: undefined,
         version: parse('0.0.0'),
       });
     });

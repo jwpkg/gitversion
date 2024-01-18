@@ -1,4 +1,3 @@
-import { Configuration } from '../config';
 import { DEFAULT_PACKAGE_VERSION } from '../utils/constants';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
@@ -13,19 +12,16 @@ export class ResetCommand extends GitVersionCommand {
 
   async execute(): Promise<number> {
     const project = await Project.load(await gitRoot());
-    const config = await Configuration.load(project.cwd);
-    if (!config) {
-      return 1;
-    }
-
-    if (config.options.independentVersioning) {
-      logger.reportError('Independenversioning not yet supported for <restore>');
+    if (!project) {
       return 1;
     }
 
     const reset = logger.beginSection('Reset step');
 
-    await Promise.all(project.workspaces.map(w => w.updateVersion(DEFAULT_PACKAGE_VERSION)));
+    await project.bumpManifest.clear();
+
+    await Promise.all(project.workspaces.map(w => w.updateVersion(DEFAULT_PACKAGE_VERSION, logger)));
+
     logger.endSection(reset);
 
     return 0;

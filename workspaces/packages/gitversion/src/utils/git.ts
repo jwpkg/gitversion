@@ -15,7 +15,7 @@ export interface GitCommit {
 
 export interface GitTag {
   tagName: string;
-  hash: string;
+  hash?: string;
 }
 
 export async function gitExec(args: string[], cwd?: string) {
@@ -36,7 +36,7 @@ export class Git {
   constructor(private cwd: string) {
   }
 
-  async logs(sinceHash?: string): Promise<GitCommit[]> {
+  async logs(sinceHash?: string, relativeCwd?: string): Promise<GitCommit[]> {
     const formatFlag = `--format=format:%s${delim1}%cI${delim1}%H${delim1}%b${delim2}`;
 
     const parseEntry = (entry?: string): GitCommit | undefined => {
@@ -61,6 +61,10 @@ export class Git {
 
     if (sinceHash) {
       args.push(`${sinceHash}..`);
+    }
+
+    if (relativeCwd) {
+      args.push('--', relativeCwd);
     }
 
     const output = await gitExec(args, this.cwd);
@@ -105,6 +109,10 @@ export class Git {
       .map(parseEntry)
       .filter(e => e !== undefined)
       .map(e => e as GitTag);
+  }
+
+  async addTag(...tags: string[]) {
+    return await gitExec(['tag', ...tags]);
   }
 
   async currentBranch() {

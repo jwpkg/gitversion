@@ -1,3 +1,4 @@
+import { IGitPlatform } from './git-platform';
 import { GitCommit } from './git';
 
 export enum ConventionalCommitFooterType {
@@ -22,8 +23,9 @@ export interface ConventionalCommit {
 }
 
 
-export function parseConventionalCommits(commits: GitCommit[]): ConventionalCommit[] {
-  return commits.map(parseConventionalCommit).filter((c): c is ConventionalCommit => !!c);
+export function parseConventionalCommits(commits: GitCommit[], platform: IGitPlatform): ConventionalCommit[] {
+  const sanitizedCommits = commits.map(platform.stripMergeMessage);
+  return sanitizedCommits.map(parseConventionalCommit).filter((c): c is ConventionalCommit => !!c);
 }
 
 export function parseConventionalCommit(commit: GitCommit): ConventionalCommit | undefined {

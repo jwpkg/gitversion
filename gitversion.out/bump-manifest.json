@@ -1,0 +1,20 @@
+{
+  "bumps": [
+    {
+      "changeLog": "",
+      "fromVersion": "0.0.1-bumping.0",
+      "packageName": "root",
+      "packageRelativeCwd": ".",
+      "toVersion": "0.0.1-bumping.1",
+      "tag": "vroot@0.0.1-bumping.1"
+    },
+    {
+      "changeLog": "",
+      "fromVersion": "0.0.0",
+      "packageName": "@test-scope/test-package-a",
+      "packageRelativeCwd": "workspaces/packages/test-package-a",
+      "toVersion": "0.0.1-bumping.0",
+      "tag": "v@test-scope/test-package-a@0.0.1-bumping.0"
+    }
+  ]
+}

@@ -1,14 +1,11 @@
 import { colorize } from 'colorize-node';
 
-import { Configuration } from '../config';
 import { detectBumpType, executeBump } from '../utils/bump-utils';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
-import { formatBumpType } from '../utils/format-utils';
-import { tagPrefix } from '../utils/git-utils';
-import { Git, gitRoot } from '../utils/git';
-import { logger } from '../utils/log-reporter';
-import { determineCurrentVersion } from '../utils/version-utils';
-import { Project } from '../utils/workspace-utils';
+import { formatBumpType, formatPackageName } from '../utils/format-utils';
+import { gitRoot } from '../utils/git';
+import { LogReporter, logger } from '../utils/log-reporter';
+import { Project, Workspace } from '../utils/workspace-utils';
 
 import { RestoreCommand } from './restore';
 
@@ -22,32 +19,64 @@ export class BumpCommand extends RestoreCommand {
       return 1;
     }
 
-    const bump = logger.beginSection('Bump step');
     const project = await Project.load(await gitRoot());
-    const config = await Configuration.load(project.cwd);
-    if (!config) {
+    if (!project) {
       return 1;
     }
-    const git = new Git(project.cwd);
 
-    const tags = await git.versionTags();
-    const version = determineCurrentVersion(tags, config.branch, tagPrefix());
+    const bump = logger.beginSection('Bump step');
 
-    const platform = await git.platform();
-    const logs = (await git.logs(version.hash)).map(platform.stripMergeMessage);
-    const commits = parseConventionalCommits(logs);
+    await project.bumpManifest.clear();
+
+    if (project.config.options.independentVersioning) {
+      logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
+      const promises = project.workspaces.map(async workspace => {
+        return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
+          const newVersion = await this.detectBumpForWorkspace(workspace, logger);
+          if (newVersion) {
+            await workspace.updateVersion(newVersion, logger);
+          }
+        });
+      });
+
+      await Promise.all(promises);
+    } else {
+      const newVersion = await this.detectBumpForWorkspace(project, logger);
+
+      if (newVersion) {
+        await Promise.all(project.workspaces.map(w => w.updateVersion(newVersion, logger)));
+      }
+    }
+    await project.bumpManifest.persist();
+    logger.endSection(bump);
+    return 0;
+  }
+
+  async detectBumpForWorkspace(workspace: Workspace, logger: LogReporter) {
+    const version = await this.currentVersionFromGit(workspace);
+
+    const platform = await workspace.project.git.platform();
+    const logs = await workspace.project.git.logs(version.hash, workspace.relativeCwd);
+    const commits = parseConventionalCommits(logs, platform);
+
     logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard`);
 
     const bumpType = detectBumpType(commits);
 
     logger.reportInfo(`Detected bump type: ${formatBumpType(bumpType)}`);
 
-    const newVersion = executeBump(version.version, config.branch, bumpType);
+    const newVersion = executeBump(version.version, workspace.config.branch, bumpType);
 
     if (newVersion) {
-      await Promise.all(project.workspaces.map(w => w.updateVersion(newVersion)));
+      workspace.project.bumpManifest.add({
+        changeLog: '',
+        fromVersion: version.version.format(),
+        packageName: workspace.packageName,
+        packageRelativeCwd: workspace.relativeCwd,
+        toVersion: newVersion,
+        tag: workspace.tagPrefix + newVersion,
+      });
     }
-    logger.endSection(bump);
-    return 0;
+    return newVersion;
   }
 }

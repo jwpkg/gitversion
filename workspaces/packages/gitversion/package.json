@@ -23,9 +23,6 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@yarnpkg/cli": "^4.0.2",
-    "@yarnpkg/core": "^4.0.2",
-    "@yarnpkg/fslib": "^3.0.1",
     "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
     "colorize-node": "^0.5.0",
@@ -35,5 +32,5 @@
     "semver": "^7.5.4",
     "typanion": "^3.14.0"
   },
-  "version": "0.0.2-bumping.0"
+  "version": "0.0.1-bumping.0"
 }
