@@ -1,6 +1,6 @@
-import { BranchType, Configuration } from './config';
+import { BranchType, Configuration, ConfigurationOptions } from './config';
 
-const defaultConfig = {
+const defaultConfig: Required<ConfigurationOptions> = {
   featureBranchPatterns: [
     '^feature/(.*)$',
   ],
@@ -10,6 +10,7 @@ const defaultConfig = {
   mainBranch: 'main',
   independentVersioning: false,
   versionTagPrefix: 'v',
+  alwaysBumpFeatureCommits: true,
 };
 
 describe('configuration', () => {

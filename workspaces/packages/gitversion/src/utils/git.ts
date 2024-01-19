@@ -111,8 +111,11 @@ export class Git {
       .map(e => e as GitTag);
   }
 
-  async addTag(...tags: string[]) {
-    return await gitExec(['tag', ...tags]);
+  async addTag(tag: string, push: boolean) {
+    await gitExec(['tag', tag]);
+    if (push) {
+      await gitExec(['push', 'origin', tag]);
+    }
   }
 
   async currentBranch() {

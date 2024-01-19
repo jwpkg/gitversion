@@ -12,6 +12,7 @@ export const isConfigurationOptions = t.isObject({
   mainBranch: t.isOptional(t.isString()),
   independentVersioning: t.isOptional(t.isBoolean()),
   versionTagPrefix: t.isOptional(t.isString()),
+  alwaysBumpFeatureCommits: t.isOptional(t.isBoolean()),
 });
 
 export type ConfigurationOptions = t.InferType<typeof isConfigurationOptions>;
@@ -92,18 +93,19 @@ export class Configuration {
       mainBranch: 'main',
       independentVersioning: false,
       versionTagPrefix: 'v',
+      alwaysBumpFeatureCommits: true,
     };
     let options = defaultOptions;
 
-    if (existsSync(join(cwd, '.gitversion.js'))) {
-      const config = require(join(cwd, '.gitversion.js'));
+    if (existsSync(join(cwd, '.gitversion.cjs'))) {
+      const config = require(join(cwd, '.gitversion.cjs'));
       if (isConfigurationOptions(config)) {
         options = {
           ...options,
           ...config,
         };
       } else {
-        logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitversion.js'))}`, true);
+        logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitversion.cjs'))}`, true);
         return null;
       }
     }

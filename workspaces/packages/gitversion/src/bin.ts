@@ -3,6 +3,8 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { BumpCommand } from './commands/bump';
+import { PackCommand } from './commands/pack';
+import { PublishCommand } from './commands/publish';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
 import { TagCommand } from './commands/tag';
@@ -22,6 +24,8 @@ run([
   ResetCommand,
   RestoreCommand,
   TagCommand,
+  PackCommand,
+  PublishCommand,
 ], {
   logger,
 }).then(result => {

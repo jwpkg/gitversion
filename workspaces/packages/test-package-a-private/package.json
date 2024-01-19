@@ -1,5 +1,5 @@
 {
-  "name": "@test-scope/test-package-a-private",
+  "name": "@cp-utils-test/test-package-a-private",
   "packageManager": "yarn@4.0.2",
   "private": true,
   "version": "0.0.1"

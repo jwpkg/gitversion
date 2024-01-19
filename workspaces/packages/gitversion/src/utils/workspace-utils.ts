@@ -5,7 +5,6 @@ import { join } from 'path';
 
 import { Configuration } from '../config';
 
-import { BumpManifest } from './bump-utils';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
 import { formatPackageName, formatVersion } from './format-utils';
 import { tagPrefix } from './git-utils';
@@ -13,6 +12,8 @@ import { Git } from './git';
 import { LogReporter } from './log-reporter';
 
 export class Workspace {
+  _project?: Project;
+
   cwd: string;
   relativeCwd: string;
   version: string;
@@ -20,7 +21,6 @@ export class Workspace {
   packageName: string;
   manifest: Record<string, any>;
   tagPrefix: string;
-  _project?: Project;
   config: Configuration;
 
   get project(): Project {
@@ -72,13 +72,14 @@ export class Project extends Workspace {
   workspaces: Workspace[];
   childWorkspaces: Workspace[];
   git: Git;
-  bumpManifest: BumpManifest;
+
+  stagingFolder: string;
 
   get project(): Project {
     return this;
   }
 
-  private constructor(cwd: string, manifest: Record<string, any>, childWorkspaces: Workspace[], config: Configuration, bumpManifest: BumpManifest) {
+  private constructor(cwd: string, manifest: Record<string, any>, childWorkspaces: Workspace[], config: Configuration) {
     super(cwd, '.', manifest, config);
     this.childWorkspaces = childWorkspaces;
     this.workspaces = [
@@ -86,7 +87,7 @@ export class Project extends Workspace {
       ...childWorkspaces,
     ];
 
-    this.bumpManifest = bumpManifest;
+    this.stagingFolder = join(cwd, 'gitversion.out');
 
     this.git = new Git(this.cwd);
   }
@@ -115,9 +116,7 @@ export class Project extends Workspace {
       const workspaces = await Promise.all(workspacePromises);
       const allWorkspaces = workspaces.filter((w): w is Workspace => !!w);
 
-      const bumpManifest = await BumpManifest.load(join(rootCwd, 'gitversion.out'));
-
-      const project = new Project(rootCwd, manifest, allWorkspaces, config, bumpManifest);
+      const project = new Project(rootCwd, manifest, allWorkspaces, config);
       allWorkspaces.forEach(w => {
         w._project = project;
       });

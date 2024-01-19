@@ -1,3 +1,4 @@
+import { BumpManifest } from '../utils/bump-manifest';
 import { DEFAULT_PACKAGE_VERSION } from '../utils/constants';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
@@ -18,7 +19,7 @@ export class ResetCommand extends GitVersionCommand {
 
     const reset = logger.beginSection('Reset step');
 
-    await project.bumpManifest.clear();
+    await BumpManifest.clear(project);
 
     await Promise.all(project.workspaces.map(w => w.updateVersion(DEFAULT_PACKAGE_VERSION, logger)));
 

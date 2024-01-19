@@ -1,6 +1,8 @@
 import { colorize } from 'colorize-node';
 
-import { detectBumpType, executeBump } from '../utils/bump-utils';
+import { BranchType } from '../config';
+import { BumpManifest } from '../utils/bump-manifest';
+import { BumpType, detectBumpType, executeBump } from '../utils/bump-utils';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
@@ -26,13 +28,15 @@ export class BumpCommand extends RestoreCommand {
 
     const bump = logger.beginSection('Bump step');
 
-    await project.bumpManifest.clear();
+    const bumpManifest = new BumpManifest(project);
+
+    await bumpManifest.clear();
 
     if (project.config.options.independentVersioning) {
       logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
       const promises = project.workspaces.map(async workspace => {
         return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
-          const newVersion = await this.detectBumpForWorkspace(workspace, logger);
+          const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest);
           if (newVersion) {
             await workspace.updateVersion(newVersion, logger);
           }
@@ -41,18 +45,18 @@ export class BumpCommand extends RestoreCommand {
 
       await Promise.all(promises);
     } else {
-      const newVersion = await this.detectBumpForWorkspace(project, logger);
+      const newVersion = await this.detectBumpForWorkspace(project, logger, bumpManifest);
 
       if (newVersion) {
         await Promise.all(project.workspaces.map(w => w.updateVersion(newVersion, logger)));
       }
     }
-    await project.bumpManifest.persist();
+    await bumpManifest.persist();
     logger.endSection(bump);
     return 0;
   }
 
-  async detectBumpForWorkspace(workspace: Workspace, logger: LogReporter) {
+  async detectBumpForWorkspace(workspace: Workspace, logger: LogReporter, bumpManifest: BumpManifest) {
     const version = await this.currentVersionFromGit(workspace);
 
     const platform = await workspace.project.git.platform();
@@ -61,20 +65,29 @@ export class BumpCommand extends RestoreCommand {
 
     logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard`);
 
-    const bumpType = detectBumpType(commits);
+    let bumpType = detectBumpType(commits);
 
     logger.reportInfo(`Detected bump type: ${formatBumpType(bumpType)}`);
+
+    if (bumpType === BumpType.NONE
+      && logs.length > 0
+      && workspace.config.branch.type === BranchType.FEATURE
+      && workspace.config.options.alwaysBumpFeatureCommits) {
+      bumpType = BumpType.PATCH;
+      logger.reportInfo(`Found ${colorize.cyan(commits.length)} normal commits and will bump feature branch with ${colorize.bgGreen('PATCH')}`);
+    }
 
     const newVersion = executeBump(version.version, workspace.config.branch, bumpType);
 
     if (newVersion) {
-      workspace.project.bumpManifest.add({
+      bumpManifest.add({
         changeLog: '',
         fromVersion: version.version.format(),
         packageName: workspace.packageName,
         packageRelativeCwd: workspace.relativeCwd,
         toVersion: newVersion,
         tag: workspace.tagPrefix + newVersion,
+        private: workspace.manifest.private === true,
       });
     }
     return newVersion;

@@ -1,6 +1,3 @@
-import { mkdir, readFile, rm, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { dirname, join } from 'path';
 import { SemVer, inc, prerelease } from 'semver';
 
 import { BranchType, VersionBranch } from '../config';
@@ -67,58 +64,4 @@ export function detectBumpType(commits: ConventionalCommit[]) {
     }
   }
   return current;
-}
-
-export interface Bump {
-  packageRelativeCwd: string;
-  tag: string;
-  packageName: string;
-  fromVersion: string;
-  toVersion: string;
-  changeLog: string;
-}
-
-export interface BumpManifestContent {
-  bumps: Bump[];
-}
-
-export class BumpManifest {
-  private constructor(private bumpManifestFile: string, public bumpManifest: BumpManifestContent) {
-  }
-
-  static async load(outputFolder: string) {
-    const bumpManifestFile = join(outputFolder, 'bump-manifest.json');
-    let bumpManifest: BumpManifestContent = {
-      bumps: [],
-    };
-
-    if (existsSync(bumpManifestFile)) {
-      const content = await readFile(bumpManifestFile, 'utf-8');
-      bumpManifest = JSON.parse(content) as BumpManifestContent;
-    }
-    return new BumpManifest(bumpManifestFile, bumpManifest);
-  }
-
-  add(bump: Bump) {
-    this.bumpManifest.bumps.push(bump);
-  }
-
-  async clear() {
-    this.bumpManifest.bumps = [];
-    rm(this.bumpManifestFile, {
-      force: true,
-    });
-  }
-
-  async persist() {
-    const content = JSON.stringify(this.bumpManifest, null, 2);
-    await mkdir(dirname(this.bumpManifestFile), {
-      recursive: true,
-    });
-
-    await writeFile(this.bumpManifestFile, content, {
-      encoding: 'utf-8',
-
-    });
-  }
 }

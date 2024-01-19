@@ -1,5 +1,5 @@
 {
-  "name": "gitversion",
+  "name": "@cp-utils/gitversion",
   "packageManager": "yarn@4.0.2",
   "bin": "bin/index.js",
   "type": "commonjs",
@@ -23,6 +23,7 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
+    "axios": "^1.6.5",
     "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
     "colorize-node": "^0.5.0",
@@ -32,5 +33,5 @@
     "semver": "^7.5.4",
     "typanion": "^3.14.0"
   },
-  "version": "0.0.0"
+  "version": "0.0.1-bumping.0"
 }

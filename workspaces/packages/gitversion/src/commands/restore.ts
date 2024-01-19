@@ -1,3 +1,4 @@
+import { BumpManifest } from '../utils/bump-manifest';
 import { formatVersion, formatVersionBranch } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
@@ -20,7 +21,7 @@ export class RestoreCommand extends GitVersionCommand {
     logger.reportInfo(`Branch type: ${formatVersionBranch(project.config.branch)}`);
     const section = logger.beginSection('Restore step');
 
-    await project.bumpManifest.clear();
+    await BumpManifest.clear(project);
 
     if (project.config.options.independentVersioning) {
       const promises = project.workspaces.map(async workspace => {

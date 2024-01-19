@@ -49,7 +49,21 @@ export function formatPackageName(name: string) {
   const regex = /^(@.*\/)?(.*)$/;
   const result = regex.exec(name);
   if (result && result[1]) {
-    return `${colorize.blueBright(result[1])}${colorize.magentaBright(result[2])}`;
+    return `${colorize.redBright(result[1])}${colorize.red(result[2])}`;
   }
-  return `${colorize.magentaBright(name)}`;
+  return `${colorize.red(name)}`;
+}
+
+export function formatFileSize(size: number) {
+  if (size <= 0) return '0';
+  const units = ['B', 'kB', 'MB', 'GB', 'TB'];
+  const digitGroups = (Math.log10(size) / Math.log10(1024));
+  const num = (size / Math.pow(1024, Math.floor(digitGroups)));
+
+  const result = `${Math.floor(num * 10) / 10}${units[Math.floor(digitGroups)]}`;
+  if (digitGroups <= 1) {
+    return colorize.greenBright(result);
+  } else if (digitGroups <= 2) {
+    return colorize.yellowBright(result);
+  } else return colorize.redBright(result);
 }
