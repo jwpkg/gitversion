@@ -4,6 +4,8 @@ import { dirname, join } from 'path';
 
 import { Project } from './workspace-utils';
 
+const MANIFEST_NAME = 'bump-manifest.json';
+
 export interface Bump {
   packageRelativeCwd: string;
   tag: string;
@@ -19,28 +21,17 @@ export interface BumpManifestContent {
 }
 
 export class BumpManifest {
-  bumpManifest: BumpManifestContent;
-  bumpManifestFile: string;
+  manifest: BumpManifestContent;
 
-  constructor(project: Project, bumpManifest?: BumpManifestContent) {
-    this.bumpManifestFile = BumpManifest.manifestFile(project);
-    this.bumpManifest = bumpManifest ?? {
+  private constructor(public bumpManifestFile: string, manifest?: BumpManifestContent) {
+    this.manifest = manifest ?? {
       bumps: [],
     };
   }
 
-  private static manifestFile(project: Project) {
-    return join(project.stagingFolder, 'bump-manifest.json');
-  }
-
-  static async clear(project: Project) {
-    rm(BumpManifest.manifestFile(project), {
-      force: true,
-    });
-  }
-
   static async load(project: Project) {
-    const bumpManifestFile = BumpManifest.manifestFile(project);
+    const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
+
     let bumpManifest: BumpManifestContent = {
       bumps: [],
     };
@@ -49,22 +40,28 @@ export class BumpManifest {
       const content = await readFile(bumpManifestFile, 'utf-8');
       bumpManifest = JSON.parse(content) as BumpManifestContent;
     }
-    return new BumpManifest(project, bumpManifest);
+
+    return new BumpManifest(bumpManifestFile, bumpManifest);
   }
 
-  add(bump: Bump) {
-    this.bumpManifest.bumps.push(bump);
+  static async new(project: Project) {
+    await this.clear(project);
+    const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
+    return new BumpManifest(bumpManifestFile);
   }
 
-  async clear() {
-    this.bumpManifest.bumps = [];
-    rm(this.bumpManifestFile, {
+  static async clear(project: Project) {
+    rm(join(project.stagingFolder, MANIFEST_NAME), {
       force: true,
     });
   }
 
+  add(bump: Bump) {
+    this.manifest.bumps.push(bump);
+  }
+
   async persist() {
-    const content = JSON.stringify(this.bumpManifest, null, 2);
+    const content = JSON.stringify(this.manifest, null, 2);
     await mkdir(dirname(this.bumpManifestFile), {
       recursive: true,
     });

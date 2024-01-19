@@ -1,0 +1,9 @@
+- changelog generation
+- push changelogs
+- reset changelogs
+- refactor workspace utils + test
+- bin strategy (tsnode/node)
+- command context
+- remove logger global
+- git status verification
+- plugins for teams/slack

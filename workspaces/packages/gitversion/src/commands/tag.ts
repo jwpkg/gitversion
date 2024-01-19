@@ -26,7 +26,7 @@ export class TagCommand extends GitVersionCommand {
 
     const bumpManifest = await BumpManifest.load(project);
 
-    const bumpedWorkspaces = bumpManifest.bumpManifest.bumps;
+    const bumpedWorkspaces = bumpManifest.manifest.bumps;
     if (bumpedWorkspaces.length > 0) {
       const promises = bumpedWorkspaces.map(async bump => {
         logger.reportInfo(`Setting tag for package ${formatPackageName(bump.packageName)}: ${colorize.cyanBright(bump.tag)}`);

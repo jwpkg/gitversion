@@ -28,9 +28,7 @@ export class BumpCommand extends RestoreCommand {
 
     const bump = logger.beginSection('Bump step');
 
-    const bumpManifest = new BumpManifest(project);
-
-    await bumpManifest.clear();
+    const bumpManifest = await BumpManifest.new(project);
 
     if (project.config.options.independentVersioning) {
       logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
@@ -74,7 +72,7 @@ export class BumpCommand extends RestoreCommand {
       && workspace.config.branch.type === BranchType.FEATURE
       && workspace.config.options.alwaysBumpFeatureCommits) {
       bumpType = BumpType.PATCH;
-      logger.reportInfo(`Found ${colorize.cyan(commits.length)} normal commits and will bump feature branch with ${colorize.bgGreen('PATCH')}`);
+      logger.reportInfo(`Found ${colorize.cyan(logs.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
     }
 
     const newVersion = executeBump(version.version, workspace.config.branch, bumpType);

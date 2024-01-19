@@ -7,7 +7,7 @@ import { BranchType, VersionBranch } from '../config';
 import { formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
-import { PackManifest, PackedPackage } from '../utils/pack-manifest';
+import { PackArtifact, PackedPackage } from '../utils/pack-artifact';
 import { Project } from '../utils/workspace-utils';
 
 import { GitVersionCommand } from './context';
@@ -25,9 +25,9 @@ export class PublishCommand extends GitVersionCommand {
       return 1;
     }
 
-    const packManifest = await PackManifest.load(project);
+    const packManifest = await PackArtifact.load(project);
 
-    const packedWorkspaces = packManifest.packManifest.packages;
+    const packedWorkspaces = packManifest.manifest.packages;
     if (packedWorkspaces.length > 0) {
       const promises = packedWorkspaces.map(async packedPackage => {
         await this.publishPackage(packedPackage, join(packManifest.packFolder, packedPackage.packFile), project.config.branch);

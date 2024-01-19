@@ -7,7 +7,7 @@ import { Bump, BumpManifest } from '../utils/bump-manifest';
 import { formatFileSize, formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
-import { PackManifest } from '../utils/pack-manifest';
+import { PackArtifact } from '../utils/pack-artifact';
 import { Project } from '../utils/workspace-utils';
 
 import { GitVersionCommand } from './context';
@@ -26,10 +26,9 @@ export class PackCommand extends GitVersionCommand {
     const section = logger.beginSection('Pack step');
 
     const bumpManifest = await BumpManifest.load(project);
-    const packManifest = new PackManifest(project);
-    await packManifest.clear();
+    const packManifest = await PackArtifact.new(project);
 
-    const bumpedWorkspaces = bumpManifest.bumpManifest.bumps.filter(b => b.private === false);
+    const bumpedWorkspaces = bumpManifest.manifest.bumps.filter(b => b.private === false);
     if (bumpedWorkspaces.length > 0) {
       const packFolder = join(project.stagingFolder, 'pack');
       await mkdir(packFolder, {
@@ -53,7 +52,7 @@ export class PackCommand extends GitVersionCommand {
     return 0;
   }
 
-  async execPackCommand(cwd: string, packFolder: string, bump: Bump, packManifest: PackManifest) {
+  async execPackCommand(cwd: string, packFolder: string, bump: Bump, packManifest: PackArtifact) {
     const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}.tgz`;
     const packFile = `${join(packFolder, normalizedPackageName)}`;
 
