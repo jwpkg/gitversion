@@ -13,6 +13,8 @@ export interface ConventionalCommitFooter {
 }
 
 export interface ConventionalCommit {
+  hash: string;
+  shortHash: string;
   type: string;
   message: string;
   scope?: string;
@@ -46,6 +48,8 @@ export function parseConventionalCommit(commit: GitCommit): ConventionalCommit |
     breaking: result[3] === '!',
     message: result[4],
     body: '',
+    hash: commit.hash,
+    shortHash: commit.hash.substring(0, 7),
     footers: [],
   };
 

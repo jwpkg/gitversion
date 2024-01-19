@@ -1,8 +1,10 @@
 import { colorize } from 'colorize-node';
+import { parse } from 'semver';
 
 import { BranchType } from '../config';
 import { BumpManifest } from '../utils/bump-manifest';
 import { BumpType, detectBumpType, executeBump } from '../utils/bump-utils';
+import { ChangeLogUrls, generateChangeLogEntry } from '../utils/changelog';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
@@ -77,9 +79,16 @@ export class BumpCommand extends RestoreCommand {
 
     const newVersion = executeBump(version.version, workspace.config.branch, bumpType);
 
+    const urls: ChangeLogUrls = {
+      compareUrl: (a, b) => `https://github.com/cp-utils/gitversion/compare/${a}...${b}`,
+      commitUrl: a => `https://github.com/cp-utils/gitversion/commit/${a}`,
+    };
+
     if (newVersion) {
       bumpManifest.add({
-        changeLog: '',
+        changeLog: generateChangeLogEntry(commits, {
+          version: parse(newVersion)!,
+        }, version, urls),
         fromVersion: version.version.format(),
         packageName: workspace.packageName,
         packageRelativeCwd: workspace.relativeCwd,

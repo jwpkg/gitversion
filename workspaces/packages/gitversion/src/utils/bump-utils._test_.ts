@@ -12,6 +12,8 @@ function cc(commit: Partial<ConventionalCommit>): ConventionalCommit {
     type: 'fix',
     message: '',
     footers: [],
+    hash: '',
+    shortHash: '',
     ...commit,
   };
 }
