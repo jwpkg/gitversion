@@ -1,12 +1,11 @@
-import { SemVer, parse } from 'semver';
+import { parse } from 'semver';
 
-import { BranchType, VersionBranch } from '../config';
-
+import { BranchType, VersionBranch } from './config';
 import { GitTag } from './git';
 
 export type GitSemverTag = {
   hash?: string;
-  version: SemVer;
+  version: string;
 };
 
 export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, prefix: string): GitSemverTag {
@@ -43,7 +42,7 @@ export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, p
   if (version) {
     return {
       hash: latestTag.hash,
-      version,
+      version: version.format(),
     };
   }
   throw new Error(`Oops something went wrong parsing version ${version}`);

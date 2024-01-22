@@ -3,8 +3,8 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import * as t from 'typanion';
 
-import { Git } from './utils/git';
-import { logger } from './utils/log-reporter';
+import { Git } from './git';
+import { logger } from './log-reporter';
 
 export const isConfigurationOptions = t.isObject({
   featureBranchPatterns: t.isOptional(t.isArray(t.isString())),

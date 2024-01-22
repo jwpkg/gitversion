@@ -1,7 +1,6 @@
-import { SemVer, inc, prerelease } from 'semver';
+import { inc, parse, prerelease } from 'semver';
 
-import { BranchType, VersionBranch } from '../config';
-
+import { BranchType, VersionBranch } from './config';
 import { ConventionalCommit } from './conventional-commmit-utils';
 
 export enum BumpType {
@@ -22,19 +21,25 @@ const bumpMap: Record<string, BumpType> = {
 };
 
 // eslint-disable-next-line consistent-return
-export function executeBump(version: SemVer, branch: VersionBranch, bumpType: BumpType): string | null {
+export function executeBump(version: string, branch: VersionBranch, bumpType: BumpType): string | null {
   if (bumpType === BumpType.NONE) {
     return null;
   }
 
-  if (prerelease(version)) {
+  const semver = parse(version);
+
+  if (!semver) {
+    return null;
+  }
+
+  if (prerelease(semver)) {
     return inc(version, 'prerelease');
   }
 
   const preReleaseName = branch.type === BranchType.MAIN ? undefined : branch.name;
   const preReleasePrefix = branch.type === BranchType.MAIN ? '' : 'pre';
 
-  if (version.major === 0) {
+  if (semver.major === 0) {
     switch (bumpType) {
       case BumpType.GRADUATE: return inc(version, `${preReleasePrefix}major`, preReleaseName);
       case BumpType.MAJOR: return inc(version, `${preReleasePrefix}minor`, preReleaseName);

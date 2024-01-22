@@ -26,7 +26,7 @@ export class RestoreCommand extends GitVersionCommand {
     if (project.config.options.independentVersioning) {
       const promises = project.workspaces.map(async workspace => {
         const version = await this.currentVersionFromGit(workspace);
-        await workspace.updateVersion(version.version.format(), logger);
+        await workspace.updateVersion(version.version, logger);
       });
       await Promise.all(promises);
     } else {
@@ -34,7 +34,7 @@ export class RestoreCommand extends GitVersionCommand {
 
       logger.reportInfo(`Latest version in git tags: ${formatVersion(version.version)}`);
 
-      await Promise.all(project.workspaces.map(w => w.updateVersion(version.version.format(), logger)));
+      await Promise.all(project.workspaces.map(w => w.updateVersion(version.version, logger)));
     }
 
     logger.endSection(section);

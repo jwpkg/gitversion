@@ -1,10 +1,12 @@
 import { colorize } from 'colorize-node';
-import { parse } from 'semver';
+import { readFile, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
-import { BranchType } from '../config';
 import { BumpManifest } from '../utils/bump-manifest';
 import { BumpType, detectBumpType, executeBump } from '../utils/bump-utils';
-import { ChangeLogUrls, generateChangeLogEntry } from '../utils/changelog';
+import { addToChangelog, generateChangeLogEntry } from '../utils/changelog';
+import { BranchType } from '../utils/config';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
@@ -79,23 +81,27 @@ export class BumpCommand extends RestoreCommand {
 
     const newVersion = executeBump(version.version, workspace.config.branch, bumpType);
 
-    const urls: ChangeLogUrls = {
-      compareUrl: (a, b) => `https://github.com/cp-utils/gitversion/compare/${a}...${b}`,
-      commitUrl: a => `https://github.com/cp-utils/gitversion/commit/${a}`,
-    };
-
     if (newVersion) {
+      const changelogEntry = generateChangeLogEntry(commits, {
+        version: newVersion,
+      }, version, platform);
+
       bumpManifest.add({
-        changeLog: generateChangeLogEntry(commits, {
-          version: parse(newVersion)!,
-        }, version, urls),
-        fromVersion: version.version.format(),
+        changeLog: changelogEntry,
         packageName: workspace.packageName,
         packageRelativeCwd: workspace.relativeCwd,
         toVersion: newVersion,
         tag: workspace.tagPrefix + newVersion,
         private: workspace.manifest.private === true,
       });
+
+      const changeLogFile = join(workspace.cwd, 'CHANGELOG.md');
+      let changeLog = '';
+      if (existsSync(changeLogFile)) {
+        changeLog = await readFile(changeLogFile, 'utf-8');
+      }
+      changeLog = addToChangelog(changelogEntry, changeLog);
+      await writeFile(changeLogFile, changeLog, 'utf-8');
     }
     return newVersion;
   }

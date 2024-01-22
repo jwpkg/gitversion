@@ -10,7 +10,6 @@ export interface Bump {
   packageRelativeCwd: string;
   tag: string;
   packageName: string;
-  fromVersion: string;
   toVersion: string;
   changeLog: string;
   private: boolean;

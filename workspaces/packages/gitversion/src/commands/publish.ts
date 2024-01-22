@@ -3,7 +3,7 @@ import { colorize } from 'colorize-node';
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { dirname, join } from 'path';
 
-import { BranchType, VersionBranch } from '../config';
+import { BranchType, VersionBranch } from '../utils/config';
 import { formatPackageName } from '../utils/format-utils';
 import { gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
