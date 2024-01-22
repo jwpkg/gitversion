@@ -75,7 +75,6 @@ export class PackCommand extends GitVersionCommand {
       }
       packManifest.add({
         packFile: normalizedPackageName,
-        version: bump.toVersion,
         ...bump,
       });
     });

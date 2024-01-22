@@ -132,12 +132,17 @@ export class Git {
 
     const output = await gitExec(args, this.cwd);
 
-    // get from git
     return output.replace(/\n*$/, '');
+  }
+
+  async currentCommit() {
+    return await gitExec(['rev-parse', '--verify', 'HEAD']);
   }
 
   async cleanChangeLogs() {
     await gitExec(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], this.cwd);
+    await gitExec(['checkout', 'CHANGELOG.md'], this.cwd);
+    await gitExec(['checkout', '**/CHANGELOG.md'], this.cwd);
   }
 
   async platform(): Promise<IGitPlatform> {

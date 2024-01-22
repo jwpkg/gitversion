@@ -1,7 +1,10 @@
+import { colorize } from 'colorize-node';
 import { inc, parse, prerelease } from 'semver';
 
-import { BranchType, VersionBranch } from './config';
+import { BranchType, Configuration, VersionBranch } from './config';
 import { ConventionalCommit } from './conventional-commmit-utils';
+import { GitCommit } from './git';
+import { logger } from './log-reporter';
 
 export enum BumpType {
   NONE = 0,
@@ -69,4 +72,15 @@ export function detectBumpType(commits: ConventionalCommit[]) {
     }
   }
   return current;
+}
+
+export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], config: Configuration) {
+  if (bumpType === BumpType.NONE
+    && rawCommits.length > 0
+    && config.branch.type === BranchType.FEATURE
+    && config.options.alwaysBumpFeatureCommits) {
+    logger.reportInfo(`Found ${colorize.cyan(rawCommits.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
+    return BumpType.PATCH;
+  }
+  return bumpType;
 }

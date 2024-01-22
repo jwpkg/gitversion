@@ -4,13 +4,14 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 import { BumpManifest } from '../utils/bump-manifest';
-import { BumpType, detectBumpType, executeBump } from '../utils/bump-utils';
+import { detectBumpType, executeBump, validateBumpType } from '../utils/bump-utils';
 import { addToChangelog, generateChangeLogEntry } from '../utils/changelog';
-import { BranchType } from '../utils/config';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../utils/format-utils';
+import { IGitPlatform } from '../utils/git-platform';
 import { gitRoot } from '../utils/git';
 import { LogReporter, logger } from '../utils/log-reporter';
+import { GitSemverTag } from '../utils/version-utils';
 import { Project, Workspace } from '../utils/workspace-utils';
 
 import { RestoreCommand } from './restore';
@@ -34,75 +35,73 @@ export class BumpCommand extends RestoreCommand {
 
     const bumpManifest = await BumpManifest.new(project);
 
-    if (project.config.options.independentVersioning) {
-      logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
-      const promises = project.workspaces.map(async workspace => {
-        return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
-          const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest);
-          if (newVersion) {
-            await workspace.updateVersion(newVersion, logger);
-          }
-        });
+    // if (project.config.options.independentVersioning) {
+    //   logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
+    const promises = project.workspaces.map(async workspace => {
+      return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
+        const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest);
+        if (newVersion) {
+          await workspace.updateVersion(newVersion, logger);
+        }
       });
+    });
 
-      await Promise.all(promises);
-    } else {
-      const newVersion = await this.detectBumpForWorkspace(project, logger, bumpManifest);
+    await Promise.all(promises);
+    // } else {
+    //   const newVersion = await this.detectBumpForWorkspace(project, logger, bumpManifest);
 
-      if (newVersion) {
-        await Promise.all(project.workspaces.map(w => w.updateVersion(newVersion, logger)));
-      }
-    }
-    await bumpManifest.persist();
+    //   if (newVersion) {
+    //     await Promise.all(project.workspaces.map(async workspace => {
+    //       await workspace.updateVersion(newVersion, logger);
+    //     }));
+    //   }
+    // }
+    // await bumpManifest.persist();
     logger.endSection(bump);
     return 0;
   }
 
   async detectBumpForWorkspace(workspace: Workspace, logger: LogReporter, bumpManifest: BumpManifest) {
-    const version = await this.currentVersionFromGit(workspace);
+    const workspaceForVersion = workspace.config.options.independentVersioning ? workspace : workspace.project;
+    const version = await this.currentVersionFromGit(workspaceForVersion);
 
     const platform = await workspace.project.git.platform();
-    const logs = await workspace.project.git.logs(version.hash, workspace.relativeCwd);
+
+    const logs = await workspace.project.git.logs(version.hash, workspaceForVersion.relativeCwd);
     const commits = parseConventionalCommits(logs, platform);
 
-    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard`);
+    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
 
-    let bumpType = detectBumpType(commits);
+    const bumpType = validateBumpType(detectBumpType(commits), logs, workspace.config);
 
-    logger.reportInfo(`Detected bump type: ${formatBumpType(bumpType)}`);
-
-    if (bumpType === BumpType.NONE
-      && logs.length > 0
-      && workspace.config.branch.type === BranchType.FEATURE
-      && workspace.config.options.alwaysBumpFeatureCommits) {
-      bumpType = BumpType.PATCH;
-      logger.reportInfo(`Found ${colorize.cyan(logs.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
-    }
+    logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
 
     const newVersion = executeBump(version.version, workspace.config.branch, bumpType);
 
     if (newVersion) {
-      const changelogEntry = generateChangeLogEntry(commits, {
+      await this.generateChangelogForWorkspace(workspace, version, {
         version: newVersion,
-      }, version, platform);
-
-      bumpManifest.add({
-        changeLog: changelogEntry,
-        packageName: workspace.packageName,
-        packageRelativeCwd: workspace.relativeCwd,
-        toVersion: newVersion,
-        tag: workspace.tagPrefix + newVersion,
-        private: workspace.manifest.private === true,
-      });
-
-      const changeLogFile = join(workspace.cwd, 'CHANGELOG.md');
-      let changeLog = '';
-      if (existsSync(changeLogFile)) {
-        changeLog = await readFile(changeLogFile, 'utf-8');
-      }
-      changeLog = addToChangelog(changelogEntry, changeLog);
-      await writeFile(changeLogFile, changeLog, 'utf-8');
+        hash: await workspace.project.git.currentCommit(),
+      }, platform, bumpManifest, logger);
     }
     return newVersion;
+  }
+
+  private async generateChangelogForWorkspace(workspace: Workspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, platform: IGitPlatform, bumpManifest: BumpManifest, logger: LogReporter) {
+    const logs = await workspace.project.git.logs(fromVersion.hash, workspace.relativeCwd);
+    const commits = parseConventionalCommits(logs, platform);
+    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);
+
+    const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, platform);
+
+    bumpManifest.add(workspace, toVersion.version, changelogEntry);
+
+    const changeLogFile = join(workspace.cwd, 'CHANGELOG.md');
+    let changeLog = '';
+    if (existsSync(changeLogFile)) {
+      changeLog = await readFile(changeLogFile, 'utf-8');
+    }
+    changeLog = addToChangelog(changelogEntry, changeLog);
+    await writeFile(changeLogFile, changeLog, 'utf-8');
   }
 }

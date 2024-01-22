@@ -2,7 +2,7 @@ import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
-import { Project } from './workspace-utils';
+import { Project, Workspace } from './workspace-utils';
 
 const MANIFEST_NAME = 'bump-manifest.json';
 
@@ -10,7 +10,7 @@ export interface Bump {
   packageRelativeCwd: string;
   tag: string;
   packageName: string;
-  toVersion: string;
+  version: string;
   changeLog: string;
   private: boolean;
 }
@@ -55,8 +55,15 @@ export class BumpManifest {
     });
   }
 
-  add(bump: Bump) {
-    this.manifest.bumps.push(bump);
+  add(workspace: Workspace, version: string, changeLog: string) {
+    this.manifest.bumps.push({
+      changeLog,
+      packageName: workspace.packageName,
+      packageRelativeCwd: workspace.relativeCwd,
+      version,
+      tag: workspace.tagPrefix + version,
+      private: workspace.manifest.private === true,
+    });
   }
 
   async persist() {
