@@ -44,11 +44,9 @@ export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitS
       md.link(to.version, urls.compareUrl(from, to)),
       `(${new Date().toDateString()})`,
     ),
-    Object.entries(groupByType(commits)).map(([type, commits]) => [
+    ...Object.entries(groupByType(commits)).map(([type, commits]) => [
       md.h3(type),
-      commits.map(commit => [
-        renderCommit(commit, urls),
-      ].join('\n')),
+      ...commits.map(commit => renderCommit(commit, urls)),
     ].join('\n')),
 
   ].join('\n');
