@@ -23,5 +23,5 @@ export async function loadManifest(folder: string): Promise<NodeManifest> {
 }
 
 export async function persistManifest(folder: string, manifest: NodeManifest) {
-  await writeFile(join(folder, NODE_MANIFEST_NAME), JSON.stringify(manifest), 'utf-8');
+  await writeFile(join(folder, NODE_MANIFEST_NAME), JSON.stringify(manifest, null, 2), 'utf-8');
 }

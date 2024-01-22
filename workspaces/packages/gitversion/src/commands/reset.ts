@@ -21,7 +21,11 @@ export class ResetCommand extends GitVersionCommand {
 
     await BumpManifest.clear(project);
 
-    await Promise.all(project.workspaces.map(w => w.updateVersion(DEFAULT_PACKAGE_VERSION, logger)));
+    await project.git.cleanChangeLogs();
+
+    await Promise.all(project.workspaces.map(async workspace => {
+      await workspace.updateVersion(DEFAULT_PACKAGE_VERSION, logger);
+    }));
 
     logger.endSection(reset);
 

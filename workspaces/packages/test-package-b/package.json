@@ -1,1 +1,5 @@
-{"name":"@cp-utils-test/test-package-b","packageManager":"yarn@4.0.2","version":"0.0.1-bumping.0"}
+{
+  "name": "@cp-utils-test/test-package-b",
+  "packageManager": "yarn@4.0.2",
+  "version": "0.0.0"
+}

@@ -136,6 +136,10 @@ export class Git {
     return output.replace(/\n*$/, '');
   }
 
+  async cleanChangeLogs() {
+    await gitExec(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], this.cwd);
+  }
+
   async platform(): Promise<IGitPlatform> {
     const branchOutput = await gitExec(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'], this.cwd);
     const [origin] = branchOutput.trim().split('/');
