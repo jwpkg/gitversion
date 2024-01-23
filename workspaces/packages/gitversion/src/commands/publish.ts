@@ -99,11 +99,11 @@ export class PublishCommand extends GitVersionCommand {
           } else {
             logger.reportError(`${output.error}`);
           }
-          logger.reportError(`Error during publish. Exit code: ${colorize.redBright(output.exitCode)}`);
+          throw new Error(`Error during publish. Exit code: ${colorize.redBright(output.exitCode)}`);
         } else if (output.exitCode !== 0) {
           console.log(output.stdout.toString('utf-8'));
           console.log(output.stderr.toString('utf-8'));
-          logger.reportInfo(`Publish error: ${output.exitCode}`);
+          throw new Error(`Publish error: ${output.exitCode}`);
         } else {
           logger.reportInfo('Publish package success');
         }
