@@ -47,7 +47,7 @@ export class PublishCommand extends GitVersionCommand {
 
     const packedPackages = packManifest.manifest.packages;
     if (packedPackages.length > 0) {
-      await this.publishPackages(packedPackages, project.config.branch);
+      await this.publishPackages(packedPackages, project.config.branch, packManifest.packFolder);
       await this.addTags(packedPackages, project.git);
       await this.updateChangelogs(packedPackages, project);
 
@@ -68,11 +68,11 @@ export class PublishCommand extends GitVersionCommand {
     return 0;
   }
 
-  async publishPackages(packedPackages: PackedPackage[], branch: VersionBranch) {
+  async publishPackages(packedPackages: PackedPackage[], branch: VersionBranch, packFolder: string) {
     const publish = logger.beginSection('Publish step');
     const promises = packedPackages.map(async packedPackage => {
       if (packedPackage.packFile) {
-        await this.publishPackage(packedPackage, packedPackage.packFile, branch);
+        await this.publishPackage(packedPackage, join(packFolder, packedPackage.packFile), branch);
       }
     });
 
