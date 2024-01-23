@@ -42,7 +42,6 @@ export function addToChangelog(entry: string, version: string, changelogContent?
     }
 
     for (const range of removeRanges) {
-      console.log('LKJLKJLKJL', range);
       lines.splice(range.start, range.end - range.start);
     }
 
