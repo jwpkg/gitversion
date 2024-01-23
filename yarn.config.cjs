@@ -10,12 +10,6 @@ module.exports = defineConfig({
 
     enforceFieldsOnAllWorkspaces(Yarn, {
       ['engines.node']: '>=18.12.0',
-      private: workspace => {
-        if (workspace.cwd.startsWith('workspaces/packages') || workspace.cwd.startsWith('workspaces/utils')) {
-          return undefined;
-        }
-        return true;
-      },
     });
   },
 });

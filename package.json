@@ -12,6 +12,15 @@
   "workspaces": [
     "workspaces/*/*"
   ],
+  "scripts": {
+    "build:all": "yarn validate:all && yarn build:packages",
+    "build:packages": "yarn workspaces foreach -A run build",
+    "validate:all": "yarn validate:constraints && yarn validate:lint && yarn validate:tests",
+    "validate:constraints": "yarn constraints",
+    "validate:lint": "yarn eslint",
+    "validate:tests": "yarn jest",
+    "eslint": "eslint ."
+  },
   "devDependencies": {
     "@cp-utils/constraints-config": "^0.0.7",
     "@cp-utils/eslint-config": "^0.0.6",

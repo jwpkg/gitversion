@@ -1,5 +1,16 @@
 {
   "name": "@cp-utils-test/test-package-a",
   "packageManager": "yarn@4.0.2",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cp-utils/gitversion",
+    "directory": "workspaces/packages/test-package-a"
+  },
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=18.12.0"
+  }
 }
