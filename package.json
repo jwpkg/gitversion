@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -54,6 +54,6 @@
     }
   },
   "dependencies": {
-    "gitversion": "workspace:^"
+    "@cp-utils/gitversion": "workspace:^"
   }
 }

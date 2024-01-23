@@ -3,84 +3,147 @@ import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 
+import { addToChangelog } from './changelog';
+import { Configuration } from './config';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
+import { formatPackageName, formatVersion } from './format-utils';
+import { Git } from './git';
+import { LogReporter } from './log-reporter';
+import { NodeManifest, loadManifest, persistManifest } from './node-manifest';
 
 export class Workspace {
-  cwd: string;
-  relativeCwd: string;
-  version: string;
-  private: boolean;
-  packageName: string;
-  manifest: Record<string, any>;
+  protected _project: Project;
 
-  constructor(rootCwd: string, relativeCwd: string, manifest: Record<string, any>) {
-    this.cwd = join(rootCwd, relativeCwd);
+  manifest: NodeManifest;
+
+  readonly relativeCwd: string;
+
+  get cwd() {
+    return join(this.project.cwd, this.relativeCwd);
+  }
+
+  get version() {
+    return this.manifest.version ?? DEFAULT_PACKAGE_VERSION;
+  }
+
+  get private() {
+    return this.manifest.private ?? false;
+  }
+
+  get config() {
+    return this.project.config;
+  }
+
+  get packageName() {
+    return this.manifest.name;
+  }
+
+  get project(): Project {
+    return this._project!;
+  }
+
+  get tagPrefix() {
+    if (this.config.options.independentVersioning) {
+      return `${this.config.options.versionTagPrefix}${this.packageName}@`;
+    } else {
+      return this.config.options.versionTagPrefix;
+    }
+  }
+
+  constructor(project: Project, relativeCwd: string, manifest: NodeManifest) {
     this.manifest = manifest;
-    this.version = manifest.version ?? DEFAULT_PACKAGE_VERSION;
-    this.private = manifest.private ?? false;
     if (!manifest.name) {
       throw new Error(`Invalid manifest. Package at '${relativeCwd}' does not have a name`);
     }
-    this.packageName = manifest.name;
     this.relativeCwd = relativeCwd;
+    this._project = project;
   }
 
-  static async loadManifest(cwd: string): Promise<Record<string, any> | undefined> {
-    const manifestLocation = join(cwd, 'package.json');
-    if (existsSync(manifestLocation)) {
-      const manifestContent = await readFile(manifestLocation, {
-        encoding: 'utf-8',
-      });
-      const manifestJson = JSON.parse(manifestContent);
-      return manifestJson;
+  async updateChangelog(version: string, entry: string) {
+    const changeLogFile = join(this.cwd, 'CHANGELOG.md');
+    let changeLog = '';
+    if (existsSync(changeLogFile)) {
+      changeLog = await readFile(changeLogFile, 'utf-8');
     }
-    return undefined;
+    changeLog = addToChangelog(entry, version, changeLog);
+    await writeFile(changeLogFile, changeLog, 'utf-8');
   }
 
-  async updateVersion(version: string) {
-    const newManifest = {
+  async updateVersion(version: string, logger: LogReporter) {
+    const newManifest: NodeManifest = {
       ...this.manifest,
       version,
     };
-    const content = JSON.stringify(newManifest, null, 2);
-    return writeFile(join(this.cwd, 'package.json'), content, {
-      encoding: 'utf-8',
-    });
+    logger.reportInfo(`Update package ${formatPackageName(this.packageName)} to version ${formatVersion(version)}`);
+    await persistManifest(this.cwd, newManifest);
+    this.manifest = newManifest;
   }
 }
 
 export class Project extends Workspace {
-  workspaces: Workspace[];
-  childWorkspaces: Workspace[];
+  private _cwd: string;
+  private _config: Configuration;
 
-  private constructor(cwd: string, manifest: Record<string, any>, childWorkspaces: Workspace[]) {
-    super(cwd, '.', manifest);
-    this.childWorkspaces = childWorkspaces;
-    this.workspaces = [
+  childWorkspaces: Workspace[] = [];
+  git: Git;
+
+  get workspaces(): Workspace[] {
+    return [
       this,
-      ...childWorkspaces,
+      ...this.childWorkspaces,
     ];
   }
 
-  static async load(rootCwd: string): Promise<Project> {
-    const manifest = await Workspace.loadManifest(rootCwd);
+  get cwd() {
+    return this._cwd;
+  }
+
+  get config() {
+    return this._config;
+  }
+
+  get project(): Project {
+    return this;
+  }
+
+  get stagingFolder() {
+    return join(this.cwd, 'gitversion.out');
+  }
+
+  private constructor(cwd: string, manifest: NodeManifest, config: Configuration) {
+    super((undefined as any as Project), '.', manifest);
+    this._project = this;
+    this._cwd = cwd;
+    this._config = config;
+
+    this.git = new Git(this.cwd);
+  }
+
+  static async load(rootCwd: string): Promise<Project | null> {
+    const config = await Configuration.load(rootCwd);
+    if (!config) {
+      return null;
+    }
+    const manifest = await loadManifest(rootCwd);
+    const project = new Project(rootCwd, manifest, config);
+
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {
         cwd: rootCwd,
       });
 
-      const workspacePromises = paths.map(path =>
-        Workspace.loadManifest(join(rootCwd, path)).then(manifest => {
-          if (manifest) {
-            return new Workspace(rootCwd, path, manifest);
-          } else {
-            return undefined;
-          }
-        }),
-      );
+      const workspacePromises = paths.map(async path => {
+        const manifest = await loadManifest(join(rootCwd, path));
+        if (manifest && manifest.private !== true) {
+          return new Workspace(project, path, manifest);
+        } else {
+          return undefined;
+        }
+      });
+
       const workspaces = await Promise.all(workspacePromises);
-      return new Project(rootCwd, manifest, workspaces.filter((w): w is Workspace => !!w));
+      project.childWorkspaces = workspaces.filter((w): w is Workspace => !!w);
     }
-    throw new Error(`Can't create project at '${rootCwd}' `);
+    return project;
   }
 }

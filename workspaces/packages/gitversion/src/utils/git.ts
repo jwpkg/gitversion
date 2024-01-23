@@ -15,7 +15,7 @@ export interface GitCommit {
 
 export interface GitTag {
   tagName: string;
-  hash: string;
+  hash?: string;
 }
 
 export async function gitExec(args: string[], cwd?: string) {
@@ -36,7 +36,7 @@ export class Git {
   constructor(private cwd: string) {
   }
 
-  async logs(sinceHash?: string): Promise<GitCommit[]> {
+  async logs(sinceHash?: string, relativeCwd?: string): Promise<GitCommit[]> {
     const formatFlag = `--format=format:%s${delim1}%cI${delim1}%H${delim1}%b${delim2}`;
 
     const parseEntry = (entry?: string): GitCommit | undefined => {
@@ -61,6 +61,10 @@ export class Git {
 
     if (sinceHash) {
       args.push(`${sinceHash}..`);
+    }
+
+    if (relativeCwd) {
+      args.push('--', relativeCwd);
     }
 
     const output = await gitExec(args, this.cwd);
@@ -107,6 +111,20 @@ export class Git {
       .map(e => e as GitTag);
   }
 
+  async addTag(tag: string) {
+    await gitExec(['tag', tag]);
+  }
+
+  async addAndCommitFiles(message: string, files: string[]) {
+    await gitExec(['add', ...files]);
+    await gitExec(['commit', '-m', `'${message} [skip ci]'`, '--', ...files]);
+  }
+
+
+  async push() {
+    await gitExec(['push', '--follow-tags']);
+  }
+
   async currentBranch() {
     // azure devops lookup
     if (process.env.BUILD_SOURCEBRANCHNAME) {
@@ -121,8 +139,17 @@ export class Git {
 
     const output = await gitExec(args, this.cwd);
 
-    // get from git
     return output.replace(/\n*$/, '');
+  }
+
+  async currentCommit() {
+    return await gitExec(['rev-parse', '--verify', 'HEAD']);
+  }
+
+  async cleanChangeLogs() {
+    await gitExec(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], this.cwd);
+    await gitExec(['checkout', 'CHANGELOG.md'], this.cwd);
+    await gitExec(['checkout', '**/CHANGELOG.md'], this.cwd);
   }
 
   async platform(): Promise<IGitPlatform> {

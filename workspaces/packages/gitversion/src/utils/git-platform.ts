@@ -1,12 +1,22 @@
+import { ChangeLogUrls } from './changelog';
 import { GitCommit } from './git';
+import { GitSemverTag } from './version-utils';
 
-export interface IGitPlatform {
+export interface IGitPlatform extends ChangeLogUrls {
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
 
 export class Generic implements IGitPlatform {
   stripMergeMessage(commit: GitCommit): GitCommit {
     return commit;
+  }
+
+  compareUrl(from: GitSemverTag, to: GitSemverTag) {
+    return `https://github.com/cp-utils/gitversion/compare/${from.version}...${to.version}`;
+  }
+
+  commitUrl(commit: string) {
+    return `https://github.com/cp-utils/gitversion/commit/${commit}`;
   }
 }
 
@@ -24,5 +34,13 @@ export class Github implements IGitPlatform {
     } else {
       return commit;
     }
+  }
+
+  compareUrl(from: GitSemverTag, to: GitSemverTag) {
+    return `https://github.com/cp-utils/gitversion/compare/${from.version}...${to.version}`;
+  }
+
+  commitUrl(commit: string) {
+    return `https://github.com/cp-utils/gitversion/commit/${commit}`;
   }
 }

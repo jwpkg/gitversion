@@ -1,5 +1,5 @@
 {
-  "name": "gitversion",
+  "name": "@cp-utils/gitversion",
   "packageManager": "yarn@4.0.2",
   "bin": "bin/index.js",
   "type": "commonjs",
@@ -23,14 +23,15 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "@yarnpkg/cli": "^4.0.2",
-    "@yarnpkg/core": "^4.0.2",
-    "@yarnpkg/fslib": "^3.0.1",
+    "axios": "^1.6.5",
+    "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
+    "colorize-node": "^0.5.0",
     "cross-spawn": "^7.0.3",
     "cross-spawn-extra": "^2.1.0",
     "glob": "^10.3.10",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "typanion": "^3.14.0"
   },
-  "version": "0.0.1"
+  "version": "0.0.0"
 }
