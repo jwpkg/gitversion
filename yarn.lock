@@ -481,7 +481,7 @@ __metadata:
     typanion: "npm:^3.14.0"
     typescript: "npm:^5.3.3"
   bin:
-    gitversion: bin/index.js
+    gitversion: bin/index-typescript.js
   languageName: unknown
   linkType: soft
 
