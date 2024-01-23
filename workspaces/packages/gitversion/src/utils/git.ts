@@ -26,9 +26,9 @@ export async function gitExec(args: string[], cwd?: string) {
     throw output.error;
   }
   if (output.exitCode !== 0) {
-    console.log(output.stderr);
-    console.log(output.stdout);
-    throw new Error(`Invalid status code from git output: ${output.exitCode}`);
+    console.log(output.stderr.toString());
+    console.log(output.stdout.toString());
+    // throw new Error(`Invalid status code from git output: ${output.exitCode}`);
   }
   return output.stdout
     .toString()
