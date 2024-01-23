@@ -30,6 +30,11 @@ export class PackCommand extends GitVersionCommand {
 
     const bumpedWorkspaces = bumpManifest.manifest.bumps.filter(b => b.private === false);
     if (bumpedWorkspaces.length > 0) {
+      const projectBump = bumpManifest.manifest.bumps.find(b => b.packageRelativeCwd === '.');
+      if (projectBump) {
+        packManifest.add(projectBump);
+      }
+
       const packFolder = join(project.stagingFolder, 'pack');
       await mkdir(packFolder, {
         recursive: true,

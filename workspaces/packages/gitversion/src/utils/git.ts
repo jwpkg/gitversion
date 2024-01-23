@@ -111,11 +111,18 @@ export class Git {
       .map(e => e as GitTag);
   }
 
-  async addTag(tag: string, push: boolean) {
+  async addTag(tag: string) {
     await gitExec(['tag', tag]);
-    if (push) {
-      await gitExec(['push', 'origin', tag]);
-    }
+  }
+
+  async addAndCommitFiles(message: string, files: string[]) {
+    await gitExec(['add', ...files]);
+    await gitExec(['commit', '-m', `'${message} [skip ci]'`, '--', ...files]);
+  }
+
+
+  async push() {
+    await gitExec(['push', '--follow-tags']);
   }
 
   async currentBranch() {

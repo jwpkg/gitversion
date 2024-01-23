@@ -8,7 +8,7 @@ const MANIFEST_NAME = 'pack-manifest.json';
 const PACK_FOLDER = 'pack';
 
 export interface PackedPackage {
-  packFile: string;
+  packFile?: string;
   packageRelativeCwd: string;
   tag: string;
   packageName: string;

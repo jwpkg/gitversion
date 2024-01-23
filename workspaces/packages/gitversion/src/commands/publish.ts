@@ -3,9 +3,10 @@ import { colorize } from 'colorize-node';
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { dirname, join } from 'path';
 
+import { updateChangelog } from '../utils/changelog';
 import { BranchType, VersionBranch } from '../utils/config';
 import { formatPackageName } from '../utils/format-utils';
-import { gitRoot } from '../utils/git';
+import { Git, gitRoot } from '../utils/git';
 import { logger } from '../utils/log-reporter';
 import { PackArtifact, PackedPackage } from '../utils/pack-artifact';
 import { Project } from '../utils/workspace-utils';
@@ -45,26 +46,39 @@ export class PublishCommand extends GitVersionCommand {
     }
 
 
-    const publish = logger.beginSection('Publish step');
+    const packedPackages = packManifest.manifest.packages;
+    if (packedPackages.length > 0) {
+      await this.publishPackages(packedPackages, project.config.branch);
+      await this.addTags(packedPackages, project.git);
+      await this.updateChangelogs(packedPackages, project);
 
-    const packedWorkspaces = packManifest.manifest.packages;
-    if (packedWorkspaces.length > 0) {
-      const promises = packedWorkspaces.map(async packedPackage => {
-        await this.publishPackage(packedPackage, join(packManifest!.packFolder, packedPackage.packFile), project.config.branch);
-      });
-      await Promise.all(promises);
+      if (this.push) {
+        if (this.dryRun) {
+          logger.reportInfo('[Dry run] Would be pushing back to git');
+        } else {
+          logger.reportInfo('Pushing back to git');
+          await project.git.push();
+        }
+      } else {
+        logger.reportInfo('Skipping push step');
+      }
     } else {
-      logger.reportWarning('Nothing to tag');
+      logger.reportWarning('Nothing to publish');
     }
 
-    logger.endSection(publish);
-
-    if (this.dryRun) {
-      logger.reportWarning('Dry run active. Would tag now');
-    } else {
-      await this.cli.run(['tag', '--push', `${this.push}`]);
-    }
     return 0;
+  }
+
+  async publishPackages(packedPackages: PackedPackage[], branch: VersionBranch) {
+    const publish = logger.beginSection('Publish step');
+    const promises = packedPackages.map(async packedPackage => {
+      if (packedPackage.packFile) {
+        await this.publishPackage(packedPackage, packedPackage.packFile, branch);
+      }
+    });
+
+    await Promise.all(promises);
+    logger.endSection(publish);
   }
 
   async publishPackage(packedPackage: PackedPackage, packFile: string, branch: VersionBranch) {
@@ -94,5 +108,49 @@ export class PublishCommand extends GitVersionCommand {
         }
       }
     });
+  }
+
+  async addTags(packages: PackedPackage[], git: Git) {
+    const section = logger.beginSection('Tagging step');
+
+    const allTags = packages.map(p => p.tag);
+    const tags = allTags.filter((tag, pos) => {
+      return allTags.indexOf(tag) == pos;
+    });
+
+    const commands = tags.map(async tag => {
+      if (this.dryRun) {
+        logger.reportInfo(`[DryRun] Would add tag ${tag}`);
+      } else {
+        logger.reportInfo(`Adding tag: ${tag}`);
+        await git.addTag(tag);
+      }
+    });
+    await Promise.all(commands);
+    logger.endSection(section);
+  }
+
+  async updateChangelogs(packages: PackedPackage[], project: Project) {
+    const section = logger.beginSection('Updating changelogs');
+
+    const files: string[] = [];
+    const commands = packages.map(async p => {
+      const changelogFile = join(project.cwd, p.packageRelativeCwd, 'CHANGELOG.md');
+      files.push(changelogFile);
+      logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(changelogFile))}`);
+      await updateChangelog(changelogFile, p.changeLog);
+    });
+    await Promise.all(commands);
+
+    if (files.length > 0) {
+      if (this.dryRun) {
+        logger.reportInfo('[Dry run] Would be committing changelogs to git');
+      } else {
+        logger.reportInfo('Committing changelogs to git');
+        await project.git.addAndCommitFiles('Updated changelogs', files);
+      }
+    }
+
+    logger.endSection(section);
   }
 }

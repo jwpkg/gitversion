@@ -7,7 +7,6 @@ import { PackCommand } from './commands/pack';
 import { PublishCommand } from './commands/publish';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
-import { TagCommand } from './commands/tag';
 import { formatDuration } from './utils/format-utils';
 import { logger } from './utils/log-reporter';
 
@@ -23,7 +22,6 @@ run([
   BumpCommand,
   ResetCommand,
   RestoreCommand,
-  TagCommand,
   PackCommand,
   PublishCommand,
 ], {
