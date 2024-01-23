@@ -19,6 +19,7 @@ export interface GitTag {
 }
 
 export async function gitExec(args: string[], cwd?: string) {
+  console.log('>>', 'git', ...args);
   const output = await crossSpawnAsync('git', args, {
     cwd,
   });
