@@ -3,7 +3,6 @@ import { colorize } from 'colorize-node';
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { dirname, join } from 'path';
 
-import { updateChangelog } from '../utils/changelog';
 import { BranchType, VersionBranch } from '../utils/config';
 import { formatPackageName } from '../utils/format-utils';
 import { Git, gitRoot } from '../utils/git';
@@ -135,10 +134,11 @@ export class PublishCommand extends GitVersionCommand {
 
     const files: string[] = [];
     const commands = packages.map(async p => {
-      const changelogFile = join(project.cwd, p.packageRelativeCwd, 'CHANGELOG.md');
-      files.push(changelogFile);
-      logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(changelogFile))}`);
-      await updateChangelog(changelogFile, p.changeLog);
+      const workspace = project.workspaces.find(w => w.relativeCwd === p.packageRelativeCwd);
+      if (workspace) {
+        logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(join(workspace.cwd, 'CHANGELOG.md')))}`);
+        await workspace.updateChangelog(p.version, p.changeLog);
+      }
     });
     await Promise.all(commands);
 

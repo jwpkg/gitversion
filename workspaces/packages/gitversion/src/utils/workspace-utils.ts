@@ -59,13 +59,13 @@ export class Workspace {
     this._project = project;
   }
 
-  async updateChangelog(entry: string) {
+  async updateChangelog(version: string, entry: string) {
     const changeLogFile = join(this.cwd, 'CHANGELOG.md');
     let changeLog = '';
     if (existsSync(changeLogFile)) {
       changeLog = await readFile(changeLogFile, 'utf-8');
     }
-    changeLog = addToChangelog(entry, changeLog);
+    changeLog = addToChangelog(entry, version, changeLog);
     await writeFile(changeLogFile, changeLog, 'utf-8');
   }
 

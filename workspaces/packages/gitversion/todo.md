@@ -1,6 +1,3 @@
-- changelog generation
-- push changelogs
-- reset changelogs
 - bin strategy (tsnode/node)
 - command context
 - remove logger global

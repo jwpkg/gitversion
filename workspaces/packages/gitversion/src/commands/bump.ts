@@ -83,6 +83,6 @@ export class BumpCommand extends RestoreCommand {
 
     bumpManifest.add(workspace, toVersion.version, changelogEntry);
 
-    await workspace.updateChangelog(changelogEntry);
+    await workspace.updateChangelog(toVersion.version, changelogEntry);
   }
 }

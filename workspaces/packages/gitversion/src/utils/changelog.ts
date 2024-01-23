@@ -1,6 +1,3 @@
-import { readFile, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-
 import { ConventionalCommit, parseConventionalCommits } from './conventional-commmit-utils';
 import { Git } from './git';
 import * as md from './markdown';
@@ -26,18 +23,29 @@ export async function detectChangelog(relativeCwd: string, git: Git, from: GitSe
   return generateChangeLogEntry(commits, from, to, platform);
 }
 
-export async function updateChangelog(changeLogFile: string, entry: string) {
-  let changeLog = '';
-  if (existsSync(changeLogFile)) {
-    changeLog = await readFile(changeLogFile, 'utf-8');
-  }
-  changeLog = addToChangelog(entry, changeLog);
-  await writeFile(changeLogFile, changeLog, 'utf-8');
-}
-
-export function addToChangelog(entry: string, changelogContent?: string) {
+export function addToChangelog(entry: string, version: string, changelogContent?: string) {
   if (changelogContent) {
     const lines = changelogContent.split('\n');
+
+    const removeRanges: { start: number, end: number }[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith(`## [${version}]`)) {
+        for (let j = i + 1; j < lines.length; j++) {
+          if (lines[j].startsWith('## ')) {
+            removeRanges.push({
+              start: i,
+              end: j,
+            });
+          }
+        }
+      }
+    }
+
+    for (const range of removeRanges) {
+      console.log('LKJLKJLKJL', range);
+      lines.splice(range.start, range.end - range.start);
+    }
+
     for (const [index, line] of lines.entries()) {
       if (line.startsWith('## ')) {
         lines.splice(0, index);
