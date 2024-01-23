@@ -31,19 +31,16 @@ export class PackArtifact {
     };
   }
 
-  static async load(project: Project) {
+  static async load(project: Project): Promise<PackArtifact | null> {
     const packFolder = join(project.stagingFolder, PACK_FOLDER);
     const manifestFile = join(packFolder, MANIFEST_NAME);
 
-    let manifest: PackManifestContent = {
-      packages: [],
-    };
-
     if (existsSync(manifestFile)) {
       const content = await readFile(manifestFile, 'utf-8');
-      manifest = JSON.parse(content) as PackManifestContent;
+      const manifest = JSON.parse(content) as PackManifestContent;
+      return new PackArtifact(packFolder, manifest);
     }
-    return new PackArtifact(packFolder, manifest);
+    return null;
   }
 
   static async new(project: Project) {

@@ -1,6 +1,9 @@
+import { readFile, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 
+import { addToChangelog } from './changelog';
 import { Configuration } from './config';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
 import { formatPackageName, formatVersion } from './format-utils';
@@ -56,6 +59,15 @@ export class Workspace {
     this._project = project;
   }
 
+  async updateChangelog(entry: string) {
+    const changeLogFile = join(this.cwd, 'CHANGELOG.md');
+    let changeLog = '';
+    if (existsSync(changeLogFile)) {
+      changeLog = await readFile(changeLogFile, 'utf-8');
+    }
+    changeLog = addToChangelog(entry, changeLog);
+    await writeFile(changeLogFile, changeLog, 'utf-8');
+  }
 
   async updateVersion(version: string, logger: LogReporter) {
     const newManifest: NodeManifest = {

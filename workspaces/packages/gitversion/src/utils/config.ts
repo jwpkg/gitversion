@@ -6,13 +6,19 @@ import * as t from 'typanion';
 import { Git } from './git';
 import { logger } from './log-reporter';
 
+export enum FeatureBumpBehavior {
+  AllCommits,
+  Never,
+  Normal,
+}
+
 export const isConfigurationOptions = t.isObject({
   featureBranchPatterns: t.isOptional(t.isArray(t.isString())),
   releaseBranchPatterns: t.isOptional(t.isArray(t.isString())),
   mainBranch: t.isOptional(t.isString()),
   independentVersioning: t.isOptional(t.isBoolean()),
   versionTagPrefix: t.isOptional(t.isString()),
-  alwaysBumpFeatureCommits: t.isOptional(t.isBoolean()),
+  featureBumpBehavior: t.isOptional(t.isEnum(FeatureBumpBehavior)),
 });
 
 export type ConfigurationOptions = t.InferType<typeof isConfigurationOptions>;
@@ -93,7 +99,7 @@ export class Configuration {
       mainBranch: 'main',
       independentVersioning: false,
       versionTagPrefix: 'v',
-      alwaysBumpFeatureCommits: true,
+      featureBumpBehavior: FeatureBumpBehavior.Normal,
     };
     let options = defaultOptions;
 

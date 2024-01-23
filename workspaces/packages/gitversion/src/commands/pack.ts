@@ -39,11 +39,10 @@ export class PackCommand extends GitVersionCommand {
         return this.execPackCommand(join(project.cwd, bump.packageRelativeCwd), packFolder, bump, packManifest);
       });
       await Promise.all(promises);
+      await packManifest.persist();
     } else {
       logger.reportWarning('Nothing to pack');
     }
-
-    await packManifest.persist();
 
     logger.endSection(section);
 
@@ -53,7 +52,7 @@ export class PackCommand extends GitVersionCommand {
   }
 
   async execPackCommand(cwd: string, packFolder: string, bump: Bump, packManifest: PackArtifact) {
-    const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}.tgz`;
+    const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}-${bump.version}.tgz`;
     const packFile = `${join(packFolder, normalizedPackageName)}`;
 
     return logger.runSection(`Packing ${formatPackageName(bump.packageName)}`, async logger => {

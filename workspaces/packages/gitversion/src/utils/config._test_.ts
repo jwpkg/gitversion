@@ -1,4 +1,4 @@
-import { BranchType, Configuration, ConfigurationOptions } from './config';
+import { BranchType, Configuration, ConfigurationOptions, FeatureBumpBehavior } from './config';
 
 const defaultConfig: Required<ConfigurationOptions> = {
   featureBranchPatterns: [
@@ -10,7 +10,7 @@ const defaultConfig: Required<ConfigurationOptions> = {
   mainBranch: 'main',
   independentVersioning: false,
   versionTagPrefix: 'v',
-  alwaysBumpFeatureCommits: true,
+  featureBumpBehavior: FeatureBumpBehavior.AllCommits,
 };
 
 describe('configuration', () => {

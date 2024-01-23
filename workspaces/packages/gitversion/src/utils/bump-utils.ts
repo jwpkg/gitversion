@@ -1,7 +1,7 @@
 import { colorize } from 'colorize-node';
 import { inc, parse, prerelease } from 'semver';
 
-import { BranchType, Configuration, VersionBranch } from './config';
+import { BranchType, Configuration, FeatureBumpBehavior, VersionBranch } from './config';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { GitCommit } from './git';
 import { logger } from './log-reporter';
@@ -75,12 +75,19 @@ export function detectBumpType(commits: ConventionalCommit[]) {
 }
 
 export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], config: Configuration) {
-  if (bumpType === BumpType.NONE
-    && rawCommits.length > 0
-    && config.branch.type === BranchType.FEATURE
-    && config.options.alwaysBumpFeatureCommits) {
-    logger.reportInfo(`Found ${colorize.cyan(rawCommits.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
-    return BumpType.PATCH;
+  if (config.branch.type === BranchType.FEATURE) {
+    switch (config.options.featureBumpBehavior) {
+      case FeatureBumpBehavior.Never:
+        logger.reportInfo(`On feature branch with featureBumpBehavior: Never. Forcing bumptype to ${colorize.greenBright('NONE')} `);
+        return BumpType.NONE;
+      case FeatureBumpBehavior.Normal: return bumpType;
+    }
+    // all commits
+    if (bumpType === BumpType.NONE && rawCommits.length > 0) {
+      logger.reportInfo(`Found ${colorize.cyan(rawCommits.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
+      return BumpType.PATCH;
+    }
   }
+
   return bumpType;
 }

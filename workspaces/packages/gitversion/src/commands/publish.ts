@@ -18,6 +18,7 @@ export class PublishCommand extends GitVersionCommand {
   ];
 
   push = Option.Boolean('--push', true);
+  dryRun = Option.Boolean('--dry-run', true);
 
   async execute(): Promise<number> {
     const project = await Project.load(await gitRoot());
@@ -25,44 +26,72 @@ export class PublishCommand extends GitVersionCommand {
       return 1;
     }
 
-    const packManifest = await PackArtifact.load(project);
+    let packManifest = await PackArtifact.load(project);
+
+    if (!packManifest) {
+      logger.reportInfo('No pack manifest found. Running pack on current workspace');
+      const result = await this.cli.run(['pack']);
+      if (result !== 0) {
+        return result;
+      }
+      packManifest = await PackArtifact.load(project);
+    } else {
+      logger.reportInfo('Pack manifest found. Publishing from pack');
+    }
+
+    if (packManifest === null) {
+      logger.reportError('Still invalid pack manifest. Breaking off');
+      return 1;
+    }
+
+
+    const publish = logger.beginSection('Publish step');
 
     const packedWorkspaces = packManifest.manifest.packages;
     if (packedWorkspaces.length > 0) {
       const promises = packedWorkspaces.map(async packedPackage => {
-        await this.publishPackage(packedPackage, join(packManifest.packFolder, packedPackage.packFile), project.config.branch);
+        await this.publishPackage(packedPackage, join(packManifest!.packFolder, packedPackage.packFile), project.config.branch);
       });
       await Promise.all(promises);
     } else {
       logger.reportWarning('Nothing to tag');
     }
 
-    await this.cli.run(['tag', '--push', `${this.push}`]);
+    logger.endSection(publish);
 
+    if (this.dryRun) {
+      logger.reportWarning('Dry run active. Would tag now');
+    } else {
+      await this.cli.run(['tag', '--push', `${this.push}`]);
+    }
     return 0;
   }
 
   async publishPackage(packedPackage: PackedPackage, packFile: string, branch: VersionBranch) {
     return logger.runSection(`Publishing ${formatPackageName(packedPackage.packageName)}`, async logger => {
       const tag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
-      logger.reportInfo(['npm', 'publish', packFile, '--tag', tag].join(' '));
+      logger.reportInfo([colorize.whiteBright('»'), 'npm', 'publish', packFile, '--tag', tag].join(' '));
 
-      const output = await crossSpawnAsync('npm', ['publish', packFile, '--tag', tag, '--access', 'public', '--verbose'], {
-        cwd: dirname(packFile),
-        env: process.env,
-      });
-
-      if (output.error) {
-        if (output.error?.message) {
-          logger.reportError(`${output.error.message}`);
-        } else {
-          logger.reportError(`${output.error}`);
-        }
-        logger.reportError(`Error during publish. Exit code: ${colorize.redBright(output.exitCode)}`);
-      } else if (output.exitCode !== 0) {
-        logger.reportInfo(`Publish error: ${output.exitCode}`);
+      if (this.dryRun) {
+        logger.reportWarning('Dry run active. Only simulating publish');
       } else {
-        logger.reportInfo('Publish package success');
+        const output = await crossSpawnAsync('npm', ['publish', packFile, '--tag', tag, '--access', 'public', '--verbose'], {
+          cwd: dirname(packFile),
+          env: process.env,
+        });
+
+        if (output.error) {
+          if (output.error?.message) {
+            logger.reportError(`${output.error.message}`);
+          } else {
+            logger.reportError(`${output.error}`);
+          }
+          logger.reportError(`Error during publish. Exit code: ${colorize.redBright(output.exitCode)}`);
+        } else if (output.exitCode !== 0) {
+          logger.reportInfo(`Publish error: ${output.exitCode}`);
+        } else {
+          logger.reportInfo('Publish package success');
+        }
       }
     });
   }

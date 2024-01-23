@@ -1,11 +1,8 @@
 import { colorize } from 'colorize-node';
-import { readFile, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join } from 'path';
 
 import { BumpManifest } from '../utils/bump-manifest';
 import { detectBumpType, executeBump, validateBumpType } from '../utils/bump-utils';
-import { addToChangelog, generateChangeLogEntry } from '../utils/changelog';
+import { generateChangeLogEntry } from '../utils/changelog';
 import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../utils/format-utils';
 import { IGitPlatform } from '../utils/git-platform';
@@ -35,8 +32,6 @@ export class BumpCommand extends RestoreCommand {
 
     const bumpManifest = await BumpManifest.new(project);
 
-    // if (project.config.options.independentVersioning) {
-    //   logger.reportInfo('➤ Independent versioning active. Bumping each package seperately');
     const promises = project.workspaces.map(async workspace => {
       return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
         const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest);
@@ -47,16 +42,8 @@ export class BumpCommand extends RestoreCommand {
     });
 
     await Promise.all(promises);
-    // } else {
-    //   const newVersion = await this.detectBumpForWorkspace(project, logger, bumpManifest);
+    await bumpManifest.persist();
 
-    //   if (newVersion) {
-    //     await Promise.all(project.workspaces.map(async workspace => {
-    //       await workspace.updateVersion(newVersion, logger);
-    //     }));
-    //   }
-    // }
-    // await bumpManifest.persist();
     logger.endSection(bump);
     return 0;
   }
@@ -96,12 +83,6 @@ export class BumpCommand extends RestoreCommand {
 
     bumpManifest.add(workspace, toVersion.version, changelogEntry);
 
-    const changeLogFile = join(workspace.cwd, 'CHANGELOG.md');
-    let changeLog = '';
-    if (existsSync(changeLogFile)) {
-      changeLog = await readFile(changeLogFile, 'utf-8');
-    }
-    changeLog = addToChangelog(changelogEntry, changeLog);
-    await writeFile(changeLogFile, changeLog, 'utf-8');
+    await workspace.updateChangelog(changelogEntry);
   }
 }

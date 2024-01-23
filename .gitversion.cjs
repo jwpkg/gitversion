@@ -1,5 +1,6 @@
-const { defineConfig } = require("@cp-utils/gitversion");
+const { defineConfig, FeatureBumpBehavior } = require("@cp-utils/gitversion");
 
 module.exports = defineConfig({
-  independentVersioning: true,
+  independentVersioning: false,
+  featureBumpBehavior: FeatureBumpBehavior.AllCommits
 })
