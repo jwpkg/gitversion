@@ -122,7 +122,7 @@ export class Git {
 
 
   async push() {
-    await gitExec(['push', '--follow-tags']);
+    await gitExec(['push', 'origin', '--follow-tags']);
   }
 
   async currentBranch() {
