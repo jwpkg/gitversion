@@ -123,7 +123,7 @@ export class Git {
 
   async push() {
     const result = await gitExec(['push', 'origin', '--follow-tags']);
-    console.log(result);
+    console.log('GIT PUSH', result);
   }
 
   async currentBranch() {
