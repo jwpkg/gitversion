@@ -18,7 +18,7 @@ export class PublishCommand extends GitVersionCommand {
   ];
 
   push = Option.Boolean('--push', true);
-  dryRun = Option.Boolean('--dry-run', true);
+  dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
     const project = await Project.load(await gitRoot());
