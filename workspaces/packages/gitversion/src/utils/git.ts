@@ -22,6 +22,14 @@ export async function gitExec(args: string[], cwd?: string) {
   const output = await crossSpawnAsync('git', args, {
     cwd,
   });
+  if (output.error) {
+    throw output.error;
+  }
+  if (output.exitCode !== 0) {
+    console.log(output.stderr);
+    console.log(output.stdout);
+    throw new Error(`Invalid status code from git: ${output.exitCode}`);
+  }
   return output.stdout
     .toString()
     .replace(/\\r?\\n?$/, '')
@@ -122,8 +130,7 @@ export class Git {
 
 
   async push() {
-    const result = await gitExec(['push', 'origin', '--follow-tags']);
-    console.log('GIT PUSH', result);
+    await gitExec(['push', 'origin', '--follow-tags']);
   }
 
   async currentBranch() {
