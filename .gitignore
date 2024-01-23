@@ -13,3 +13,5 @@
 .pnp.*
 coverage
 gitversion.out
+lib
+tsconfig.tsbuildinfo

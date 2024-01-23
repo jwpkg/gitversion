@@ -1,3 +1,2 @@
 #! /usr/bin/env node
-require('ts-node').register();
-require('../src/bin.ts');
+require('../lib/bin.js');
