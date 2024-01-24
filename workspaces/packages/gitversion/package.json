@@ -1,8 +1,18 @@
 {
-  "name": "gitversion",
+  "name": "@cp-utils/gitversion",
   "packageManager": "yarn@4.0.2",
-  "bin": "bin/index.js",
+  "bin": "bin/index-typescript.js",
   "type": "commonjs",
+  "publishConfig": {
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "bin": "bin/index.js"
+  },
+  "scripts": {
+    "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
+    "prepack": "yarn build",
+    "postpack": "rm -rf lib"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.0",
@@ -19,18 +29,20 @@
     "node": ">=18.12.0"
   },
   "files": [
-    "lib"
+    "/lib/**/!(*._test_).(js|d.ts)"
   ],
   "main": "src/index.ts",
+  "types": "src/index.ts",
   "dependencies": {
-    "@yarnpkg/cli": "^4.0.2",
-    "@yarnpkg/core": "^4.0.2",
-    "@yarnpkg/fslib": "^3.0.1",
+    "axios": "^1.6.5",
+    "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
+    "colorize-node": "^0.5.0",
     "cross-spawn": "^7.0.3",
     "cross-spawn-extra": "^2.1.0",
     "glob": "^10.3.10",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "typanion": "^3.14.0"
   },
-  "version": "0.0.1"
+  "version": "0.0.0"
 }

@@ -1,17 +1,34 @@
-import { Command } from 'clipanion';
+import { BumpManifest } from '../core/bump-manifest';
+import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
+import { gitRoot } from '../core/git';
+import { logger } from '../core/log-reporter';
+import { Project } from '../core/workspace-utils';
 
-import { DEFAULT_PACKAGE_VERSION } from '../utils/constants';
-import { gitRoot } from '../utils/git';
-import { Project } from '../utils/workspace-utils';
+import { GitVersionCommand } from './context';
 
-export class ResetCommand extends Command {
+export class ResetCommand extends GitVersionCommand {
   static paths = [
     ['reset'],
   ];
 
-  async execute() {
+  async execute(): Promise<number> {
     const project = await Project.load(await gitRoot());
+    if (!project) {
+      return 1;
+    }
 
-    await Promise.all(project.workspaces.map(w => w.updateVersion(DEFAULT_PACKAGE_VERSION)));
+    const reset = logger.beginSection('Reset step');
+
+    await BumpManifest.clear(project);
+
+    await project.git.cleanChangeLogs();
+
+    await Promise.all(project.workspaces.map(async workspace => {
+      await workspace.updateVersion(DEFAULT_PACKAGE_VERSION, logger);
+    }));
+
+    logger.endSection(reset);
+
+    return 0;
   }
 }

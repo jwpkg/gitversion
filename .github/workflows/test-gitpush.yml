@@ -1,0 +1,41 @@
+name: Generate packages and publish
+on:
+  workflow_dispatch: 
+  # push:
+  #   branches:
+  #     - main
+  #     - release/*
+
+permissions:
+  contents: write
+  
+jobs:
+  Build-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        with:
+          fetch-depth: 0
+        uses: actions/checkout@v4
+
+      - name: Git identification
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+      - name: Reset versions
+        run: |
+          set -x
+          set -e
+          git status
+          echo "Hello 2" >> test.txt
+          # git add test.txt
+          # git commit -m "Pushing mytext with remote push [skip ci]"
+          # git status
+          git tag -a "test-tag2" -m "Adding tag"
+          # git push origin tag test-tag
+          git push --set-upstream origin 'HEAD:${{ github.ref }}' --follow-tags --atomic
+          git status
+
+
+

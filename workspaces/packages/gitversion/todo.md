@@ -1,0 +1,5 @@
+- bin strategy (tsnode/node)
+- command context
+- remove logger global
+- git status verification
+- plugins for teams/slack
