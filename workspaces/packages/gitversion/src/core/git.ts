@@ -126,7 +126,7 @@ export class Git {
 
   async addAndCommitFiles(message: string, files: string[]) {
     await gitExec(['add', ...files]);
-    await gitExec(['commit', '-m', `'${message} [skip ci]'`, '--', ...files]);
+    await gitExec(['commit', '-m', `${message} [skip ci]`, '--', ...files]);
   }
 
 

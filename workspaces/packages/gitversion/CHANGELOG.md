@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.2](https://github.com/cp-utils/gitversion/compare/0.0.1...0.0.2) (Wed Jan 24 2024)
+
+### feat
+
+* Added commands ([b70966d](https://github.com/cp-utils/gitversion/commit/b70966d338552d9be55620c8809eb103cb55414f))
+
+* First release (#23) ([f9b97fb](https://github.com/cp-utils/gitversion/commit/f9b97fba8a1ff8b66e1682997a5308159ca13b24))
+
 ## [0.0.2-alpha.9](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.8...0.0.2-alpha.9) (Wed Jan 24 2024)
 
 ### fix
