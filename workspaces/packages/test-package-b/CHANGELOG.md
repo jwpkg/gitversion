@@ -4,6 +4,8 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.3-alpha.0](https://github.com/cp-utils/gitversion/compare/0.0.2...0.0.3-alpha.0) (Wed Jan 24 2024)
+
 ## [0.0.2-alpha.10](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.9...0.0.2-alpha.10) (Wed Jan 24 2024)
 
 ### feat
