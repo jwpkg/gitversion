@@ -1,4 +1,4 @@
-import { parse } from 'semver';
+import { lt, parse } from 'semver';
 
 import { BranchType, VersionBranch } from './config';
 import { GitTag } from './git';
@@ -21,11 +21,13 @@ export function determineCurrentVersion(tags: GitTag[], branch: VersionBranch, p
   } else {
     const preReleaseTags = tags.filter(x => new RegExp(`${escapeRegExp(prefix)}[0-9]+\\.[0-9]+\\.[0-9]+-${escapeRegExp(branch.name)}\\.[0-9]+$`).test(x.tagName));
     if (preReleaseTags.length > 0) {
-      tags = preReleaseTags;
+      tags = [...preReleaseTags, ...officialTags];
     } else {
       tags = officialTags;
     }
   }
+
+  tags.sort((a, b) => lt(a.tagName.replace(prefix, ''), b.tagName.replace(prefix, '')) ? 1 : -1);
 
   let latestTag: GitTag;
 

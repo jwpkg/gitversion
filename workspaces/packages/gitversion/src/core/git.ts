@@ -19,7 +19,7 @@ export interface GitTag {
 }
 
 export async function gitExec(args: string[], cwd?: string) {
-  console.log('>>', 'git', ...args);
+  // console.log('>>', 'git', ...args);
   const output = await crossSpawnAsync('git', args, {
     cwd,
   });
@@ -29,7 +29,7 @@ export async function gitExec(args: string[], cwd?: string) {
   if (output.exitCode !== 0) {
     console.log(output.stderr.toString());
     console.log(output.stdout.toString());
-    // throw new Error(`Invalid status code from git output: ${output.exitCode}`);
+    throw new Error(`Invalid status code from git output: ${output.exitCode}`);
   }
   return output.stdout
     .toString()
@@ -112,12 +112,14 @@ export class Git {
 
     const output = await gitExec(args, this.cwd);
 
-    return output
+    const tags = output
       .replace(endRegex, '')
       .split(delim2)
       .map(parseEntry)
       .filter(e => e !== undefined)
       .map(e => e as GitTag);
+
+    return tags;
   }
 
   async addTag(tag: string, message: string) {
@@ -126,7 +128,7 @@ export class Git {
 
   async addAndCommitFiles(message: string, files: string[]) {
     await gitExec(['add', ...files]);
-    await gitExec(['commit', '-m', `'${message} [skip ci]'`, '--', ...files]);
+    await gitExec(['commit', '-m', `${message} [skip ci]`, '--', ...files]);
   }
 
 

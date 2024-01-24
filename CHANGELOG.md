@@ -4,6 +4,64 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.3-alpha.0](https://github.com/cp-utils/gitversion/compare/0.0.2...0.0.3-alpha.0) (Wed Jan 24 2024)
+
+### feat
+
+* Initial full flow application (#16) ([6f702d7](https://github.com/cp-utils/gitversion/commit/6f702d7c8a15ec080b73c838e3bfafe8506751ae))
+
+* Push to origin ([77cdd90](https://github.com/cp-utils/gitversion/commit/77cdd90a79ec305b302e0a652259ee5a31adf82e))
+
+### fix
+
+* Break on error ([e05e0d0](https://github.com/cp-utils/gitversion/commit/e05e0d0f2d222cb355b263f7dd97cbe2de2fc775))
+
+* Git log output ([22652b2](https://github.com/cp-utils/gitversion/commit/22652b2bf0664e2d5567d576dc209cce96be3505))
+
+* Testing with git error ([b059fef](https://github.com/cp-utils/gitversion/commit/b059fef494582e0c4ea9b8f126dda40649a0c0d7))
+
+* Extra commit ([d983052](https://github.com/cp-utils/gitversion/commit/d983052bc81a3caaf81b603a3787cd9cfca193d6))
+
+* Logging git commands ([2c26857](https://github.com/cp-utils/gitversion/commit/2c2685766f32c19f0fc4fed66e543313b95f776f))
+
+* Checkout current ref ([aa77019](https://github.com/cp-utils/gitversion/commit/aa77019331503ad46c15ca60ebea60349f86fd7d))
+
+* Test change ([739b7ac](https://github.com/cp-utils/gitversion/commit/739b7ac12b68738a33b4d131c94621d1e196ed2d))
+
+* Testing with publish ([fc99a36](https://github.com/cp-utils/gitversion/commit/fc99a366cfe182c70c584ee37c65d9bf301fa04f))
+
+* Now really pushing changelogs ([7f17526](https://github.com/cp-utils/gitversion/commit/7f1752689ad7e94958cc7de2d9fa905a1870e743))
+
+* Removed quotes ([09efcb9](https://github.com/cp-utils/gitversion/commit/09efcb94710fedadf80c64513123f53c715c6665))
+
+* Update readme location ([c78d63e](https://github.com/cp-utils/gitversion/commit/c78d63eb51ce7a6a8044703a9ee6d68d4148617c))
+
+* Copy readme on pack ([0d21ff8](https://github.com/cp-utils/gitversion/commit/0d21ff86bd2408ad3f8fc21942eb303a6e44b2c1))
+
+* Manual sort tags ([2e9eb18](https://github.com/cp-utils/gitversion/commit/2e9eb185a8d4a301ef51e6b4ef404d3f41602b69))
+
+### refactor
+
+* Renamed folder ([abe2c0b](https://github.com/cp-utils/gitversion/commit/abe2c0bfa1e2583b14199990cca8fb15cf53db0e))
+
+### docs
+
+* Added readme ([ac99217](https://github.com/cp-utils/gitversion/commit/ac99217c69f4d8b4bd81746fbcbce7099a2a92e4))
+
+## [0.0.2-alpha.10](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.9...0.0.2-alpha.10) (Wed Jan 24 2024)
+
+### feat
+
+* First release (#23) ([f9b97fb](https://github.com/cp-utils/gitversion/commit/f9b97fba8a1ff8b66e1682997a5308159ca13b24))
+
+### fix
+
+* Removed quotes ([09efcb9](https://github.com/cp-utils/gitversion/commit/09efcb94710fedadf80c64513123f53c715c6665))
+
+### docs
+
+* Added readme ([ac99217](https://github.com/cp-utils/gitversion/commit/ac99217c69f4d8b4bd81746fbcbce7099a2a92e4))
+
 ## [0.0.2](https://github.com/cp-utils/gitversion/compare/0.0.1...0.0.2) (Wed Jan 24 2024)
 
 ### feat
