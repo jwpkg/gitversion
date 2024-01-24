@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.2-alpha.9](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.8...0.0.2-alpha.9) (Wed Jan 24 2024)
+
+### fix
+
+* Now really pushing changelogs ([7f17526](https://github.com/cp-utils/gitversion/commit/7f1752689ad7e94958cc7de2d9fa905a1870e743))
+
 ## [0.0.2-bumping.0](https://github.com/cp-utils/gitversion/compare/0.0.1...0.0.2-bumping.0) (Tue Jan 23 2024)
 
 ### feat

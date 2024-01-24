@@ -4,6 +4,8 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.2-alpha.9](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.8...0.0.2-alpha.9) (Wed Jan 24 2024)
+
 ## [0.0.2-bumping.0](https://github.com/cp-utils/gitversion/compare/0.0.1...0.0.2-bumping.0) (Tue Jan 23 2024)
 
 ### feat
