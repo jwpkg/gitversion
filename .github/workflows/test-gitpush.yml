@@ -28,8 +28,9 @@ jobs:
           set -x
           set -e
           git status
+          git checkout ${{ github.ref }} --
           git tag test-tag
-          git push --set-upstream origin '"HEAD:${{ github.ref }}"' --follow-tags --atomic
+          git push --set-upstream origin 'HEAD:${{ github.ref }}' --follow-tags --atomic
 
 
 
