@@ -33,6 +33,7 @@ jobs:
           git commit -m "Pushing mytext with remote push [skip ci]"
           git status
           git tag test-tag
+          git push origin tag test-tag
           git push --set-upstream origin 'HEAD:${{ github.ref }}' --follow-tags --atomic
           git status
 
