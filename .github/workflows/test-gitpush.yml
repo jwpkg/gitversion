@@ -30,7 +30,12 @@ jobs:
           git status
           git checkout ${{ github.ref }} --
           git tag test-tag
+          echo "Hello" >> test.txt
+          git add test.txt
+          git commit -m "Pushing mytext with remote push [skip ci]"
+          git status
           git push --set-upstream origin 'HEAD:${{ github.ref }}' --follow-tags --atomic
+          git status
 
 
 
