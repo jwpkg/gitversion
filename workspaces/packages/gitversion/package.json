@@ -29,7 +29,8 @@
     "node": ">=18.12.0"
   },
   "files": [
-    "/lib/**/!(*._test_).(js|d.ts)"
+    "/lib/**/!(*._test_).(js|d.ts)",
+    "../../../README.md"
   ],
   "main": "src/index.ts",
   "types": "src/index.ts",

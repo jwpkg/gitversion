@@ -23,7 +23,9 @@ Gitversion has the following key elements:
 ## Commands
 
 ### Bump
-> yarn gitversion bump
+```bash
+yarn gitversion bump
+```
 
 This will: 
 - read the current version(s) from the git repo (using tags)
@@ -31,14 +33,18 @@ This will:
 - store the version in the package.json files of the packages
 
 ### Pack
-> yarn gitversion pack
+```bash
+yarn gitversion pack
+```
 
 This will:
 - Run the pack command of the currently detected package manager per workspace.
 - store the generated .tgz files in the ***gitversion.out*** folder
 
 ### Publish
-> yarn gitversion publish
+```bash
+yarn gitversion publish
+```
 
 This will:
 - read the contents of the ***gitversion.out** folder
@@ -47,4 +53,4 @@ This will:
 - tag the current version(s)
 - push to the origin
 
->> Note: Due to the ***gitversion.out*** folder pack and publish can be executed in different jobs. This enables running parallel jobs together with pack/build before publishing (i.e. end-to-end tests jobs and code quality jobs)
+> Due to the ***gitversion.out*** folder pack and publish can be executed in different jobs. This enables running parallel jobs together with pack/build before publishing (i.e. end-to-end tests jobs and code quality jobs)
