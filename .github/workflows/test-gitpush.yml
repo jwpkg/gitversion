@@ -29,7 +29,7 @@ jobs:
           set -e
           git status
           git tag test-tag
-          git push --follow-tags
+          git push --follow-tags --set-upstream origin "HEAD:${{ github.ref }}"
 
 
 
