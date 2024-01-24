@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
-    "prepack": "yarn build",
+    "copy-readme": "cp ../../../README.md .",
+    "prepack": "yarn copy-readme && yarn build",
     "postpack": "rm -rf lib"
   },
   "devDependencies": {
@@ -29,8 +30,7 @@
     "node": ">=18.12.0"
   },
   "files": [
-    "/lib/**/!(*._test_).(js|d.ts)",
-    "../../../README.md"
+    "/lib/**/!(*._test_).(js|d.ts)"
   ],
   "main": "src/index.ts",
   "types": "src/index.ts",
