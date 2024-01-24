@@ -120,8 +120,8 @@ export class Git {
       .map(e => e as GitTag);
   }
 
-  async addTag(tag: string) {
-    await gitExec(['tag', tag]);
+  async addTag(tag: string, message: string) {
+    await gitExec(['tag', '-a', tag, '-m', message]);
   }
 
   async addAndCommitFiles(message: string, files: string[]) {

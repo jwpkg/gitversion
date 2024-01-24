@@ -1,8 +1,8 @@
-import { BumpManifest } from '../utils/bump-manifest';
-import { DEFAULT_PACKAGE_VERSION } from '../utils/constants';
-import { gitRoot } from '../utils/git';
-import { logger } from '../utils/log-reporter';
-import { Project } from '../utils/workspace-utils';
+import { BumpManifest } from '../core/bump-manifest';
+import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
+import { gitRoot } from '../core/git';
+import { logger } from '../core/log-reporter';
+import { Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 

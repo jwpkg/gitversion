@@ -7,8 +7,8 @@ import { PackCommand } from './commands/pack';
 import { PublishCommand } from './commands/publish';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
-import { formatDuration } from './utils/format-utils';
-import { logger } from './utils/log-reporter';
+import { formatDuration } from './core/format-utils';
+import { logger } from './core/log-reporter';
 
 
 const start = Date.now();

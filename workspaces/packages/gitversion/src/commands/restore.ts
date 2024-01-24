@@ -1,9 +1,9 @@
-import { BumpManifest } from '../utils/bump-manifest';
-import { formatVersion, formatVersionBranch } from '../utils/format-utils';
-import { gitRoot } from '../utils/git';
-import { logger } from '../utils/log-reporter';
-import { determineCurrentVersion } from '../utils/version-utils';
-import { Project, Workspace } from '../utils/workspace-utils';
+import { BumpManifest } from '../core/bump-manifest';
+import { formatVersion, formatVersionBranch } from '../core/format-utils';
+import { gitRoot } from '../core/git';
+import { logger } from '../core/log-reporter';
+import { determineCurrentVersion } from '../core/version-utils';
+import { Project, Workspace } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 

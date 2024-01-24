@@ -3,12 +3,12 @@ import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { mkdir, stat } from 'fs/promises';
 import { join } from 'path';
 
-import { Bump, BumpManifest } from '../utils/bump-manifest';
-import { formatFileSize, formatPackageName } from '../utils/format-utils';
-import { gitRoot } from '../utils/git';
-import { logger } from '../utils/log-reporter';
-import { PackArtifact } from '../utils/pack-artifact';
-import { Project } from '../utils/workspace-utils';
+import { Bump, BumpManifest } from '../core/bump-manifest';
+import { formatFileSize, formatPackageName } from '../core/format-utils';
+import { gitRoot } from '../core/git';
+import { logger } from '../core/log-reporter';
+import { PackArtifact } from '../core/pack-artifact';
+import { Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 

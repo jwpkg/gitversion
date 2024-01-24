@@ -1,6 +1,6 @@
 import { BaseContext, Command } from 'clipanion';
 
-import { LogReporter } from '../utils/log-reporter';
+import { LogReporter } from '../core/log-reporter';
 
 export interface GitVersionContext extends BaseContext {
   logger: LogReporter;

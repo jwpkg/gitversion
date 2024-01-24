@@ -3,12 +3,12 @@ import { colorize } from 'colorize-node';
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { dirname, join } from 'path';
 
-import { BranchType, VersionBranch } from '../utils/config';
-import { formatPackageName } from '../utils/format-utils';
-import { Git, gitRoot } from '../utils/git';
-import { logger } from '../utils/log-reporter';
-import { PackArtifact, PackedPackage } from '../utils/pack-artifact';
-import { Project } from '../utils/workspace-utils';
+import { BranchType, VersionBranch } from '../core/config';
+import { formatPackageName } from '../core/format-utils';
+import { Git, gitRoot } from '../core/git';
+import { logger } from '../core/log-reporter';
+import { PackArtifact, PackedPackage } from '../core/pack-artifact';
+import { Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -48,8 +48,8 @@ export class PublishCommand extends GitVersionCommand {
     const packedPackages = packManifest.manifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packedPackages, project.config.branch, packManifest.packFolder);
-      await this.addTags(packedPackages, project.git);
       await this.updateChangelogs(packedPackages, project);
+      await this.addTags(packedPackages, project.git);
 
       if (this.push) {
         if (this.dryRun) {
@@ -124,7 +124,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo(`[DryRun] Would add tag ${tag}`);
       } else {
         logger.reportInfo(`Adding tag: ${tag}`);
-        await git.addTag(tag);
+        await git.addTag(tag, 'Tag added by gitversion');
       }
     });
     await Promise.all(commands);

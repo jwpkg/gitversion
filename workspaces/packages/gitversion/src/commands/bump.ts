@@ -1,15 +1,15 @@
 import { colorize } from 'colorize-node';
 
-import { BumpManifest } from '../utils/bump-manifest';
-import { detectBumpType, executeBump, validateBumpType } from '../utils/bump-utils';
-import { generateChangeLogEntry } from '../utils/changelog';
-import { parseConventionalCommits } from '../utils/conventional-commmit-utils';
-import { formatBumpType, formatPackageName } from '../utils/format-utils';
-import { IGitPlatform } from '../utils/git-platform';
-import { gitRoot } from '../utils/git';
-import { LogReporter, logger } from '../utils/log-reporter';
-import { GitSemverTag } from '../utils/version-utils';
-import { Project, Workspace } from '../utils/workspace-utils';
+import { BumpManifest } from '../core/bump-manifest';
+import { detectBumpType, executeBump, validateBumpType } from '../core/bump-utils';
+import { generateChangeLogEntry } from '../core/changelog';
+import { parseConventionalCommits } from '../core/conventional-commmit-utils';
+import { formatBumpType, formatPackageName } from '../core/format-utils';
+import { IGitPlatform } from '../core/git-platform';
+import { gitRoot } from '../core/git';
+import { LogReporter, logger } from '../core/log-reporter';
+import { GitSemverTag } from '../core/version-utils';
+import { Project, Workspace } from '../core/workspace-utils';
 
 import { RestoreCommand } from './restore';
 

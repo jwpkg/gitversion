@@ -1,1 +1,1 @@
-export * from './utils/config';
+export * from './core/config';
