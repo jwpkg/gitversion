@@ -67,6 +67,7 @@ export class Workspace {
     }
     changeLog = addToChangelog(entry, version, changeLog);
     await writeFile(changeLogFile, changeLog, 'utf-8');
+    return changeLogFile;
   }
 
   async updateVersion(version: string, logger: LogReporter) {
