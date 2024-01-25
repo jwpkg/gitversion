@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.3-alpha.2](https://github.com/cp-utils/gitversion/compare/0.0.3-alpha.1...0.0.3-alpha.2) (Thu Jan 25 2024)
+
+### fix
+
+* Post pack status ([4523649](https://github.com/cp-utils/gitversion/commit/4523649331d0027e43bc38233a73d72f5de5e943))
+
 ## [0.0.3-alpha.1](https://github.com/cp-utils/gitversion/compare/0.0.3-alpha.0...0.0.3-alpha.1) (Thu Jan 25 2024)
 
 ### feat
