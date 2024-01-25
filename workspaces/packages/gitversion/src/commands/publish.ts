@@ -44,8 +44,13 @@ export class PublishCommand extends GitVersionCommand {
       return 1;
     }
 
+    if (!(await packManifest.validateGitStatusForPublish())) {
+      // TODO: Reference to a correct help page to fix this
+      logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
+      return 1;
+    }
 
-    const packedPackages = packManifest.manifest.packages;
+    const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packedPackages, project.config.branch, packManifest.packFolder);
       await this.updateChangelogs(packedPackages, project);

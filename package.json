@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "0.0.3-alpha.0",
+  "version": "0.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",

@@ -15,48 +15,47 @@ export interface Bump {
   private: boolean;
 }
 
+export interface BumpManifestGitStatus {
+  preBump: string;
+  postBump: string;
+}
+
 export interface BumpManifestContent {
-  preBumpStatusHash: string;
-  postBumpStatusHash: string;
+  gitStatus: BumpManifestGitStatus;
   bumps: Bump[];
 }
 
 export class BumpManifest {
-  private preBumpStatusHash?: string;
+  gitStatus: BumpManifestGitStatus;
   bumps: Bump[];
 
-  private constructor(public bumpManifestFile: string, private project: Project, manifest?: BumpManifestContent) {
-    this.bumps = manifest?.bumps ?? [];
+  private constructor(private project: Project, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
+    this.bumps = bumps ?? [];
+    this.gitStatus = gitStatus;
   }
 
-  static async load(project: Project) {
+  static async load(project: Project): Promise<BumpManifest | null> {
     const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
-    const statusHash = await project.git.gitStatusHash();
-
-    let bumpManifest: BumpManifestContent = {
-      preBumpStatusHash: statusHash,
-      postBumpStatusHash: statusHash,
-      bumps: [],
-    };
 
     if (existsSync(bumpManifestFile)) {
       const content = await readFile(bumpManifestFile, 'utf-8');
-      bumpManifest = JSON.parse(content) as BumpManifestContent;
+      const manifest = JSON.parse(content) as BumpManifestContent;
+      return new BumpManifest(
+        project,
+        manifest.gitStatus,
+        manifest.bumps,
+      );
     }
-
-    return new BumpManifest(
-      bumpManifestFile,
-      project,
-      bumpManifest,
-    );
+    return null;
   }
 
   static async new(project: Project) {
     await this.clear(project);
-    const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
-    const result = new BumpManifest(bumpManifestFile, project);
-
-    result.preBumpStatusHash = await project.git.gitStatusHash();
+    const gitStatus = await project.git.gitStatusHash();
+    const result = new BumpManifest(project, {
+      preBump: gitStatus,
+      postBump: 'INVALID',
+    });
 
     return result;
   }
@@ -79,21 +78,24 @@ export class BumpManifest {
   }
 
   async persist() {
-    if (!this.preBumpStatusHash) {
+    if (!this.gitStatus.preBump) {
       throw new Error('No pre bump status hash set');
     }
+    const bumpManifestFile = join(this.project.stagingFolder, MANIFEST_NAME);
     const content: BumpManifestContent = {
-      preBumpStatusHash: this.preBumpStatusHash,
-      postBumpStatusHash: await this.project.git.gitStatusHash(),
+      gitStatus: {
+        preBump: this.gitStatus.preBump,
+        postBump: await this.project.git.gitStatusHash(),
+      },
       bumps: this.bumps,
     };
 
     const contentData = JSON.stringify(content, null, 2);
-    await mkdir(dirname(this.bumpManifestFile), {
+    await mkdir(dirname(bumpManifestFile), {
       recursive: true,
     });
 
-    await writeFile(this.bumpManifestFile, contentData, {
+    await writeFile(bumpManifestFile, contentData, {
       encoding: 'utf-8',
     });
   }

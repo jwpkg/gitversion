@@ -1,4 +1,3 @@
-import { BumpManifest } from '../core/bump-manifest';
 import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
 import { gitRoot } from '../core/git';
 import { logger } from '../core/log-reporter';
@@ -18,8 +17,6 @@ export class ResetCommand extends GitVersionCommand {
     }
 
     const reset = logger.beginSection('Reset step');
-
-    await BumpManifest.clear(project);
 
     await project.git.cleanChangeLogs();
 
