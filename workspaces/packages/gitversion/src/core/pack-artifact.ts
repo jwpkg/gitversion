@@ -49,7 +49,6 @@ export class PackArtifact {
   }
 
   validateGitStatusDuringPack() {
-    console.log(this.gitStatus.prePack, this.gitStatus.postPack);
     return this.gitStatus.prePack == this.gitStatus.postPack;
   }
 
