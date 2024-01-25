@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.3-alpha.1](https://github.com/cp-utils/gitversion/compare/0.0.3-alpha.0...0.0.3-alpha.1) (Thu Jan 25 2024)
+
+### feat
+
+* Bump manifest git status ([f6dffbf](https://github.com/cp-utils/gitversion/commit/f6dffbf041847576c867857743ae5cecdc38c66c))
+
+* Added git status checks ([dbaaad9](https://github.com/cp-utils/gitversion/commit/dbaaad9b1c281690d2f84caf0fbb8240e3e767a5))
+
 ## [0.0.3-alpha.0](https://github.com/cp-utils/gitversion/compare/0.0.2...0.0.3-alpha.0) (Wed Jan 24 2024)
 
 ## [0.0.2-alpha.10](https://github.com/cp-utils/gitversion/compare/0.0.2-alpha.9...0.0.2-alpha.10) (Wed Jan 24 2024)
