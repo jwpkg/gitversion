@@ -49,7 +49,7 @@ export class PackArtifact {
   }
 
   validateGitStatusDuringPack() {
-    return this.gitStatus.prePack === this.gitStatus.postPack;
+    return this.gitStatus.prePack == this.gitStatus.postPack;
   }
 
   async validateGitStatusForPublish() {
