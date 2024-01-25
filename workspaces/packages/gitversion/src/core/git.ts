@@ -1,4 +1,5 @@
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
+import { createHash } from 'crypto';
 
 import { Generic, Github, IGitPlatform } from './git-platform';
 
@@ -149,6 +150,15 @@ export class Git {
     const output = await gitExec(args, this.cwd);
 
     return output.replace(/\n*$/, '');
+  }
+
+  async gitStatusHash() {
+    const commit = await gitExec(['rev-parse', '--revs-only', 'HEAD'], this.cwd);
+    const status = await gitExec(['status', '--porcelain'], this.cwd);
+    const hash = createHash('sha256');
+    hash.update(commit);
+    hash.update(status);
+    return hash.digest().toString('base64');
   }
 
   async currentCommit() {

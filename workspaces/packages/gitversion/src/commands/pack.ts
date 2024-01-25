@@ -28,9 +28,9 @@ export class PackCommand extends GitVersionCommand {
     const bumpManifest = await BumpManifest.load(project);
     const packManifest = await PackArtifact.new(project);
 
-    const bumpedWorkspaces = bumpManifest.manifest.bumps.filter(b => b.private === false);
+    const bumpedWorkspaces = bumpManifest.bumps.filter(b => b.private === false);
     if (bumpedWorkspaces.length > 0) {
-      const projectBump = bumpManifest.manifest.bumps.find(b => b.packageRelativeCwd === '.');
+      const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
       if (projectBump) {
         packManifest.add(projectBump);
       }
