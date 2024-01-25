@@ -12,7 +12,7 @@
     "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
     "copy-readme": "cp ../../../README.md .",
     "prepack": "yarn copy-readme && yarn build",
-    "postpack": "rm -rf lib"
+    "postpack": "rm -rf lib && rm -f tsconfig.tsbuildinfo"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
