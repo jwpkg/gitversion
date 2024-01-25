@@ -1,4 +1,5 @@
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
+import { createHash } from 'crypto';
 
 import { Generic, Github, IGitPlatform } from './git-platform';
 
@@ -101,11 +102,9 @@ export class Git {
     };
 
     const args = [
-      '-c',
-      'versionsort.suffix=-', // makes sure pre-release versions are listed after the primary version
       'tag',
-      '--sort=-version:refname', // sort as versions and not lexicographically
       '--list',
+      '--merged=HEAD',
       `--format=%(objectname)${delim1}%(refname:strip=2)${delim2}`,
       prefixFilter,
     ];
@@ -151,6 +150,20 @@ export class Git {
     const output = await gitExec(args, this.cwd);
 
     return output.replace(/\n*$/, '');
+  }
+
+  async gitStatusHash() {
+    const commit = await gitExec(['rev-parse', '--revs-only', 'HEAD'], this.cwd);
+    const status = await gitExec(['status', '--porcelain'], this.cwd);
+
+    const cleanedStatus = status.split('\n').filter(l => {
+      return !(l.includes('package.json') || l.includes('CHANGELOG.md'));
+    }).join('\n');
+
+    const hash = createHash('sha256');
+    hash.update(commit);
+    hash.update(cleanedStatus);
+    return hash.digest().toString('base64');
   }
 
   async currentCommit() {

@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
-import { gitRoot } from '../core/git';
+import { gitExec, gitRoot } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact } from '../core/pack-artifact';
 import { Project } from '../core/workspace-utils';
@@ -26,11 +26,20 @@ export class PackCommand extends GitVersionCommand {
     const section = logger.beginSection('Pack step');
 
     const bumpManifest = await BumpManifest.load(project);
-    const packManifest = await PackArtifact.new(project);
+    if (!bumpManifest) {
+      logger.reportError('No valid bump file found. Please run bump first');
+      return 1;
+    }
+    const packManifest = await PackArtifact.new(project, bumpManifest.gitStatus);
 
-    const bumpedWorkspaces = bumpManifest.manifest.bumps.filter(b => b.private === false);
+    if (!packManifest.validateGitStatusWithBump()) {
+      logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
+      console.log(await gitExec(['status']));
+    }
+
+    const bumpedWorkspaces = bumpManifest.bumps.filter(b => b.private === false);
     if (bumpedWorkspaces.length > 0) {
-      const projectBump = bumpManifest.manifest.bumps.find(b => b.packageRelativeCwd === '.');
+      const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
       if (projectBump) {
         packManifest.add(projectBump);
       }
@@ -53,6 +62,11 @@ export class PackCommand extends GitVersionCommand {
       await packManifest.persist();
     } else {
       logger.reportWarning('Nothing to pack');
+    }
+
+    if (!packManifest.validateGitStatusDuringPack()) {
+      logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);
+      console.log(await gitExec(['status']));
     }
 
     logger.endSection(section);

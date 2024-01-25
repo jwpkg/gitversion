@@ -2,6 +2,7 @@ import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
+import { BumpManifestGitStatus } from './bump-manifest';
 import { Project } from './workspace-utils';
 
 const MANIFEST_NAME = 'pack-manifest.json';
@@ -16,19 +17,48 @@ export interface PackedPackage {
   changeLog: string;
 }
 
+export interface PackManifestGitStatus extends BumpManifestGitStatus {
+  prePack: string;
+  postPack: string;
+}
+
 export interface PackManifestContent {
+  gitStatus: PackManifestGitStatus;
   packages: PackedPackage[];
 }
 
 export class PackArtifact {
-  manifest: PackManifestContent;
-  manifestFile: string;
+  gitStatus: PackManifestGitStatus;
+  packages: PackedPackage[];
 
-  private constructor(public packFolder: string, manifest?: PackManifestContent) {
-    this.manifestFile = join(packFolder, MANIFEST_NAME);
-    this.manifest = manifest ?? {
-      packages: [],
-    };
+  get packFolder() {
+    return join(this.project.stagingFolder, PACK_FOLDER);
+  }
+
+  get packManifestFile() {
+    return join(this.packFolder, MANIFEST_NAME);
+  }
+
+  private constructor(private project: Project, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
+    this.gitStatus = gitStatus;
+    this.packages = packages ?? [];
+  }
+
+  validateGitStatusWithBump() {
+    return [this.gitStatus.postBump, this.gitStatus.preBump].includes(this.gitStatus.prePack);
+  }
+
+  validateGitStatusDuringPack() {
+    return this.gitStatus.prePack == this.gitStatus.postPack;
+  }
+
+  async validateGitStatusForPublish() {
+    return [
+      this.gitStatus.preBump,
+      this.gitStatus.postBump,
+      this.gitStatus.prePack,
+      this.gitStatus.postPack,
+    ].includes(await this.project.git.gitStatusHash());
   }
 
   static async load(project: Project): Promise<PackArtifact | null> {
@@ -38,16 +68,21 @@ export class PackArtifact {
     if (existsSync(manifestFile)) {
       const content = await readFile(manifestFile, 'utf-8');
       const manifest = JSON.parse(content) as PackManifestContent;
-      return new PackArtifact(packFolder, manifest);
+      return new PackArtifact(project, manifest.gitStatus, manifest.packages);
     }
     return null;
   }
 
-  static async new(project: Project) {
-    const packFolder = join(project.stagingFolder, PACK_FOLDER);
+  static async new(project: Project, bumpGitStatus: BumpManifestGitStatus) {
+    const statusHash = await project.git.gitStatusHash();
+    const gitStatus: PackManifestGitStatus = {
+      ...bumpGitStatus,
+      prePack: statusHash,
+      postPack: 'INVALID',
+    };
 
     await this.clear(project);
-    return new PackArtifact(packFolder);
+    return new PackArtifact(project, gitStatus);
   }
 
   static async clear(project: Project) {
@@ -58,16 +93,21 @@ export class PackArtifact {
   }
 
   add(packedPackage: PackedPackage) {
-    this.manifest.packages.push(packedPackage);
+    this.packages.push(packedPackage);
   }
 
   async persist() {
-    const content = JSON.stringify(this.manifest, null, 2);
-    await mkdir(dirname(this.manifestFile), {
+    this.gitStatus.postPack = await this.project.git.gitStatusHash();
+    const content: PackManifestContent = {
+      gitStatus: this.gitStatus,
+      packages: this.packages,
+    };
+    const contentData = JSON.stringify(content, null, 2);
+    await mkdir(dirname(this.packManifestFile), {
       recursive: true,
     });
 
-    await writeFile(this.manifestFile, content, {
+    await writeFile(this.packManifestFile, contentData, {
       encoding: 'utf-8',
 
     });
