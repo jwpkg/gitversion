@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 
 import { BranchType, VersionBranch } from '../core/config';
 import { formatPackageName } from '../core/format-utils';
-import { Git, gitRoot } from '../core/git';
+import { Git, gitExec, gitRoot } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
 import { Project } from '../core/workspace-utils';
@@ -47,6 +47,7 @@ export class PublishCommand extends GitVersionCommand {
     if (!(await packManifest.validateGitStatusForPublish())) {
       // TODO: Reference to a correct help page to fix this
       logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
+      console.log(await gitExec(['status']));
       return 1;
     }
 
