@@ -49,6 +49,7 @@ export class PackArtifact {
   }
 
   validateGitStatusDuringPack() {
+    console.log(this.gitStatus.prePack, this.gitStatus.postPack);
     return this.gitStatus.prePack == this.gitStatus.postPack;
   }
 
@@ -97,11 +98,9 @@ export class PackArtifact {
   }
 
   async persist() {
+    this.gitStatus.postPack = await this.project.git.gitStatusHash();
     const content: PackManifestContent = {
-      gitStatus: {
-        ...this.gitStatus,
-        postPack: await this.project.git.gitStatusHash(),
-      },
+      gitStatus: this.gitStatus,
       packages: this.packages,
     };
     const contentData = JSON.stringify(content, null, 2);
