@@ -155,9 +155,14 @@ export class Git {
   async gitStatusHash() {
     const commit = await gitExec(['rev-parse', '--revs-only', 'HEAD'], this.cwd);
     const status = await gitExec(['status', '--porcelain'], this.cwd);
+
+    const cleanedStatus = status.split('\n').filter(l => {
+      return !(l.includes('package.json') || l.includes('CHANGELOG.md'));
+    }).join('\n');
+
     const hash = createHash('sha256');
     hash.update(commit);
-    hash.update(status);
+    hash.update(cleanedStatus);
     return hash.digest().toString('base64');
   }
 
