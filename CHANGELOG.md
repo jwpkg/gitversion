@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.3](https://github.com/cp-utils/gitversion/compare/0.0.2...0.0.3) (Thu Jan 25 2024)
+
+### feat
+
+* Added git status checks. Now breaks of when the steps can't be matched by gitstatus (#26) ([b0f593e](https://github.com/cp-utils/gitversion/commit/b0f593e594d5cd571f5f9f0aff11e16b637c7e08))
+
 ## [0.0.3-alpha.0](https://github.com/cp-utils/gitversion/compare/0.0.2...0.0.3-alpha.0) (Wed Jan 24 2024)
 
 ### feat
