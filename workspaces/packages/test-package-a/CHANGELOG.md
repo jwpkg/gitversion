@@ -4,6 +4,8 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.7](https://github.com/cp-utils/gitversion/compare/0.0.6...0.0.7) (Fri Jan 26 2024)
+
 ## [0.0.5](https://github.com/not_initialized/not_initialized/compare/0.0.4...0.0.5) (Fri Jan 26 2024)
 
 ## [0.0.4](https://github.com///compare/0.0.3...0.0.4) (Fri Jan 26 2024)
