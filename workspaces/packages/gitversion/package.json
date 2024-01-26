@@ -45,5 +45,5 @@
     "semver": "^7.5.4",
     "typanion": "^3.14.0"
   },
-  "version": "0.0.4-platform-plugins.0"
+  "version": "0.0.0"
 }

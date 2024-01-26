@@ -9,8 +9,8 @@ import { IPlugin, PluginManager } from './plugin';
 export interface IGitPlatformPlugin extends IPlugin {
   currentBranch(): Promise<string | null>;
   stripMergeMessage(commit: GitCommit): GitCommit;
-  compareUrl(from: GitSemverTag, to: GitSemverTag): string;
-  commitUrl(commitHash: string): string;
+  compareUrl(from: GitSemverTag, to: GitSemverTag): string | null;
+  commitUrl(commitHash: string): string | null;
 }
 
 
@@ -26,25 +26,15 @@ export class GitPlatformDefault implements IGitPlatformPlugin {
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {
-    if (commit.message.startsWith('Merge pull request ')) {
-      const lines = commit.message.split('\n');
-      lines.splice(0, 2);
-      return {
-        ...commit,
-        message: lines.join('\n').trim(),
-      };
-    } else {
-      return commit;
-    }
+    return commit;
   }
 
-  compareUrl(from: GitSemverTag, to: GitSemverTag) {
-    console.log('LK:KJL:KJKLJKLJKLJKLJLKj');
-    return `https://github.com/cp-utils/gitversion/compare/${from.version}...${to.version}`;
+  compareUrl(_from: GitSemverTag, _to: GitSemverTag) {
+    return null;
   }
 
-  commitUrl(commit: string) {
-    return `https://github.com/cp-utils/gitversion/commit/${commit}`;
+  commitUrl(_commit: string) {
+    return null;
   }
 }
 

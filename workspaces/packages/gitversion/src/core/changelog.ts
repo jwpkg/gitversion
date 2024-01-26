@@ -53,9 +53,10 @@ export function addToChangelog(entry: string, version: string, changelogContent?
 }
 
 export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, urls: IGitPlatformPlugin): string {
+  const compareUrl = urls.compareUrl(from, to);
   return [
     md.h2(
-      md.link(to.version, urls.compareUrl(from, to)),
+      compareUrl ? md.link(to.version, compareUrl) : `[${to.version}]`,
       `(${new Date().toDateString()})`,
     ),
     ...Object.entries(groupByType(commits)).map(([type, commits]) => [
@@ -67,10 +68,11 @@ export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitS
 }
 
 export function renderCommit(commit: ConventionalCommit, urls: IGitPlatformPlugin) {
+  const commitUrl = urls.commitUrl(commit.hash);
   if (commit.scope) {
-    return md.li(md.b(commit.scope), commit.message, `(${md.link(commit.shortHash, urls.commitUrl(commit.hash))})`);
+    return md.li(md.b(commit.scope), commit.message, `(${commitUrl ? md.link(commit.shortHash, commitUrl) : commit.shortHash})`);
   } else {
-    return md.li(commit.message, `(${md.link(commit.shortHash, urls.commitUrl(commit.hash))})`);
+    return md.li(commit.message, `(${commitUrl ? md.link(commit.shortHash, commitUrl) : commit.shortHash})`);
   }
 }
 
