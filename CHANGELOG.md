@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.5](https://github.com/not_initialized/not_initialized/compare/0.0.4...0.0.5) (Fri Jan 26 2024)
+
+### fix
+
+* Pack status ([69429ec](https://github.com/not_initialized/not_initialized/commit/69429eca2e6bb0846f57dba2c72780418e45da59))
+
 ## [0.0.4](https://github.com///compare/0.0.3...0.0.4) (Fri Jan 26 2024)
 
 ### feat
