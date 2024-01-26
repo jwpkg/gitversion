@@ -59,10 +59,11 @@ export class PackCommand extends GitVersionCommand {
         return this.execPackCommand(join(project.cwd, bump.packageRelativeCwd), packFolder, bump, packManifest);
       });
       await Promise.all(promises);
-      await packManifest.persist();
     } else {
       logger.reportWarning('Nothing to pack');
     }
+
+    await packManifest.persist();
 
     if (!packManifest.validateGitStatusDuringPack()) {
       logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);

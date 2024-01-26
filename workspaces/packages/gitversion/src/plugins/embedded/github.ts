@@ -8,9 +8,9 @@ export class Github implements IGitPlatformPlugin {
   /**
    * Git url has the format: https://github.com/cp-utils/gitversion.git or git@github.com:cp-utils/gitversion.git
    */
-  private gitUrl: string = '';
-  private projectName: string = '';
-  private repoName: string = '';
+  private gitUrl: string = 'not_initialized';
+  private projectName: string = 'not_initialized';
+  private repoName: string = 'not_initialized';
 
   parseUrl(url: string) {
     const result = /^(https:\/\/|git@)github.com(\/|:)(.+)\/(.+)\.git$/.exec(url);
