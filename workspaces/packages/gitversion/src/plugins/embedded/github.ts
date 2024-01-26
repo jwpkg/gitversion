@@ -28,6 +28,7 @@ export class Github implements IGitPlatformPlugin {
     this.project = project;
 
     const gitUrl = await this.project.git.remoteUrl();
+    console.log(gitUrl);
 
     if (gitUrl) {
       this.gitUrl = gitUrl;
