@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 
 import { BranchType, VersionBranch } from '../core/config';
 import { formatPackageName } from '../core/format-utils';
-import { Git, gitExec, gitRoot } from '../core/git';
+import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
 import { Project } from '../core/workspace-utils';
@@ -21,7 +21,7 @@ export class PublishCommand extends GitVersionCommand {
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
-    const project = await Project.load(await gitRoot());
+    const project = await Project.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -47,7 +47,7 @@ export class PublishCommand extends GitVersionCommand {
     if (!(await packManifest.validateGitStatusForPublish())) {
       // TODO: Reference to a correct help page to fix this
       logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
-      console.log(await gitExec(['status']));
+      console.log(await project.git.exec('status'));
       return 1;
     }
 

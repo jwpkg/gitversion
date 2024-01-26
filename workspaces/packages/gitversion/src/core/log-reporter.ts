@@ -76,7 +76,7 @@ export class LogReporter {
     this.reportInfo(`┌ ${title}`);
     this.indent += 1;
 
-    if (PLATFORM?.start) {
+    if (PLATFORM?.start && this.level <= 1) {
       this.stdout.write(PLATFORM.start(title));
     }
     return {

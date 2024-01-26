@@ -2,12 +2,8 @@ import { ConventionalCommitFooterType, parseConventionalCommit } from './convent
 import { GitCommit } from './git';
 
 function commit(message: string): GitCommit {
-  const lines = message.split('\n');
-  const subject = lines.splice(0, 1).join('\n').trim();
-  const body = lines.join('\n').trim();
   return {
-    body,
-    subject,
+    message,
     date: new Date(),
     hash: 'abcd',
   };

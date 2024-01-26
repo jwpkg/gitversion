@@ -1,15 +1,12 @@
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { createHash } from 'crypto';
 
-import { Generic, Github, IGitPlatform } from './git-platform';
-
 const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3';
 const delim2 = '25B7DA41-228B-4679-B2A2-86E328D3C3DE';
 const endRegex = new RegExp(`${delim2}\\r?\\n?$`);
 
 export interface GitCommit {
-  subject: string;
-  body: string;
+  message: string;
   date: Date;
   hash: string;
 }
@@ -19,7 +16,7 @@ export interface GitTag {
   hash?: string;
 }
 
-export async function gitExec(args: string[], cwd?: string) {
+async function gitExec(args: string[], cwd?: string) {
   // console.log('>>', 'git', ...args);
   const output = await crossSpawnAsync('git', args, {
     cwd,
@@ -38,12 +35,18 @@ export async function gitExec(args: string[], cwd?: string) {
     .trim();
 }
 
-export async function gitRoot(): Promise<string> {
-  return gitExec(['rev-parse', '--show-toplevel']);
-}
-
 export class Git {
+  private commandCache: Map<string, string> = new Map();
+
+  static async root(): Promise<string> {
+    return gitExec(['rev-parse', '--show-toplevel']);
+  }
+
   constructor(private cwd: string) {
+  }
+
+  async exec(...args: string[]) {
+    return gitExec(args, this.cwd);
   }
 
   async logs(sinceHash?: string, relativeCwd?: string): Promise<GitCommit[]> {
@@ -54,10 +57,9 @@ export class Git {
         const [subject, date, hash, body] = entry.split(delim1);
 
         return {
-          subject: subject.trim(),
+          message: `${subject.trim()}\n\n${body.trim()}`,
           date: new Date(date),
           hash: hash.trim(),
-          body: body.trim(),
         };
       }
       return undefined;
@@ -77,7 +79,7 @@ export class Git {
       args.push('--', relativeCwd);
     }
 
-    const output = await gitExec(args, this.cwd);
+    const output = await this.exec(...args);
 
     return output
       .replace(endRegex, '')
@@ -109,7 +111,7 @@ export class Git {
       prefixFilter,
     ];
 
-    const output = await gitExec(args, this.cwd);
+    const output = await this.exec(...args);
 
     const tags = output
       .replace(endRegex, '')
@@ -122,17 +124,17 @@ export class Git {
   }
 
   async addTag(tag: string, message: string) {
-    await gitExec(['tag', '-a', tag, '-m', message]);
+    await this.exec('tag', '-a', tag, '-m', message);
   }
 
   async addAndCommitFiles(message: string, files: string[]) {
-    await gitExec(['add', ...files]);
-    await gitExec(['commit', '-m', `${message} [skip ci]`, '--', ...files]);
+    await this.exec('add', ...files);
+    await this.exec('commit', '-m', `${message} [skip ci]`, '--', ...files);
   }
 
 
   async push() {
-    await gitExec(['push', 'origin', '--follow-tags']);
+    await this.exec('push', 'origin', '--follow-tags');
   }
 
   async currentBranch() {
@@ -141,20 +143,14 @@ export class Git {
       return process.env.BUILD_SOURCEBRANCHNAME;
     }
 
-    const args = [
-      'rev-parse',
-      '--abbrev-ref',
-      'HEAD',
-    ];
-
-    const output = await gitExec(args, this.cwd);
+    const output = await this.exec('rev-parse', '--abbrev-ref', 'HEAD');
 
     return output.replace(/\n*$/, '');
   }
 
   async gitStatusHash() {
-    const commit = await gitExec(['rev-parse', '--revs-only', 'HEAD'], this.cwd);
-    const status = await gitExec(['status', '--porcelain'], this.cwd);
+    const commit = await this.exec('rev-parse', '--revs-only', 'HEAD');
+    const status = await this.exec('status', '--porcelain');
 
     const cleanedStatus = status.split('\n').filter(l => {
       return !(l.includes('package.json') || l.includes('CHANGELOG.md'));
@@ -167,23 +163,44 @@ export class Git {
   }
 
   async currentCommit() {
-    return await gitExec(['rev-parse', '--verify', 'HEAD']);
+    return await this.exec('rev-parse', '--verify', 'HEAD');
   }
 
   async cleanChangeLogs() {
-    await gitExec(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], this.cwd);
-    await gitExec(['checkout', 'CHANGELOG.md'], this.cwd);
-    await gitExec(['checkout', '**/CHANGELOG.md'], this.cwd);
+    await this.exec('clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md');
+    await this.exec('checkout', 'CHANGELOG.md');
+    await this.exec('checkout', '**/CHANGELOG.md');
   }
 
-  async platform(): Promise<IGitPlatform> {
-    const branchOutput = await gitExec(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'], this.cwd);
-    const [origin] = branchOutput.trim().split('/');
-
-    const gitUrl = await gitExec(['config', '--get', `remote.${origin}.url`], this.cwd);
-    if (gitUrl.includes('github.com')) {
-      return new Github();
+  async remoteName() {
+    const result = this.commandCache.get('remote_name');
+    if (result) {
+      return result;
     }
-    return new Generic();
+
+    const remotes = (await this.exec('remote')).split('\n');
+    if (remotes.length > 0) {
+      this.commandCache.set('remote_name', remotes[0]);
+      return remotes[0];
+    }
+    throw new Error('Invalid git, currently can\'t work with multiple remotes');
+  }
+
+  async remoteUrl() {
+    const result = this.commandCache.get('remote_url');
+    if (result) {
+      return result;
+    }
+
+    try {
+      const remoteName = await this.remoteName();
+      const result = await this.exec('config', '--get', `remote.${remoteName}.url`);
+      if (result) {
+        this.commandCache.set('remote_url', result);
+      }
+      return result;
+    } catch {
+      return null;
+    }
   }
 }

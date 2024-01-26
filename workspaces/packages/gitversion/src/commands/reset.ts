@@ -1,5 +1,5 @@
 import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
-import { gitRoot } from '../core/git';
+import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { Project } from '../core/workspace-utils';
 
@@ -11,7 +11,7 @@ export class ResetCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const project = await Project.load(await gitRoot());
+    const project = await Project.load(await Git.root());
     if (!project) {
       return 1;
     }

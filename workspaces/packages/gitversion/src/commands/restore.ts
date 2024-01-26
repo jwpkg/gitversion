@@ -1,6 +1,6 @@
 import { BumpManifest } from '../core/bump-manifest';
 import { formatVersion, formatVersionBranch } from '../core/format-utils';
-import { gitRoot } from '../core/git';
+import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { determineCurrentVersion } from '../core/version-utils';
 import { Project, Workspace } from '../core/workspace-utils';
@@ -13,7 +13,7 @@ export class RestoreCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const project = await Project.load(await gitRoot());
+    const project = await Project.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -43,12 +43,6 @@ export class RestoreCommand extends GitVersionCommand {
 
   async currentVersionFromGit(workspace: Workspace) {
     const tags = await workspace.project.git.versionTags(workspace.tagPrefix);
-
-    const version = determineCurrentVersion(tags, workspace.config.branch, workspace.tagPrefix);
-    // if (!version.hash && workspace.tagPrefix !== workspace.config.options.versionTagPrefix) {
-    //   const tags = await workspace.project.git.versionTags(workspace.project.tagPrefix);
-    //   return determineCurrentVersion(tags, workspace.config.branch, workspace.project.tagPrefix);
-    // }
-    return version;
+    return determineCurrentVersion(tags, workspace.config.branch, workspace.tagPrefix);
   }
 }
