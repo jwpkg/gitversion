@@ -70,7 +70,7 @@ export class Github implements IGitPlatformPlugin {
   }
 
   compareUrl(from: GitSemverTag, to: GitSemverTag) {
-    return `https://github.com/${this.projectName}/${this.repoName}/compare/${from.version}...${to.version}`;
+    return `https://github.com/${this.projectName}/${this.repoName}/compare/v${from.version}...v${to.version}`;
   }
 
   commitUrl(commit: string) {
