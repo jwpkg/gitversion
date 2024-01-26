@@ -1,6 +1,6 @@
-import { BranchType, Configuration, ConfigurationOptions, FeatureBumpBehavior } from './config';
+import { BranchType, Configuration, BaseConfigurationOptions, FeatureBumpBehavior } from './config';
 
-const defaultConfig: Required<ConfigurationOptions> = {
+const defaultConfig: Required<BaseConfigurationOptions> = {
   featureBranchPatterns: [
     '^feature/(.*)$',
   ],

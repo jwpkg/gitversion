@@ -3,6 +3,8 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import * as t from 'typanion';
 
+import { IGitPlatformPlugin } from '../plugins/git-platform';
+
 import { Git } from './git';
 import { logger } from './log-reporter';
 
@@ -12,7 +14,7 @@ export enum FeatureBumpBehavior {
   Normal,
 }
 
-export const isConfigurationOptions = t.isObject({
+export const isBaseConfigurationOptions = t.isPartial({
   featureBranchPatterns: t.isOptional(t.isArray(t.isString())),
   releaseBranchPatterns: t.isOptional(t.isArray(t.isString())),
   mainBranch: t.isOptional(t.isString()),
@@ -21,9 +23,17 @@ export const isConfigurationOptions = t.isObject({
   featureBumpBehavior: t.isOptional(t.isEnum(FeatureBumpBehavior)),
 });
 
-export type ConfigurationOptions = t.InferType<typeof isConfigurationOptions>;
 
-export function defineConfig(config: ConfigurationOptions): ConfigurationOptions {
+export type BaseConfigurationOptions = t.InferType<typeof isBaseConfigurationOptions>;
+
+export interface PluginConfigurationOptions {
+  platform?: IGitPlatformPlugin;
+}
+
+export type ConfigurationOption = PluginConfigurationOptions & BaseConfigurationOptions;
+export type RequiredConfigurationOption = PluginConfigurationOptions & Required<BaseConfigurationOptions>;
+
+export function defineConfig(config: ConfigurationOption): ConfigurationOption {
   return config;
 }
 
@@ -40,9 +50,9 @@ export interface VersionBranch {
 }
 
 export class Configuration {
-  private constructor(public options: Required<ConfigurationOptions>, public branch: VersionBranch) { }
+  private constructor(public options: RequiredConfigurationOption, public branch: VersionBranch) { }
 
-  static detectVersionBranch(configOptions: Required<ConfigurationOptions>, branchName: string): VersionBranch {
+  static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
     if (configOptions.mainBranch === branchName) {
       return {
         type: BranchType.MAIN,
@@ -89,7 +99,7 @@ export class Configuration {
   }
 
   static async load(cwd: string): Promise<Configuration | null> {
-    const defaultOptions: Required<ConfigurationOptions> = {
+    const defaultOptions: Required<BaseConfigurationOptions> = {
       featureBranchPatterns: [
         '^feature/(.*)$',
       ],
@@ -105,7 +115,7 @@ export class Configuration {
 
     if (existsSync(join(cwd, '.gitversion.cjs'))) {
       const config = require(join(cwd, '.gitversion.cjs'));
-      if (isConfigurationOptions(config)) {
+      if (isBaseConfigurationOptions(config)) {
         options = {
           ...options,
           ...config,

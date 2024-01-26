@@ -18,12 +18,18 @@ export class PluginManager<T extends IPlugin> {
   }
 
   async initialize(project: Project): Promise<T> {
-    const plugins = this.plugins.filter(async plugin => await plugin.initialize(project));
-    const result = await Promise.all(plugins);
-    this.availablePlugins = result;
+    const plugins = this.plugins.map(async plugin => {
+      if (await plugin.initialize(project)) {
+        return plugin;
+      }
+      return null;
+    });
 
-    if (plugins.length > 0) {
-      return plugins[plugins.length - 1];
+    const result = await Promise.all(plugins);
+    this.availablePlugins = result.filter((t): t is Awaited<T> => !!t);
+
+    if (this.availablePlugins.length > 0) {
+      return this.availablePlugins[this.availablePlugins.length - 1];
     }
     return this.defaultPlugin;
   }

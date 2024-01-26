@@ -135,7 +135,12 @@ export class Project extends Workspace {
     const manifest = await loadManifest(rootCwd);
     const project = new Project(rootCwd, manifest, config);
 
-    project._gitPlatform = await gitPlatforms.initialize(project);
+    if (config.options.platform) {
+      await config.options.platform.initialize(project);
+      project._gitPlatform = config.options.platform;
+    } else {
+      project._gitPlatform = await gitPlatforms.initialize(project);
+    }
 
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {
