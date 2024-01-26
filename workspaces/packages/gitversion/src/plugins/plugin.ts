@@ -13,10 +13,19 @@ export class PluginManager<T extends IPlugin> {
   plugins: T[] = [];
   availablePlugins: T[] = [];
 
-  async initialize(project: Project) {
-    const plugins = this.plugins.filter(async plugin => plugin.initialize(project));
+  constructor(private defaultPlugin: T) {
+
+  }
+
+  async initialize(project: Project): Promise<T> {
+    const plugins = this.plugins.filter(async plugin => await plugin.initialize(project));
     const result = await Promise.all(plugins);
     this.availablePlugins = result;
+
+    if (plugins.length > 0) {
+      return plugins[plugins.length - 1];
+    }
+    return this.defaultPlugin;
   }
 
   register(plugin: T) {

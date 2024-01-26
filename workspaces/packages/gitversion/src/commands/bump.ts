@@ -5,11 +5,11 @@ import { detectBumpType, executeBump, validateBumpType } from '../core/bump-util
 import { generateChangeLogEntry } from '../core/changelog';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
-import { IGitPlatform } from '../core/git-platform';
-import { gitRoot } from '../core/git';
+import { Git } from '../core/git';
 import { LogReporter, logger } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { Project, Workspace } from '../core/workspace-utils';
+import { IGitPlatformPlugin } from '../plugins/git-platform';
 
 import { RestoreCommand } from './restore';
 
@@ -23,7 +23,7 @@ export class BumpCommand extends RestoreCommand {
       return 1;
     }
 
-    const project = await Project.load(await gitRoot());
+    const project = await Project.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -52,7 +52,7 @@ export class BumpCommand extends RestoreCommand {
     const workspaceForVersion = workspace.config.options.independentVersioning ? workspace : workspace.project;
     const version = await this.currentVersionFromGit(workspaceForVersion);
 
-    const platform = await workspace.project.git.platform();
+    const platform = await workspace.project.gitPlatform;
 
     const logs = await workspace.project.git.logs(version.hash, workspaceForVersion.relativeCwd);
     const commits = parseConventionalCommits(logs, platform);
@@ -74,7 +74,7 @@ export class BumpCommand extends RestoreCommand {
     return newVersion;
   }
 
-  private async generateChangelogForWorkspace(workspace: Workspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, platform: IGitPlatform, bumpManifest: BumpManifest, logger: LogReporter) {
+  private async generateChangelogForWorkspace(workspace: Workspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, platform: IGitPlatformPlugin, bumpManifest: BumpManifest, logger: LogReporter) {
     const logs = await workspace.project.git.logs(fromVersion.hash, workspace.relativeCwd);
     const commits = parseConventionalCommits(logs, platform);
     logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);

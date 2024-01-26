@@ -1,4 +1,5 @@
-import { IGitPlatform } from './git-platform';
+import { IGitPlatformPlugin } from '../plugins/git-platform';
+
 import { GitCommit } from './git';
 
 export enum ConventionalCommitFooterType {
@@ -25,15 +26,14 @@ export interface ConventionalCommit {
 }
 
 
-export function parseConventionalCommits(commits: GitCommit[], platform: IGitPlatform): ConventionalCommit[] {
+export function parseConventionalCommits(commits: GitCommit[], platform: IGitPlatformPlugin): ConventionalCommit[] {
   const sanitizedCommits = commits.map(platform.stripMergeMessage);
   return sanitizedCommits.map(parseConventionalCommit).filter((c): c is ConventionalCommit => !!c);
 }
 
 export function parseConventionalCommit(commit: GitCommit): ConventionalCommit | undefined {
   const headerRegex = /^([a-zA-Z]+)(\([\w\-\\/.]+\))?(!)?:\s(.+)([\s\S]*)/i;
-  const fullText = `${commit.subject}\n\n${commit.body}`.trim();
-  const lines = fullText.split('\n');
+  const lines = commit.message.split('\n');
 
   const header = lines.splice(0, 1).join('\n').trim();
   const result = headerRegex.exec(header);

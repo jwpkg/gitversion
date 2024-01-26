@@ -1,7 +1,9 @@
+import { IGitPlatformPlugin } from '../plugins/git-platform';
+
 import { ConventionalCommit, parseConventionalCommits } from './conventional-commmit-utils';
-import { Git } from './git';
 import * as md from './markdown';
 import { GitSemverTag } from './version-utils';
+import { Project } from './workspace-utils';
 
 const HEADER = `
 # Changelog
@@ -10,17 +12,11 @@ All notable changes to this project will be documented in this file
 
 `;
 
-export interface ChangeLogUrls {
-  compareUrl: (a: GitSemverTag, b: GitSemverTag) => string;
-  commitUrl: (hash: string) => string;
-}
+export async function detectChangelog(relativeCwd: string, project: Project, from: GitSemverTag, to: GitSemverTag) {
+  const logs = await project.git.logs(from.hash, relativeCwd);
 
-export async function detectChangelog(relativeCwd: string, git: Git, from: GitSemverTag, to: GitSemverTag) {
-  const platform = await git.platform();
-  const logs = await git.logs(from.hash, relativeCwd);
-
-  const commits = parseConventionalCommits(logs, platform);
-  return generateChangeLogEntry(commits, from, to, platform);
+  const commits = parseConventionalCommits(logs, project.gitPlatform);
+  return generateChangeLogEntry(commits, from, to, project.gitPlatform);
 }
 
 export function addToChangelog(entry: string, version: string, changelogContent?: string) {
@@ -56,7 +52,7 @@ export function addToChangelog(entry: string, version: string, changelogContent?
   return [HEADER, entry, changelogContent].join('\n');
 }
 
-export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, urls: ChangeLogUrls): string {
+export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, urls: IGitPlatformPlugin): string {
   return [
     md.h2(
       md.link(to.version, urls.compareUrl(from, to)),
@@ -70,7 +66,7 @@ export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitS
   ].join('\n');
 }
 
-export function renderCommit(commit: ConventionalCommit, urls: ChangeLogUrls) {
+export function renderCommit(commit: ConventionalCommit, urls: IGitPlatformPlugin) {
   if (commit.scope) {
     return md.li(md.b(commit.scope), commit.message, `(${md.link(commit.shortHash, urls.commitUrl(commit.hash))})`);
   } else {

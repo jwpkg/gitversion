@@ -3,6 +3,8 @@ import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 
+import { IGitPlatformPlugin, gitPlatforms } from '../plugins/git-platform';
+
 import { addToChangelog } from './changelog';
 import { Configuration } from './config';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
@@ -84,6 +86,11 @@ export class Workspace {
 export class Project extends Workspace {
   private _cwd: string;
   private _config: Configuration;
+  private _gitPlatform?: IGitPlatformPlugin;
+
+  get gitPlatform(): IGitPlatformPlugin {
+    return this._gitPlatform!;
+  }
 
   childWorkspaces: Workspace[] = [];
   git: Git;
@@ -127,6 +134,8 @@ export class Project extends Workspace {
     }
     const manifest = await loadManifest(rootCwd);
     const project = new Project(rootCwd, manifest, config);
+
+    project._gitPlatform = await gitPlatforms.initialize(project);
 
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {
