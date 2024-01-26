@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.8](https://github.com/cp-utils/gitversion/compare/v0.0.7...v0.0.8) (Fri Jan 26 2024)
+
+### fix
+
+* Github compare link ([2150b54](https://github.com/cp-utils/gitversion/commit/2150b542b93ada9adec84f9eb59a3e7c54ba2e12))
+
 ## [0.0.7](https://github.com/cp-utils/gitversion/compare/0.0.6...0.0.7) (Fri Jan 26 2024)
 
 ### feat
