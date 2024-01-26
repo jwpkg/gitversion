@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.4](https://github.com///compare/0.0.3...0.0.4) (Fri Jan 26 2024)
+
+### feat
+
+* platform plugins (#27) ([3f15c0d](https://github.com///commit/3f15c0d0555dcb985d7e36dc91f5d7f753e45f13))
+
 ## [0.0.4-platform-plugins.0](https://github.com/cp-utils/gitversion/compare/0.0.3...0.0.4-platform-plugins.0) (Fri Jan 26 2024)
 
 ### feat
