@@ -13,7 +13,7 @@ export class Github implements IGitPlatformPlugin {
   private repoName: string = 'not_initialized';
 
   parseUrl(url: string) {
-    const result = /^(https:\/\/|git@)github.com(\/|:)(.+)\/(.+)\.git$/.exec(url);
+    const result = /^(https:\/\/|git@)github.com(\/|:)(.+)\/(.+)(\.git)?$/.exec(url);
 
     if (result) {
       return {
