@@ -4,6 +4,8 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.1-fetch-refs.0](https://github.com/cp-utils/gitversion/compare/v0.0.0...v0.0.1-fetch-refs.0) (Fri Jan 26 2024)
+
 ## [0.0.7](https://github.com/cp-utils/gitversion/compare/0.0.6...0.0.7) (Fri Jan 26 2024)
 
 ### feat
