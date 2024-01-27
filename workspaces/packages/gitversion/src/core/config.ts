@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import * as t from 'typanion';
 
-import { IGitPlatformPlugin } from '../plugins/git-platform';
+import { IPlugin, PluginManager } from '../plugins/plugin';
 
 import { Git } from './git';
 import { logger } from './log-reporter';
@@ -27,7 +27,7 @@ export const isBaseConfigurationOptions = t.isPartial({
 export type BaseConfigurationOptions = t.InferType<typeof isBaseConfigurationOptions>;
 
 export interface PluginConfigurationOptions {
-  platform?: IGitPlatformPlugin;
+  plugins?: IPlugin[];
 }
 
 export type ConfigurationOption = PluginConfigurationOptions & BaseConfigurationOptions;
@@ -50,6 +50,8 @@ export interface VersionBranch {
 }
 
 export class Configuration {
+  pluginManager = new PluginManager();
+
   private constructor(public options: RequiredConfigurationOption, public branch: VersionBranch) { }
 
   static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
@@ -99,7 +101,7 @@ export class Configuration {
   }
 
   static async load(cwd: string): Promise<Configuration | null> {
-    const defaultOptions: Required<BaseConfigurationOptions> = {
+    const defaultOptions: RequiredConfigurationOption = {
       featureBranchPatterns: [
         '^feature/(.*)$',
       ],
@@ -128,7 +130,15 @@ export class Configuration {
 
     const git = new Git(cwd);
     const branch = this.detectVersionBranch(options, await git.currentBranch());
-    //TODO: load from file
-    return new Configuration(options, branch);
+
+    const config = new Configuration(options, branch);
+
+    if (options.plugins) {
+      for (const plugin of options.plugins) {
+        config.pluginManager.register(plugin);
+      }
+    }
+
+    return config;
   }
 }

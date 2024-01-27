@@ -1,9 +1,11 @@
 import { GitCommit } from '../../core/git';
 import { GitSemverTag } from '../../core/version-utils';
 import { Project } from '../../core/workspace-utils';
-import { IGitPlatformPlugin } from '../git-platform';
+import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../plugin';
 
-export class AzureDevops implements IGitPlatformPlugin {
+export class AzureDevopsPlatform implements IGitPlatformPlugin {
+  name = 'Azure devops platform plugin';
+
   private project?: Project;
 
   private organizationName: string = '';
@@ -81,5 +83,15 @@ export class AzureDevops implements IGitPlatformPlugin {
 
   commitUrl(commit: string) {
     return `https://dev.azure.com/${this.organizationName}/${this.projectName}/_git/${this.repoName}/commit/${commit}`;
+  }
+}
+
+export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin {
+  name = 'Github platform plugin';
+
+  gitPlatform = new AzureDevopsPlatform();
+
+  async initialize(project: Project): Promise<boolean> {
+    return this.gitPlatform.initialize(project);
   }
 }

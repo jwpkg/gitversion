@@ -11,7 +11,7 @@ import { Git } from '../core/git';
 import { LogReporter, logger } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { Project, Workspace } from '../core/workspace-utils';
-import { IGitPlatformPlugin } from '../plugins/git-platform';
+import { IGitPlatformPlugin } from '../plugins/plugin';
 
 import { RestoreCommand } from './restore';
 
@@ -40,6 +40,8 @@ export class BumpCommand extends RestoreCommand {
     }
 
     const bump = logger.beginSection('Bump step');
+    logger.reportInfo('Fetching refs');
+    await project.git.exec('fetch');
 
     const bumpManifest = await BumpManifest.new(project);
 
@@ -52,12 +54,14 @@ export class BumpCommand extends RestoreCommand {
         const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest, this.version, this.bumpType);
         if (newVersion) {
           await workspace.updateVersion(newVersion, logger);
+          await project.config.pluginManager.dispatchOnBump(workspace, newVersion);
         }
       });
     });
 
     await Promise.all(promises);
     await bumpManifest.persist();
+
 
     logger.endSection(bump);
     return 0;

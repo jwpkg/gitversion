@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 
-import { IGitPlatformPlugin, gitPlatforms } from '../plugins/git-platform';
+import { IGitPlatformPlugin } from '../plugins/plugin';
 
 import { addToChangelog } from './changelog';
 import { Configuration } from './config';
@@ -135,12 +135,9 @@ export class Project extends Workspace {
     const manifest = await loadManifest(rootCwd);
     const project = new Project(rootCwd, manifest, config);
 
-    if (config.options.platform) {
-      await config.options.platform.initialize(project);
-      project._gitPlatform = config.options.platform;
-    } else {
-      project._gitPlatform = await gitPlatforms.initialize(project);
-    }
+    await config.pluginManager.initialize(project);
+
+    project._gitPlatform = config.pluginManager.gitPlatform;
 
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {

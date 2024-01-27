@@ -1,4 +1,4 @@
-import { IGitPlatformPlugin } from '../plugins/git-platform';
+import { IGitPlatformPlugin } from '../plugins/plugin';
 
 import { ConventionalCommit, parseConventionalCommits } from './conventional-commmit-utils';
 import * as md from './markdown';

@@ -1,8 +1,8 @@
-import { AzureDevops } from './azure-devops';
+import { AzureDevopsPlatform } from './azure-devops';
 
 describe('Github platform', () => {
   test('Url parsing', () => {
-    const github = new AzureDevops();
+    const github = new AzureDevopsPlatform();
     expect(github.parseUrl('https://aegon-nl@dev.azure.com/aegon-nl/apidas/_git/apigee-monorepo')).toStrictEqual({
       organizationName: 'aegon-nl',
       projectName: 'apidas',
