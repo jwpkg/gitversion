@@ -1,12 +1,15 @@
 import { GitCommit } from '../../core/git';
 import { GitSemverTag } from '../../core/version-utils';
 import { Project } from '../../core/workspace-utils';
-import { IGitPlatformPlugin } from '../git-platform';
+import { IGitPlatformPlugin, IIntializablePlugin } from '../plugin';
 
-export class GitPlatformDefault implements IGitPlatformPlugin {
+export class GitPlatformDefault implements IGitPlatformPlugin, IIntializablePlugin {
+  name = 'Standard git platform plugin';
+
   private project?: Project;
 
-  async initialize(_project: Project): Promise<boolean> {
+  async initialize(project: Project): Promise<boolean> {
+    this.project = project;
     return true;
   }
 

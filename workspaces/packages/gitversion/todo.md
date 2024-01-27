@@ -1,3 +1,2 @@
 - command context
 - remove logger global
-- plugins for teams/slack

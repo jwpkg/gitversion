@@ -1,6 +1,31 @@
-import { Project } from '../core/workspace-utils';
+import { GitCommit } from '../core/git';
+import { PackedPackage } from '../core/pack-artifact';
+import { GitSemverTag } from '../core/version-utils';
+import { Project, Workspace } from '../core/workspace-utils';
+
+import { AzureDevopsPlugin } from './embedded/azure-devops';
+import { GitPlatformDefault } from './embedded/default';
+import { GithubPlugin } from './embedded/github';
+
+export interface IGitPlatformPlugin {
+  currentBranch(): Promise<string | null>;
+  stripMergeMessage(commit: GitCommit): GitCommit;
+  compareUrl(from: GitSemverTag, to: GitSemverTag): string | null;
+  commitUrl(commitHash: string): string | null;
+}
+
+export interface IPluginHook {
+  onBump?: (workspace: Workspace, version: string) => Promise<void> | void;
+  onPublish?: (project: Project, packedPackage: PackedPackage[], dryRun: boolean) => Promise<void> | void;
+}
 
 export interface IPlugin {
+  name: string;
+  gitPlatform?: IGitPlatformPlugin;
+  hooks?: IPluginHook;
+}
+
+export interface IIntializablePlugin {
   /**
    * Initialize the plugin for the current project
    * @param project The project instance
@@ -9,32 +34,68 @@ export interface IPlugin {
   initialize(project: Project): Promise<boolean>;
 }
 
-export class PluginManager<T extends IPlugin> {
-  plugins: T[] = [];
-  availablePlugins: T[] = [];
+export function isInitializable(p: any): p is IIntializablePlugin {
+  return 'initialize' in p && typeof p.initialize === 'function';
+}
 
-  constructor(private defaultPlugin: T) {
+export class PluginManager {
+  plugins: IPlugin[] = [];
+  availablePlugins: IPlugin[] = [];
 
+  gitPlatform: IGitPlatformPlugin;
+
+  constructor() {
+    this.gitPlatform = new GitPlatformDefault();
+
+    // Register defaults. Should be somewhere else i gues
+    this.register(new GithubPlugin());
+    this.register(new AzureDevopsPlugin());
   }
 
-  async initialize(project: Project): Promise<T> {
+  async initialize(project: Project) {
     const plugins = this.plugins.map(async plugin => {
-      if (await plugin.initialize(project)) {
+      if (isInitializable(plugin)) {
+        if (await plugin.initialize(project)) {
+          return plugin;
+        } else {
+          return null;
+        }
+      } else {
         return plugin;
       }
-      return null;
     });
 
     const result = await Promise.all(plugins);
-    this.availablePlugins = result.filter((t): t is Awaited<T> => !!t);
+    this.availablePlugins = result.filter((t): t is Awaited<IPlugin> => !!t);
 
-    if (this.availablePlugins.length > 0) {
-      return this.availablePlugins[this.availablePlugins.length - 1];
+    const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
+    if (gitPlatform) {
+      this.gitPlatform = gitPlatform.gitPlatform!;
+    } else {
+      const defaultGit = new GitPlatformDefault();
+      await defaultGit.initialize(project);
+      this.gitPlatform = defaultGit;
     }
-    return this.defaultPlugin;
   }
 
-  register(plugin: T) {
+  register(plugin: IPlugin) {
     this.plugins.push(plugin);
+  }
+
+  async dispatchOnBump(workspace: Workspace, version: string) {
+    for (const plugin of this.availablePlugins) {
+      const result = plugin.hooks?.onBump?.(workspace, version);
+      if (result instanceof Promise) {
+        await result;
+      }
+    }
+  }
+  async dispatchOnPublish(project: Project, packedPackage: PackedPackage[], dryRun: boolean) {
+    for (const plugin of this.availablePlugins) {
+      const result = plugin.hooks?.onPublish?.(project, packedPackage, dryRun);
+      if (result instanceof Promise) {
+        await result;
+      }
+    }
   }
 }

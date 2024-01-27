@@ -67,6 +67,8 @@ export class PublishCommand extends GitVersionCommand {
       } else {
         logger.reportInfo('Skipping push step');
       }
+
+      await project.config.pluginManager.dispatchOnPublish(project, packedPackages, this.dryRun);
     } else {
       logger.reportWarning('Nothing to publish');
     }
