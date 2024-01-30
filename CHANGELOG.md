@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.11](https://github.com/cp-utils/gitversion/compare/v0.0.10...v0.0.11) (Tue Jan 30 2024)
+
+### fix
+
+* License field ([83d3912](https://github.com/cp-utils/gitversion/commit/83d391234273b9515b4db6f73648f9446cf6cbe8))
+
 ## [0.0.10](https://github.com/cp-utils/gitversion/compare/v0.0.9...v0.0.10) (Tue Jan 30 2024)
 
 ### fix
