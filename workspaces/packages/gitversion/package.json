@@ -24,7 +24,8 @@
   "scripts": {
     "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
     "copy-readme": "cp ../../../README.md .",
-    "prepack": "yarn copy-readme && yarn build",
+    "copy-licence": "cp ../../../LICENSE .",
+    "prepack": "yarn copy-readme && yarn copy-licence && yarn build",
     "postpack": "rm -rf lib"
   },
   "devDependencies": {
