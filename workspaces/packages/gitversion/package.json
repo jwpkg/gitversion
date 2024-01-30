@@ -3,6 +3,18 @@
   "packageManager": "yarn@4.0.2",
   "bin": "bin/index-typescript.js",
   "type": "commonjs",
+  "keywords": [
+    "git",
+    "npm",
+    "yarn",
+    "monorepo",
+    "ci-cd",
+    "versioning",
+    "release",
+    "conventional-commits",
+    "yarn-workspaces",
+    "yarn-berry"
+  ],
   "publishConfig": {
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",

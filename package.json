@@ -8,7 +8,7 @@
     "directory": "."
   },
   "author": "Joost van der Waal <joost.vanderwaal@aegon.nl>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "workspaces": [
     "workspaces/*/*"
   ],
