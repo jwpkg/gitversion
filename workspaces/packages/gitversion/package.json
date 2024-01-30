@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
-    "copy-readme": "cp ../../../README.md .",
+    "copy-readme": "cp ../../../README.md . && cp -rf ../../../assets .",
     "copy-licence": "cp ../../../LICENSE .",
     "prepack": "yarn copy-readme && yarn copy-licence && yarn build",
     "postpack": "rm -rf lib"
@@ -60,5 +60,5 @@
     "semver": "^7.5.4",
     "typanion": "^3.14.0"
   },
-  "version": "0.0.0"
+  "version": "0.0.9"
 }

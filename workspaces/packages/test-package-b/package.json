@@ -1,7 +1,7 @@
 {
   "name": "@cp-utils-test/test-package-b",
   "packageManager": "yarn@4.0.2",
-  "version": "0.0.0",
+  "version": "0.0.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/cp-utils/gitversion",
