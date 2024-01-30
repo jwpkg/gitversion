@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
 import { BumpManifestGitStatus } from './bump-manifest';
+import { ConventionalCommit } from './conventional-commmit-utils';
 import { Project } from './workspace-utils';
 
 const MANIFEST_NAME = 'pack-manifest.json';
@@ -15,6 +16,7 @@ export interface PackedPackage {
   packageName: string;
   version: string;
   changeLog: string;
+  commits: ConventionalCommit[];
 }
 
 export interface PackManifestGitStatus extends BumpManifestGitStatus {

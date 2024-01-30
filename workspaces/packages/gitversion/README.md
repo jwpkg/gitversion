@@ -1,56 +1,114 @@
-# Gitversion 
+# Gitversion
 
-## introduction
+Gitversion is a complete customizable git-based release management system. Primarily focused on package releases.
 
-Gitversion is a complete git-based release management tool. This was created because I always find myself struggling to work with the existing tools.
+## Key concepts
 
-Gitversion has the following key elements:
-- Default monorepo support
-  - 1 version for every package
-  - individual versions per package
-- Split flow for bump, pack and publish
-- Conventional commits
-- Build for CI/CD while still allowing testing manual
-- (pre) release channels based on git branch
-- Feature releases
-- No versions needed in package.json (preventing merge conflicts)
-- Promotes pull requests to follow conventional commits
+- [Branch based release strategy](#branch-based-release-strategy)
+- [Tag based versioning (no versions in files)](#tag-based-versioning)
+- [Conventional commit based bumps](#conventional-commit-based-bumps)
+- [Native monorepo support](#native-monorepo-support)
+- [Split stage publish](#split-stage-publish)
+- Plugin based customization
 
-## Installation
+## How does it work
 
-> yarn add -D @cp-utils/gitversion
+### Branch based release strategy
 
-## Commands
+The core concept of gitversion evolves around branch detection and branch types.
 
-### Bump
+Gitversion defines the following types:
+- main/master branch (default branch name **'main'**)
+- release branches (default matches **'release/*'**)
+- feature branches (default matches **'feature/*'**)
+
+The names and detections can be customized to your own need.
+
+Depending on the detected branch types the system will make different choices:
+
+| Branch           | Branch type | Version namings | (NPM) Release tag | Changelog | Notes                                                                |
+| :--------------- | :---------- | :-------------: | :---------------: | -- | :------------------------------------------------------------------- |
+| main             | main        | 1.0.0           | latest            | yes |Official releases                                                    |
+| release/next     | release     | 1.0.0&#8209;next.0    | next              | yes | (Pre) releases                                                       |
+| feature/gh&#8209;1234  | feature     | 1.0.0&#8209;gh&#8209;1234.0 | gh&#8209;1234 (*) | no | Feature release. I.e. to let the customer test the requested feature |
+
+> You can chose if and how feature releases are released. This can differ from release branches. 
+
+### Tag based versioning
+
+Like most release systems gitversion will add a tag for each release. This will follow the tag naming with a prefix (default 'v'). I.e.
+
+- v1.0.0
+- v1.2.3-next.0
+
+The difference of gitversion is that the tags are the only source of truth. It does not care about versions inside files and will keep them even on the default "0.0.0".
+
+There are two main advantages of this strategy:
+
+- One source of truth. Easy to see in git history what the current state is
+- No more merge conflicts due to mismatches of versions. Otherwise this will happen constantly with feature/release strategies
+
+Gitversion has 2 commands to work with this git-only version strategy:
+
+#### Restore 
+```bash
+yarn gitversion restore
+```
+
+The output will be something like:
+
+![gitversion restore](./assets/restore.png)
+
+As you see with this you wil get all versions back in package.json files.
+
+#### Reset 
+```bash
+yarn gitversion reset
+```
+
+The output will be something like:
+
+![gitversion reset](./assets/reset.png)
+
+As you see with this you wil reset all versions back to '0.0.0'.
+
+### Conventional commit based bumps
+
+Gitversion works with the concept of a "bump". This is one of the key commands:
+
 ```bash
 yarn gitversion bump
 ```
 
-This will: 
-- read the current version(s) from the git repo (using tags)
-- bump the version(s) based on found conventional commit messages
-- store the version in the package.json files of the packages
+Bump will do the following steps:
 
-### Pack
-```bash
-yarn gitversion pack
-```
+- [Restore](#restore) the current status from git
+- Read the git history and search for [Conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) style messages
+- Define a bump type based on the outcome
+- Update the workspaces with the new version
+- Udate the workspaces with the workspace specific changelogs
+- Create a bump manifest in the **gitversion.out** folder containing versions and changelogs
 
-This will:
-- Run the pack command of the currently detected package manager per workspace.
-- store the generated .tgz files in the ***gitversion.out*** folder
+### Native monorepo support
 
-### Publish
-```bash
-yarn gitversion publish
-```
+Gitversion is build for monorepos with multiple workspaces. It will detect all (public) workspaces and use them during bump.
 
-This will:
-- read the contents of the ***gitversion.out** folder
-- publish the packages to the registry
-- update the changelogs and commit them
-- tag the current version(s)
-- push to the origin
+There are 2 main operation modes:
+- [global versioning](#Global-versioning)
+- [independent versioning](#Independent-versioning)
 
-> Due to the ***gitversion.out*** folder pack and publish can be executed in different jobs. This enables running parallel jobs together with pack/build before publishing (i.e. end-to-end tests jobs and code quality jobs)
+#### Global versioning
+
+This is the default mode. This will keep all versions of all workspaces the same. This is useful for monorepos with series of packages (i.e. ***'@aws-sdk/*'***)
+
+#### Independent versioning
+
+This will use unique versions per workspace in the mono repo. Based on the path of the committed files it will decide if the specific workspace needs a bump and which bump type.
+
+### Split stage publish
+
+Gitversion is buld for usage within CI/CD pipelines. When building packages gitversion can be used in a pipeline like this:
+
+![Pipeline](./assets/pipeline.png)
+
+This will allow you to run your time consuming steps in parallel with your build step. Only when all checks pass you have a (quick) publish stage.
