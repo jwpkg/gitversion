@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.10](https://github.com/cp-utils/gitversion/compare/v0.0.9...v0.0.10) (Tue Jan 30 2024)
+
+### fix
+
+* **release** Always publish license ([52529e4](https://github.com/cp-utils/gitversion/commit/52529e4f36c75eb8bbd50028a2f04c946b2ec9d9))
+
 ## [0.0.9](https://github.com/cp-utils/gitversion/compare/v0.0.8...v0.0.9) (Tue Jan 30 2024)
 
 ### feat
