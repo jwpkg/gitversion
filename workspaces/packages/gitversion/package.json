@@ -15,6 +15,7 @@
     "yarn-workspaces",
     "yarn-berry"
   ],
+  "homepage": "https://www.cp-utils.com/projects/gitversion/",
   "publishConfig": {
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
