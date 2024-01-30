@@ -41,7 +41,7 @@ export class BumpCommand extends RestoreCommand {
 
     const bump = logger.beginSection('Bump step');
     logger.reportInfo('Fetching refs');
-    console.log(await project.git.exec('fetch', '--all', '--tags', '--unshallow'));
+    await project.git.exec('fetch', '--all', '--tags', '--unshallow');
 
     const bumpManifest = await BumpManifest.new(project);
 
