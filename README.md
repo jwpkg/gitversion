@@ -4,16 +4,16 @@ Gitversion is a complete customizable git-based release management system. Prima
 
 ## Key concepts
 
-- [Branch based release strategy](#release-strategy)
+- [Branch based release strategy](#branch-based-release-strategy)
 - [Tag based versioning (no versions in files)](#tag-based-versioning)
-- [Conventional commit based bumps](#bumps)
-- [Native monorepo support](#monorepo)
-- [Split stage pack to publish](#split-stage)
+- [Conventional commit based bumps](#conventional-commit-based-bumps)
+- [Native monorepo support](#native-monorepo-support)
+- [Split stage publish](#split-stage-publish)
 - Plugin based customization
 
 ## How does it work
 
-### Branch based release strategy {#release-strategy}
+### Branch based release strategy
 
 The core concept of gitversion evolves around branch detection and branch types.
 
@@ -32,9 +32,9 @@ Depending on the detected branch types the system will make different choices:
 | release/next     | release     | 1.0.0&#8209;next.0    | next              | yes | (Pre) releases                                                       |
 | feature/gh&#8209;1234  | feature     | 1.0.0&#8209;gh&#8209;1234.0 | gh&#8209;1234 (*) | no | Feature release. I.e. to let the customer test the requested feature |
 
-> * You can chose if and how feature releases are released. This can differ from release branches. 
+> You can chose if and how feature releases are released. This can differ from release branches. 
 
-### Tag based versioning {#tag-based-versioning}
+### Tag based versioning
 
 Like most release systems gitversion will add a tag for each release. This will follow the tag naming with a prefix (default 'v'). I.e.
 
@@ -72,7 +72,7 @@ The output will be something like:
 
 As you see with this you wil reset all versions back to '0.0.0'.
 
-### Conventional commit based bumps {#bumps}
+### Conventional commit based bumps
 
 Gitversion works with the concept of a "bump". This is one of the key commands:
 
@@ -89,7 +89,7 @@ Bump will do the following steps:
 - Udate the workspaces with the workspace specific changelogs
 - Create a bump manifest in the **gitversion.out** folder containing versions and changelogs
 
-### Native workspace/monorepo support {#monorepo}
+### Native monorepo support
 
 Gitversion is build for monorepos with multiple workspaces. It will detect all (public) workspaces and use them during bump.
 
@@ -105,7 +105,7 @@ This is the default mode. This will keep all versions of all workspaces the same
 
 This will use unique versions per workspace in the mono repo. Based on the path of the committed files it will decide if the specific workspace needs a bump and which bump type.
 
-### Split stage pack to publish {#split-stage}
+### Split stage publish
 
 Gitversion is buld for usage within CI/CD pipelines. When building packages gitversion can be used in a pipeline like this:
 
