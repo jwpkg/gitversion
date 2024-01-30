@@ -4,6 +4,22 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.9](https://github.com/cp-utils/gitversion/compare/v0.0.8...v0.0.9) (Tue Jan 30 2024)
+
+### feat
+
+* Plugin management ([28fae48](https://github.com/cp-utils/gitversion/commit/28fae48dc211a2197a7120e6081ab479647a9762))
+
+* Added parsed commits to manifest in order to improve release plugins ([f0c9717](https://github.com/cp-utils/gitversion/commit/f0c9717d4bc6c3eca25a79f997c7b2fa59a1c8a8))
+
+### licence
+
+* Updated licence ([c9f9e50](https://github.com/cp-utils/gitversion/commit/c9f9e50ed67657e6710bfc48fa170fd0775383bc))
+
+### docs
+
+* Added homepage ([642fe6b](https://github.com/cp-utils/gitversion/commit/642fe6b4e6532a63d499cc4895c2160c79d65a67))
+
 ## [0.0.8](https://github.com/cp-utils/gitversion/compare/v0.0.7...v0.0.8) (Fri Jan 26 2024)
 
 ### fix
