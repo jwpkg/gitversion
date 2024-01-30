@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.12](https://github.com/cp-utils/gitversion/compare/v0.0.11...v0.0.12) (Tue Jan 30 2024)
+
+### fix
+
+* readme assets ([a4ff2ad](https://github.com/cp-utils/gitversion/commit/a4ff2ad3725f5012c16b07f5f9fc4346fcafffb8))
+
 ## [0.0.11](https://github.com/cp-utils/gitversion/compare/v0.0.10...v0.0.11) (Tue Jan 30 2024)
 
 ### fix
