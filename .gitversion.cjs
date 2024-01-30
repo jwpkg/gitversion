@@ -1,5 +1,4 @@
-const { defineConfig, FeatureBumpBehavior, MSTeamsPlugin } = require("@cp-utils/gitversion");
-const { GitPlatformDefault } = require("@cp-utils/gitversion/src/plugins/embedded/default");
+const { defineConfig, FeatureBumpBehavior } = require("@cp-utils/gitversion");
 
 module.exports = defineConfig({
   independentVersioning: false,
