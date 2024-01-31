@@ -5,7 +5,7 @@ import { join } from 'path';
 
 import { IGitPlatformPlugin } from '../plugins/plugin';
 
-import { addToChangelog } from './changelog';
+import { ChangelogEntry, addToChangelog } from './changelog';
 import { Configuration } from './config';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
 import { formatPackageName, formatVersion } from './format-utils';
@@ -61,7 +61,7 @@ export class Workspace {
     this._project = project;
   }
 
-  async updateChangelog(version: string, entry: string) {
+  async updateChangelog(version: string, entry: ChangelogEntry) {
     const changeLogFile = join(this.cwd, 'CHANGELOG.md');
     let changeLog = '';
     if (existsSync(changeLogFile)) {

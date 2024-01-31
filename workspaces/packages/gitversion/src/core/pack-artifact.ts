@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
 import { BumpManifestGitStatus } from './bump-manifest';
+import { ChangelogEntry } from './changelog';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { Project } from './workspace-utils';
 
@@ -15,7 +16,7 @@ export interface PackedPackage {
   tag: string;
   packageName: string;
   version: string;
-  changeLog: string;
+  changeLog: ChangelogEntry;
   commits: ConventionalCommit[];
 }
 

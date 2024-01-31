@@ -2,6 +2,7 @@ import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
+import { ChangelogEntry } from './changelog';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { Project, Workspace } from './workspace-utils';
 
@@ -12,7 +13,7 @@ export interface Bump {
   tag: string;
   packageName: string;
   version: string;
-  changeLog: string;
+  changeLog: ChangelogEntry;
   private: boolean;
   commits: ConventionalCommit[];
 }
@@ -68,7 +69,7 @@ export class BumpManifest {
     });
   }
 
-  add(workspace: Workspace, version: string, changeLog: string, commits: ConventionalCommit[]) {
+  add(workspace: Workspace, version: string, changeLog: ChangelogEntry, commits: ConventionalCommit[]) {
     this.bumps.push({
       changeLog,
       packageName: workspace.packageName,

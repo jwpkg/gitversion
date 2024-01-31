@@ -56,7 +56,7 @@ export class PackCommand extends GitVersionCommand {
           await workspace.updateChangelog(bump.version, bump.changeLog);
         }
 
-        return this.execPackCommand(join(project.cwd, bump.packageRelativeCwd), packFolder, bump, packManifest);
+        await this.execPackCommand(join(project.cwd, bump.packageRelativeCwd), packFolder, bump, packManifest);
       });
       await Promise.all(promises);
     } else {

@@ -12,6 +12,12 @@ All notable changes to this project will be documented in this file
 
 `;
 
+export interface ChangelogEntry {
+  version: string;
+  headerLine: string;
+  body: string;
+}
+
 export async function detectChangelog(relativeCwd: string, project: Project, from: GitSemverTag, to: GitSemverTag) {
   const logs = await project.git.logs(from.hash, relativeCwd);
 
@@ -19,52 +25,62 @@ export async function detectChangelog(relativeCwd: string, project: Project, fro
   return generateChangeLogEntry(commits, from, to, project.config.pluginManager);
 }
 
-export function addToChangelog(entry: string, version: string, changelogContent?: string) {
+export function addToChangelog(entry: ChangelogEntry, version: string, changelogContent?: string) {
+  const entries: ChangelogEntry[] = [entry];
   if (changelogContent) {
-    const lines = changelogContent.split('\n');
-
-    const removeRanges: { start: number, end: number }[] = [];
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith(`## [${version}]`)) {
-        for (let j = i + 1; j < lines.length; j++) {
-          if (lines[j].startsWith('## ')) {
-            removeRanges.push({
-              start: i,
-              end: j,
-            });
-          }
-        }
-      }
-    }
-
-    for (const range of removeRanges) {
-      lines.splice(range.start, range.end - range.start);
-    }
-
-    for (const [index, line] of lines.entries()) {
-      if (line.startsWith('## ')) {
-        lines.splice(0, index);
-        break;
-      }
-    }
-    changelogContent = lines.join('\n');
+    const allEntries = parseChangelog(changelogContent);
+    entries.push(...allEntries.filter(e => e.version !== version));
   }
-  return [HEADER, entry, changelogContent].join('\n');
+  return [
+    HEADER,
+    ...entries.map(e => `${e.headerLine.trim()}\n\n${e.body.trim()}\n`),
+  ].join('\n');
 }
 
-export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, renderer: IChangelogRenderFunctions): string {
+export function parseChangelog(changelogContent: string): ChangelogEntry[] {
+  const result: ChangelogEntry[] = [];
+  let current: ChangelogEntry | undefined;
+
+  const lines = changelogContent.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].startsWith('## ')) {
+      if (current) result.push(current);
+      current = undefined;
+      const parsedHeader = /##\s\[([a-zA-Z0-9-.]+)\]/.exec(lines[i]);
+      if (parsedHeader) {
+        current = {
+          headerLine: lines[i],
+          version: parsedHeader[1],
+          body: '',
+        };
+      }
+    } else {
+      if (current) {
+        current.body = `${current.body}\n${lines[i]}`;
+      }
+    }
+  }
+
+  if (current) result.push(current);
+
+  return result;
+}
+
+export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, renderer: IChangelogRenderFunctions): ChangelogEntry {
   const compareUrl = renderer.renderCompareUrl(from, to);
-  return [
-    md.h2(
+
+  return {
+    headerLine: md.h2(
       compareUrl ? md.link(to.version, compareUrl) : `[${to.version}]`,
       `(${new Date().toDateString()})`,
     ),
-    ...Object.entries(groupByType(commits)).map(([type, commits]) => [
+    version: to.version,
+    body: [...Object.entries(groupByType(commits)).map(([type, commits]) => [
       md.h3(type),
       ...commits.map(commit => renderCommit(commit, renderer)),
     ].join('\n')),
-
-  ].join('\n');
+    ].join('\n'),
+  };
 }
 
 export function renderCommit(commit: ConventionalCommit, renderer: IChangelogRenderFunctions) {

@@ -1,3 +1,4 @@
+import { ChangelogEntry } from '../../core/changelog';
 import { VersionBranch } from '../../core/config';
 import { PackedPackage } from '../../core/pack-artifact';
 
@@ -11,8 +12,8 @@ export interface PayloadProps {
   packedPackage: PackedPackage;
 }
 
-function formatChangeLog(changeLog?: string) {
-  if (!changeLog) {
+function formatChangeLog(changeLogEntry?: ChangelogEntry) {
+  if (!changeLogEntry) {
     return [{
       type: 'TextBlock',
       separator: true,
@@ -20,6 +21,7 @@ function formatChangeLog(changeLog?: string) {
       wrap: true,
     }];
   }
+  const changeLog = `${changeLogEntry.headerLine}\n${changeLogEntry.body}`;
   const changelogText = changeLog
     .replace(/^## .*\n/gm, '')
     .replace(/^### (.*)\n/gm, '**$1**')
