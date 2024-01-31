@@ -1,4 +1,4 @@
-import { IGitPlatformPlugin } from '../plugins/plugin';
+import { IChangelogRenderFunctions } from '../plugins';
 
 import { ConventionalCommit, parseConventionalCommits } from './conventional-commmit-utils';
 import * as md from './markdown';
@@ -16,7 +16,7 @@ export async function detectChangelog(relativeCwd: string, project: Project, fro
   const logs = await project.git.logs(from.hash, relativeCwd);
 
   const commits = parseConventionalCommits(logs, project.gitPlatform);
-  return generateChangeLogEntry(commits, from, to, project.gitPlatform);
+  return generateChangeLogEntry(commits, from, to, project.config.pluginManager);
 }
 
 export function addToChangelog(entry: string, version: string, changelogContent?: string) {
@@ -52,8 +52,8 @@ export function addToChangelog(entry: string, version: string, changelogContent?
   return [HEADER, entry, changelogContent].join('\n');
 }
 
-export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, urls: IGitPlatformPlugin): string {
-  const compareUrl = urls.compareUrl(from, to);
+export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitSemverTag, to: GitSemverTag, renderer: IChangelogRenderFunctions): string {
+  const compareUrl = renderer.renderCompareUrl(from, to);
   return [
     md.h2(
       compareUrl ? md.link(to.version, compareUrl) : `[${to.version}]`,
@@ -61,14 +61,14 @@ export function generateChangeLogEntry(commits: ConventionalCommit[], from: GitS
     ),
     ...Object.entries(groupByType(commits)).map(([type, commits]) => [
       md.h3(type),
-      ...commits.map(commit => renderCommit(commit, urls)),
+      ...commits.map(commit => renderCommit(commit, renderer)),
     ].join('\n')),
 
   ].join('\n');
 }
 
-export function renderCommit(commit: ConventionalCommit, urls: IGitPlatformPlugin) {
-  const commitUrl = urls.commitUrl(commit.hash);
+export function renderCommit(commit: ConventionalCommit, renderer: IChangelogRenderFunctions) {
+  const commitUrl = renderer.renderCommitUrl(commit.hash);
   if (commit.scope) {
     return md.li(md.b(commit.scope), commit.message, `(${commitUrl ? md.link(commit.shortHash, commitUrl) : commit.shortHash})`);
   } else {

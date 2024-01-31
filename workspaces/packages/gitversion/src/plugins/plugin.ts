@@ -10,19 +10,39 @@ import { GithubPlugin } from './embedded/github';
 export interface IGitPlatformPlugin {
   currentBranch(): Promise<string | null>;
   stripMergeMessage(commit: GitCommit): GitCommit;
-  compareUrl(from: GitSemverTag, to: GitSemverTag): string | null;
-  commitUrl(commitHash: string): string | null;
 }
 
-export interface IPluginHook {
-  onBump?: (workspace: Workspace, version: string) => Promise<void> | void;
-  onPublish?: (project: Project, packedPackage: PackedPackage[], dryRun: boolean) => Promise<void> | void;
+export interface IPluginChangelogFunctions {
+  renderCompareUrl?(from: GitSemverTag, to: GitSemverTag): string;
+  renderCommitUrl?(commitHash: string): string;
+  renderIssueUrl?(issueId: string): string;
 }
 
-export interface IPlugin {
+// for Functions (here type Func)
+type Func = (...p: any) => any;
+
+// a mapping of a string key to an function can be created
+type FuncMap = Record<string, Func>;
+
+export type OptionalProps<Type extends FuncMap> = {
+  [Property in keyof Type]: (...a: Parameters<Type[Property]>) => ReturnType<Type[Property]> | undefined;
+};
+
+export type IChangelogRenderFunctions = OptionalProps<Required<IPluginChangelogFunctions>>;
+
+export type Prefix<Type, Prefix extends string> = {
+  [Property in keyof Type as `${Prefix}${string & Property}`]: Type[Property]
+};
+
+export interface IPluginHooks {
+  onBump?(workspace: Workspace, version: string): Promise<void> | void;
+  onPublish?(project: Project, packedPackage: PackedPackage[], dryRun: boolean): Promise<void> | void;
+}
+
+export interface IPlugin extends IPluginChangelogFunctions, IPluginHooks {
   name: string;
   gitPlatform?: IGitPlatformPlugin;
-  hooks?: IPluginHook;
+
 }
 
 export interface IIntializablePlugin {
@@ -31,14 +51,14 @@ export interface IIntializablePlugin {
    * @param project The project instance
    * @returns A boolean indicating of the plugin is valid for the current project
    */
-  initialize(project: Project): Promise<boolean>;
+  initialize(project: Project): Promise<boolean> | boolean;
 }
 
 export function isInitializable(p: any): p is IIntializablePlugin {
   return 'initialize' in p && typeof p.initialize === 'function';
 }
 
-export class PluginManager {
+export class PluginManager implements IChangelogRenderFunctions {
   plugins: IPlugin[] = [];
   availablePlugins: IPlugin[] = [];
 
@@ -51,29 +71,40 @@ export class PluginManager {
     this.register(new GithubPlugin());
     this.register(new AzureDevopsPlugin());
   }
+  renderCompareUrl(from: GitSemverTag, to: GitSemverTag) {
+    return this.render('renderCompareUrl', from, to);
+  }
+
+  renderCommitUrl(commitHash: string) {
+    return this.render('renderCommitUrl', commitHash);
+  }
+
+  renderIssueUrl(issueId: string) {
+    return this.render('renderIssueUrl', issueId);
+  }
 
   async initialize(project: Project) {
     const plugins = this.plugins.map(async plugin => {
       if (isInitializable(plugin)) {
-        if (await plugin.initialize(project)) {
+        const initialize = await plugin.initialize(project);
+        if (initialize) {
           return plugin;
-        } else {
-          return null;
         }
+        return null;
       } else {
         return plugin;
       }
     });
 
     const result = await Promise.all(plugins);
-    this.availablePlugins = result.filter((t): t is Awaited<IPlugin> => !!t);
+    this.availablePlugins = result.filter((t): t is Awaited<IPlugin> => !!t).reverse();
 
     const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
     if (gitPlatform) {
       this.gitPlatform = gitPlatform.gitPlatform!;
     } else {
       const defaultGit = new GitPlatformDefault();
-      await defaultGit.initialize(project);
+      defaultGit.initialize(project);
       this.gitPlatform = defaultGit;
     }
   }
@@ -82,20 +113,33 @@ export class PluginManager {
     this.plugins.push(plugin);
   }
 
+  render<K extends keyof IPluginChangelogFunctions>(f: K, ...params: Parameters<Required<IPluginChangelogFunctions>[K]>): ReturnType<Required<IPluginChangelogFunctions>[K]> | undefined {
+    for (const plugin of this.availablePlugins) {
+      const func = plugin[f] as Function;
+      if (func) {
+        return func.call(plugin, ...params);
+      }
+    }
+    return undefined;
+  }
+
+  async dispatchHook<K extends keyof IPluginHooks>(f: K, ...params: Parameters<Required<IPluginHooks>[K]>) {
+    for (const plugin of this.availablePlugins) {
+      const func = plugin[f] as Function;
+      if (func) {
+        await func.call(plugin, ...params);
+      }
+    }
+  }
+
   async dispatchOnBump(workspace: Workspace, version: string) {
     for (const plugin of this.availablePlugins) {
-      const result = plugin.hooks?.onBump?.(workspace, version);
-      if (result instanceof Promise) {
-        await result;
-      }
+      await plugin.onBump?.(workspace, version);
     }
   }
   async dispatchOnPublish(project: Project, packedPackage: PackedPackage[], dryRun: boolean) {
     for (const plugin of this.availablePlugins) {
-      const result = plugin.hooks?.onPublish?.(project, packedPackage, dryRun);
-      if (result instanceof Promise) {
-        await result;
-      }
+      await plugin.onPublish?.(project, packedPackage, dryRun);
     }
   }
 }

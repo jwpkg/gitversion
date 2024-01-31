@@ -1,8 +1,8 @@
-import { GithubPlatform } from './github';
+import { GithubPlugin } from './github';
 
 describe('Github platform', () => {
   test('Url parsing', () => {
-    const github = new GithubPlatform();
+    const github = new GithubPlugin();
     expect(github.parseUrl('https://github.com/cp-utils/gitversion.git')).toStrictEqual({
       projectName: 'cp-utils',
       repoName: 'gitversion',

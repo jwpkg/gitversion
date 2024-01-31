@@ -1,5 +1,4 @@
 import { GitCommit } from '../../core/git';
-import { GitSemverTag } from '../../core/version-utils';
 import { Project } from '../../core/workspace-utils';
 import { IGitPlatformPlugin, IIntializablePlugin } from '../plugin';
 
@@ -8,7 +7,7 @@ export class GitPlatformDefault implements IGitPlatformPlugin, IIntializablePlug
 
   private project?: Project;
 
-  async initialize(project: Project): Promise<boolean> {
+  initialize(project: Project) {
     this.project = project;
     return true;
   }
@@ -19,13 +18,5 @@ export class GitPlatformDefault implements IGitPlatformPlugin, IIntializablePlug
 
   stripMergeMessage(commit: GitCommit): GitCommit {
     return commit;
-  }
-
-  compareUrl(_from: GitSemverTag, _to: GitSemverTag) {
-    return null;
-  }
-
-  commitUrl(_commit: string) {
-    return null;
   }
 }

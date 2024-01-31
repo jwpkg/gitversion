@@ -41,7 +41,7 @@ export class BumpCommand extends RestoreCommand {
 
     const bump = logger.beginSection('Bump step');
     logger.reportInfo('Fetching refs');
-    await project.git.exec('fetch', '--all', '--tags', '--unshallow');
+    // await project.git.exec('fetch', '--all', '--tags', '--unshallow');
 
     const bumpManifest = await BumpManifest.new(project);
 
@@ -101,7 +101,7 @@ export class BumpCommand extends RestoreCommand {
     const commits = parseConventionalCommits(logs, platform);
     logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);
 
-    const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, platform);
+    const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, workspace.config.pluginManager);
 
     bumpManifest.add(workspace, toVersion.version, changelogEntry, commits);
 

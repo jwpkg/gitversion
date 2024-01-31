@@ -1,9 +1,15 @@
 import { GitCommit } from '../../core/git';
 import { GitSemverTag } from '../../core/version-utils';
 import { Project } from '../../core/workspace-utils';
-import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../plugin';
+import { IIntializablePlugin, IPlugin } from '../plugin';
 
-export class GithubPlatform implements IGitPlatformPlugin, IIntializablePlugin {
+export class GithubPlugin implements IPlugin, IIntializablePlugin {
+  name = 'Github platform plugin';
+
+  get gitPlatform() {
+    return this;
+  }
+
   private project?: Project;
   /**
    * Git url has the format: https://github.com/cp-utils/gitversion.git or git@github.com:cp-utils/gitversion.git
@@ -68,21 +74,11 @@ export class GithubPlatform implements IGitPlatformPlugin, IIntializablePlugin {
     }
   }
 
-  compareUrl(from: GitSemverTag, to: GitSemverTag) {
-    return `https://github.com/${this.projectName}/${this.repoName}/compare/v${from.version}...v${to.version}`;
+  renderCompareUrl(from: GitSemverTag, to: GitSemverTag) {
+    return `https://github.com/${this.gitPlatform.projectName}/${this.gitPlatform.repoName}/compare/v${from.version}...v${to.version}`;
   }
 
-  commitUrl(commit: string) {
-    return `https://github.com/${this.projectName}/${this.repoName}/commit/${commit}`;
-  }
-}
-
-export class GithubPlugin implements IPlugin, IIntializablePlugin {
-  name = 'Github platform plugin';
-
-  gitPlatform = new GithubPlatform();
-
-  async initialize(project: Project): Promise<boolean> {
-    return this.gitPlatform.initialize(project);
+  renderCommitUrl(commit: string) {
+    return `https://github.com/${this.gitPlatform.projectName}/${this.gitPlatform.repoName}/commit/${commit}`;
   }
 }
