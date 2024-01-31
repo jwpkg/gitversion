@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.13](https://github.com/cp-utils/gitversion/compare/v0.0.12...v0.0.13) (Wed Jan 31 2024)
+
+### feat
+
+* Teams plugin detects independent versioning now ([32a2daa](https://github.com/cp-utils/gitversion/commit/32a2daa7bdc229e3a99a1fc6f3b5e7f7a4a6603a))
+
 ## [0.0.12](https://github.com/cp-utils/gitversion/compare/v0.0.11...v0.0.12) (Tue Jan 30 2024)
 
 ### fix
