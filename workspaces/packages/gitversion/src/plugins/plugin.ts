@@ -1,11 +1,12 @@
+import { IConfiguration } from '../core/config';
 import { GitCommit } from '../core/git';
 import { PackedPackage } from '../core/pack-artifact';
 import { GitSemverTag } from '../core/version-utils';
 import { IProject, IWorkspace } from '../core/workspace-utils';
 
-import { AzureDevopsPlugin } from './embedded/azure-devops';
-import { GitPlatformDefault } from './embedded/default';
-import { GithubPlugin } from './embedded/github';
+import { AzureDevopsPlugin } from './embedded/git/azure-devops';
+import { GitPlatformDefault } from './embedded/git/default';
+import { GithubPlugin } from './embedded/git/github';
 
 export interface IGitPlatformPlugin {
   currentBranch(): Promise<string | null>;
@@ -52,11 +53,11 @@ export interface IPlugin extends IPluginChangelogFunctions, IPluginHooks {
 
 export interface IIntializablePlugin {
   /**
-   * Initialize the plugin for the current project
-   * @param project The project instance
-   * @returns A boolean indicating of the plugin is valid for the current project
+   * Initialize the plugin for the current configuration
+   * @param configuration The configuration ref
+   * @returns A boolean indicating of the plugin is valid for the current configuration
    */
-  initialize(project: IProject): Promise<boolean> | boolean;
+  initialize(configuration: IConfiguration): Promise<boolean> | boolean;
 }
 
 export function isInitializable(p: any): p is IIntializablePlugin {
@@ -89,10 +90,10 @@ export class PluginManager implements IChangelogRenderFunctions {
     return this.render('renderIssueUrl', issueId);
   }
 
-  async initialize(project: IProject) {
+  async initialize(configuration: IConfiguration) {
     const plugins = this.plugins.map(async plugin => {
       if (isInitializable(plugin)) {
-        const initialize = await plugin.initialize(project);
+        const initialize = await plugin.initialize(configuration);
         if (initialize) {
           return plugin;
         }
@@ -110,7 +111,7 @@ export class PluginManager implements IChangelogRenderFunctions {
       this.gitPlatform = gitPlatform.gitPlatform!;
     } else {
       const defaultGit = new GitPlatformDefault();
-      defaultGit.initialize(project);
+      defaultGit.initialize(configuration);
       this.gitPlatform = defaultGit;
     }
   }

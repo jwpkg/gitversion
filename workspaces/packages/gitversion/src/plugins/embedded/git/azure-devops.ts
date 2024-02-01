@@ -1,12 +1,16 @@
-import { GitCommit } from '../../core/git';
-import { GitSemverTag } from '../../core/version-utils';
-import { IProject } from '../../core/workspace-utils';
-import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../plugin';
+import { IBaseConfiguration } from '../../../core/config';
+import { GitCommit } from '../../../core/git';
+import { GitSemverTag } from '../../../core/version-utils';
+import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../../plugin';
 
-export class AzureDevopsPlatform implements IGitPlatformPlugin {
+export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin, IGitPlatformPlugin {
   name = 'Azure devops platform plugin';
 
-  private project?: IProject;
+  get gitPlatform() {
+    return this;
+  }
+
+  private configuration?: IBaseConfiguration;
 
   private organizationName: string = '';
   private projectName: string = '';
@@ -35,10 +39,10 @@ export class AzureDevopsPlatform implements IGitPlatformPlugin {
     return null;
   }
 
-  async initialize(project: IProject): Promise<boolean> {
-    this.project = project;
+  async initialize(configuration: IBaseConfiguration): Promise<boolean> {
+    this.configuration = configuration;
 
-    const gitUrl = await this.project.git.remoteUrl();
+    const gitUrl = await this.configuration.git.remoteUrl();
 
     if (gitUrl) {
       const result = this.parseUrl(gitUrl);
@@ -49,7 +53,7 @@ export class AzureDevopsPlatform implements IGitPlatformPlugin {
         this.repoName = result.repoName;
       }
 
-      return gitUrl.includes('dev.azure.com');
+      return true;
     }
     return false;
   }
@@ -63,7 +67,7 @@ export class AzureDevopsPlatform implements IGitPlatformPlugin {
       }
     }
 
-    return (await this.project?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return (await this.configuration?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {
@@ -83,15 +87,5 @@ export class AzureDevopsPlatform implements IGitPlatformPlugin {
 
   commitUrl(commit: string) {
     return `https://dev.azure.com/${this.organizationName}/${this.projectName}/_git/${this.repoName}/commit/${commit}`;
-  }
-}
-
-export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin {
-  name = 'Github platform plugin';
-
-  gitPlatform = new AzureDevopsPlatform();
-
-  async initialize(project: IProject): Promise<boolean> {
-    return this.gitPlatform.initialize(project);
   }
 }

@@ -1,7 +1,7 @@
-import { GitCommit } from '../../core/git';
-import { GitSemverTag } from '../../core/version-utils';
-import { IProject } from '../../core/workspace-utils';
-import { IIntializablePlugin, IPlugin } from '../plugin';
+import { IBaseConfiguration } from '../../../core/config';
+import { GitCommit } from '../../../core/git';
+import { GitSemverTag } from '../../../core/version-utils';
+import { IIntializablePlugin, IPlugin } from '../../plugin';
 
 export class GithubPlugin implements IPlugin, IIntializablePlugin {
   name = 'Github platform plugin';
@@ -10,7 +10,7 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
     return this;
   }
 
-  private project?: IProject;
+  private configuration?: IBaseConfiguration;
   /**
    * Git url has the format: https://github.com/cp-utils/gitversion.git or git@github.com:cp-utils/gitversion.git
    */
@@ -30,10 +30,10 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
     return null;
   }
 
-  async initialize(project: IProject): Promise<boolean> {
-    this.project = project;
+  async initialize(configuration: IBaseConfiguration): Promise<boolean> {
+    this.configuration = configuration;
 
-    const gitUrl = await this.project.git.remoteUrl();
+    const gitUrl = await this.configuration.git.remoteUrl();
 
     if (gitUrl) {
       this.gitUrl = gitUrl;
@@ -58,7 +58,7 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
       }
     }
 
-    return (await this.project?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return (await this.configuration?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {

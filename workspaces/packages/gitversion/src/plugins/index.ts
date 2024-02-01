@@ -1,3 +1,3 @@
 export * from './plugin';
-export * from './embedded';
+export * from './embedded/git';
 export * from './external';

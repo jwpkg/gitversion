@@ -169,7 +169,7 @@ export class Project extends Workspace implements IProject {
     const manifest = await loadManifest(rootCwd);
     const project = new Project(rootCwd, manifest, config);
 
-    await config.pluginManager.initialize(project);
+    await config.pluginManager.initialize(config);
 
     project._gitPlatform = config.pluginManager.gitPlatform;
 

@@ -49,10 +49,31 @@ export interface VersionBranch {
   readonly type: BranchType;
 }
 
-export class Configuration {
+export interface IBaseConfiguration {
+  readonly cwd: string;
+  readonly git: Git;
+  readonly options: RequiredConfigurationOption;
+}
+
+export interface IConfiguration extends IBaseConfiguration {
+  readonly pluginManager: PluginManager;
+  readonly branch: VersionBranch;
+}
+
+export class Configuration implements IConfiguration {
   pluginManager = new PluginManager();
 
-  private constructor(public options: RequiredConfigurationOption, public branch: VersionBranch) { }
+  cwd: string;
+  git: Git;
+  options: RequiredConfigurationOption;
+  branch: VersionBranch;
+
+  private constructor(cwd: string, options: RequiredConfigurationOption, branch: VersionBranch) {
+    this.cwd = cwd;
+    this.options = options;
+    this.branch = branch;
+    this.git = new Git(cwd);
+  }
 
   static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
     if (configOptions.mainBranch === branchName) {
@@ -131,7 +152,7 @@ export class Configuration {
     const git = new Git(cwd);
     const branch = this.detectVersionBranch(options, await git.currentBranch());
 
-    const config = new Configuration(options, branch);
+    const config = new Configuration(cwd, options, branch);
 
     if (options.plugins) {
       for (const plugin of options.plugins) {
