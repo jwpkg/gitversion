@@ -8,7 +8,7 @@ import { formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
-import { Project } from '../core/workspace-utils';
+import { IProject, Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -139,7 +139,7 @@ export class PublishCommand extends GitVersionCommand {
     logger.endSection(section);
   }
 
-  async updateChangelogs(packages: PackedPackage[], project: Project) {
+  async updateChangelogs(packages: PackedPackage[], project: IProject) {
     const section = logger.beginSection('Updating changelogs');
 
     const files: string[] = [];

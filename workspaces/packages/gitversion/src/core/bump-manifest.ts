@@ -4,7 +4,7 @@ import { dirname, join } from 'path';
 
 import { ChangelogEntry } from './changelog';
 import { ConventionalCommit } from './conventional-commmit-utils';
-import { Project, Workspace } from './workspace-utils';
+import { IProject, IWorkspace } from './workspace-utils';
 
 const MANIFEST_NAME = 'bump-manifest.json';
 
@@ -32,12 +32,12 @@ export class BumpManifest {
   gitStatus: BumpManifestGitStatus;
   bumps: Bump[];
 
-  private constructor(private project: Project, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
+  private constructor(private project: IProject, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
     this.bumps = bumps ?? [];
     this.gitStatus = gitStatus;
   }
 
-  static async load(project: Project): Promise<BumpManifest | null> {
+  static async load(project: IProject): Promise<BumpManifest | null> {
     const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
 
     if (existsSync(bumpManifestFile)) {
@@ -52,7 +52,7 @@ export class BumpManifest {
     return null;
   }
 
-  static async new(project: Project) {
+  static async new(project: IProject) {
     await this.clear(project);
     const gitStatus = await project.git.gitStatusHash();
     const result = new BumpManifest(project, {
@@ -63,13 +63,13 @@ export class BumpManifest {
     return result;
   }
 
-  static async clear(project: Project) {
+  static async clear(project: IProject) {
     rm(join(project.stagingFolder, MANIFEST_NAME), {
       force: true,
     });
   }
 
-  add(workspace: Workspace, version: string, changeLog: ChangelogEntry, commits: ConventionalCommit[]) {
+  add(workspace: IWorkspace, version: string, changeLog: ChangelogEntry, commits: ConventionalCommit[]) {
     this.bumps.push({
       changeLog,
       packageName: workspace.packageName,

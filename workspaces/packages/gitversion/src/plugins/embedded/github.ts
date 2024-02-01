@@ -1,6 +1,6 @@
 import { GitCommit } from '../../core/git';
 import { GitSemverTag } from '../../core/version-utils';
-import { Project } from '../../core/workspace-utils';
+import { IProject } from '../../core/workspace-utils';
 import { IIntializablePlugin, IPlugin } from '../plugin';
 
 export class GithubPlugin implements IPlugin, IIntializablePlugin {
@@ -10,7 +10,7 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
     return this;
   }
 
-  private project?: Project;
+  private project?: IProject;
   /**
    * Git url has the format: https://github.com/cp-utils/gitversion.git or git@github.com:cp-utils/gitversion.git
    */
@@ -30,7 +30,7 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
     return null;
   }
 
-  async initialize(project: Project): Promise<boolean> {
+  async initialize(project: IProject): Promise<boolean> {
     this.project = project;
 
     const gitUrl = await this.project.git.remoteUrl();

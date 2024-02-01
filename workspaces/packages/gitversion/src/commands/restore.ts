@@ -3,7 +3,7 @@ import { formatVersion, formatVersionBranch } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { determineCurrentVersion } from '../core/version-utils';
-import { Project, Workspace } from '../core/workspace-utils';
+import { IWorkspace, Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -41,7 +41,7 @@ export class RestoreCommand extends GitVersionCommand {
     return 0;
   }
 
-  async currentVersionFromGit(workspace: Workspace) {
+  async currentVersionFromGit(workspace: IWorkspace) {
     const tags = await workspace.project.git.versionTags(workspace.tagPrefix);
     return determineCurrentVersion(tags, workspace.config.branch, workspace.tagPrefix);
   }

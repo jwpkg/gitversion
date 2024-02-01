@@ -5,7 +5,7 @@ import { dirname, join } from 'path';
 import { BumpManifestGitStatus } from './bump-manifest';
 import { ChangelogEntry } from './changelog';
 import { ConventionalCommit } from './conventional-commmit-utils';
-import { Project } from './workspace-utils';
+import { IProject } from './workspace-utils';
 
 const MANIFEST_NAME = 'pack-manifest.json';
 const PACK_FOLDER = 'pack';
@@ -42,7 +42,7 @@ export class PackArtifact {
     return join(this.packFolder, MANIFEST_NAME);
   }
 
-  private constructor(private project: Project, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
+  private constructor(private project: IProject, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
     this.gitStatus = gitStatus;
     this.packages = packages ?? [];
   }
@@ -64,7 +64,7 @@ export class PackArtifact {
     ].includes(await this.project.git.gitStatusHash());
   }
 
-  static async load(project: Project): Promise<PackArtifact | null> {
+  static async load(project: IProject): Promise<PackArtifact | null> {
     const packFolder = join(project.stagingFolder, PACK_FOLDER);
     const manifestFile = join(packFolder, MANIFEST_NAME);
 
@@ -76,7 +76,7 @@ export class PackArtifact {
     return null;
   }
 
-  static async new(project: Project, bumpGitStatus: BumpManifestGitStatus) {
+  static async new(project: IProject, bumpGitStatus: BumpManifestGitStatus) {
     const statusHash = await project.git.gitStatusHash();
     const gitStatus: PackManifestGitStatus = {
       ...bumpGitStatus,
@@ -88,7 +88,7 @@ export class PackArtifact {
     return new PackArtifact(project, gitStatus);
   }
 
-  static async clear(project: Project) {
+  static async clear(project: IProject) {
     await rm(join(project.stagingFolder, 'pack'), {
       force: true,
       recursive: true,

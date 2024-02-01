@@ -2,7 +2,7 @@ import { RequestOptions, request } from 'https';
 
 import { VersionBranch } from '../../core/config';
 import { PackedPackage } from '../../core/pack-artifact';
-import { Project } from '../../core/workspace-utils';
+import { IProject } from '../../core/workspace-utils';
 import { IPlugin } from '../plugin';
 
 import { payload } from './ms-teams-payload';
@@ -10,7 +10,7 @@ import { payload } from './ms-teams-payload';
 export class MSTeamsPlugin implements IPlugin {
   name = 'MS Teams release notifications';
 
-  async onPublish(project: Project, packedPackages: PackedPackage[]) {
+  async onPublish(project: IProject, packedPackages: PackedPackage[]) {
     if (project.config.options.independentVersioning) {
       for (const packedPackage of packedPackages) {
         if (packedPackage.packFile) {

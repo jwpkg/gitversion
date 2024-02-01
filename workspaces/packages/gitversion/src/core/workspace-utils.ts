@@ -13,7 +13,41 @@ import { Git } from './git';
 import { LogReporter } from './log-reporter';
 import { NodeManifest, loadManifest, persistManifest } from './node-manifest';
 
-export class Workspace {
+export interface IWorkspace {
+  readonly manifest: NodeManifest;
+
+  readonly relativeCwd: string;
+
+  readonly cwd: string;
+
+  readonly version: string;
+
+  readonly private: boolean;
+
+  readonly config: Configuration;
+
+  readonly packageName: string;
+
+  readonly project: IProject;
+
+  readonly tagPrefix: string;
+
+  updateChangelog(version: string, entry: ChangelogEntry): Promise<string>;
+  updateVersion(version: string, logger: LogReporter): Promise<void>;
+}
+
+export interface IProject extends IWorkspace {
+  readonly gitPlatform: IGitPlatformPlugin;
+
+  readonly childWorkspaces: IWorkspace[];
+  readonly git: Git;
+
+  readonly workspaces: IWorkspace[];
+
+  readonly stagingFolder: string;
+}
+
+export class Workspace implements IWorkspace {
   protected _project: Project;
 
   manifest: NodeManifest;
@@ -69,7 +103,7 @@ export class Workspace {
     }
     changeLog = addToChangelog(entry, version, changeLog);
     await writeFile(changeLogFile, changeLog, 'utf-8');
-    return changeLogFile;
+    return changeLog;
   }
 
   async updateVersion(version: string, logger: LogReporter) {
@@ -83,7 +117,7 @@ export class Workspace {
   }
 }
 
-export class Project extends Workspace {
+export class Project extends Workspace implements IProject {
   private _cwd: string;
   private _config: Configuration;
   private _gitPlatform?: IGitPlatformPlugin;

@@ -1,12 +1,12 @@
 import { GitCommit } from '../../core/git';
 import { GitSemverTag } from '../../core/version-utils';
-import { Project } from '../../core/workspace-utils';
+import { IProject } from '../../core/workspace-utils';
 import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../plugin';
 
 export class AzureDevopsPlatform implements IGitPlatformPlugin {
   name = 'Azure devops platform plugin';
 
-  private project?: Project;
+  private project?: IProject;
 
   private organizationName: string = '';
   private projectName: string = '';
@@ -35,7 +35,7 @@ export class AzureDevopsPlatform implements IGitPlatformPlugin {
     return null;
   }
 
-  async initialize(project: Project): Promise<boolean> {
+  async initialize(project: IProject): Promise<boolean> {
     this.project = project;
 
     const gitUrl = await this.project.git.remoteUrl();
@@ -91,7 +91,7 @@ export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin {
 
   gitPlatform = new AzureDevopsPlatform();
 
-  async initialize(project: Project): Promise<boolean> {
+  async initialize(project: IProject): Promise<boolean> {
     return this.gitPlatform.initialize(project);
   }
 }

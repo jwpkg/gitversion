@@ -1,13 +1,13 @@
 import { GitCommit } from '../../core/git';
-import { Project } from '../../core/workspace-utils';
+import { IProject } from '../../core/workspace-utils';
 import { IGitPlatformPlugin, IIntializablePlugin } from '../plugin';
 
 export class GitPlatformDefault implements IGitPlatformPlugin, IIntializablePlugin {
   name = 'Standard git platform plugin';
 
-  private project?: Project;
+  private project?: IProject;
 
-  initialize(project: Project) {
+  initialize(project: IProject) {
     this.project = project;
     return true;
   }

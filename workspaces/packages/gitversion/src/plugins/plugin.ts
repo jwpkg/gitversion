@@ -1,7 +1,7 @@
 import { GitCommit } from '../core/git';
 import { PackedPackage } from '../core/pack-artifact';
 import { GitSemverTag } from '../core/version-utils';
-import { Project, Workspace } from '../core/workspace-utils';
+import { IProject, IWorkspace } from '../core/workspace-utils';
 
 import { AzureDevopsPlugin } from './embedded/azure-devops';
 import { GitPlatformDefault } from './embedded/default';
@@ -11,6 +11,11 @@ export interface IGitPlatformPlugin {
   currentBranch(): Promise<string | null>;
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
+
+export interface IPackageManagerPlugin {
+  pack(workspace: IWorkspace): Promise<string>;
+}
+
 
 export interface IPluginChangelogFunctions {
   renderCompareUrl?(from: GitSemverTag, to: GitSemverTag): string;
@@ -35,8 +40,8 @@ export type Prefix<Type, Prefix extends string> = {
 };
 
 export interface IPluginHooks {
-  onBump?(workspace: Workspace, version: string): Promise<void> | void;
-  onPublish?(project: Project, packedPackage: PackedPackage[], dryRun: boolean): Promise<void> | void;
+  onBump?(workspace: IWorkspace, version: string): Promise<void> | void;
+  onPublish?(project: IProject, packedPackage: PackedPackage[], dryRun: boolean): Promise<void> | void;
 }
 
 export interface IPlugin extends IPluginChangelogFunctions, IPluginHooks {
@@ -51,7 +56,7 @@ export interface IIntializablePlugin {
    * @param project The project instance
    * @returns A boolean indicating of the plugin is valid for the current project
    */
-  initialize(project: Project): Promise<boolean> | boolean;
+  initialize(project: IProject): Promise<boolean> | boolean;
 }
 
 export function isInitializable(p: any): p is IIntializablePlugin {
@@ -71,6 +76,7 @@ export class PluginManager implements IChangelogRenderFunctions {
     this.register(new GithubPlugin());
     this.register(new AzureDevopsPlugin());
   }
+
   renderCompareUrl(from: GitSemverTag, to: GitSemverTag) {
     return this.render('renderCompareUrl', from, to);
   }
@@ -83,7 +89,7 @@ export class PluginManager implements IChangelogRenderFunctions {
     return this.render('renderIssueUrl', issueId);
   }
 
-  async initialize(project: Project) {
+  async initialize(project: IProject) {
     const plugins = this.plugins.map(async plugin => {
       if (isInitializable(plugin)) {
         const initialize = await plugin.initialize(project);
@@ -132,12 +138,12 @@ export class PluginManager implements IChangelogRenderFunctions {
     }
   }
 
-  async dispatchOnBump(workspace: Workspace, version: string) {
+  async dispatchOnBump(workspace: IWorkspace, version: string) {
     for (const plugin of this.availablePlugins) {
       await plugin.onBump?.(workspace, version);
     }
   }
-  async dispatchOnPublish(project: Project, packedPackage: PackedPackage[], dryRun: boolean) {
+  async dispatchOnPublish(project: IProject, packedPackage: PackedPackage[], dryRun: boolean) {
     for (const plugin of this.availablePlugins) {
       await plugin.onPublish?.(project, packedPackage, dryRun);
     }
