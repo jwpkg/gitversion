@@ -1,5 +1,7 @@
 # Gitversion
 
+![NPM Version](https://img.shields.io/npm/v/%40cp-utils%2Fgitversion)
+
 Gitversion is a complete customizable git-based release management system. Primarily focused on package releases.
 
 ## Key concepts
