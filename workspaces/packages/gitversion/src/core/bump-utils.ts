@@ -7,11 +7,11 @@ import { GitCommit } from './git';
 import { logger } from './log-reporter';
 
 export enum BumpType {
-  NONE = 0,
-  PATCH = 1,
-  MINOR = 2,
-  MAJOR = 3,
-  GRADUATE = 4,
+  NONE = 'NONE',
+  PATCH = 'PATCH',
+  MINOR = 'MINOR',
+  MAJOR = 'MAJOR',
+  GRADUATE = 'GRADUATE',
 }
 
 const bumpMap: Record<string, BumpType> = {
