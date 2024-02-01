@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.15](https://github.com/cp-utils/gitversion/compare/v0.0.14...v0.0.15) (Wed Jan 31 2024)
+
+### fix
+
+* Changelog generation and parsing ([0816061](https://github.com/cp-utils/gitversion/commit/0816061d3cb9ec27d4ff46d9b1d615ad6ad8ddaf))
+
 ## [0.0.14](https://github.com/cp-utils/gitversion/compare/v0.0.13...v0.0.14) (Wed Jan 31 2024)
 
 ### fix
@@ -98,4 +104,3 @@ All notable changes to this project will be documented in this file
 # Changelog
 
 All notable changes to this project will be documented in this file
-
