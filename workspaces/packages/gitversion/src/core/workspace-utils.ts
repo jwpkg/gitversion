@@ -103,7 +103,7 @@ export class Workspace implements IWorkspace {
     }
     changeLog = addToChangelog(entry, version, changeLog);
     await writeFile(changeLogFile, changeLog, 'utf-8');
-    return changeLog;
+    return changeLogFile;
   }
 
   async updateVersion(version: string, logger: LogReporter) {
