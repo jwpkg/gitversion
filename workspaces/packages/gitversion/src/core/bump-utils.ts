@@ -14,6 +14,14 @@ export enum BumpType {
   GRADUATE = 'GRADUATE',
 }
 
+const bumpIndex: Record<BumpType, number> = {
+  [BumpType.NONE]: 0,
+  [BumpType.PATCH]: 1,
+  [BumpType.MINOR]: 2,
+  [BumpType.MAJOR]: 3,
+  [BumpType.GRADUATE]: 4,
+};
+
 const bumpMap: Record<string, BumpType> = {
   fix: BumpType.PATCH,
   feat: BumpType.MINOR,
@@ -67,7 +75,7 @@ export function detectBumpType(commits: ConventionalCommit[]) {
     }
 
     const detected = bumpMap[commit.type];
-    if (detected && detected > current) {
+    if (detected && bumpIndex[detected] > bumpIndex[current]) {
       current = detected;
     }
   }
