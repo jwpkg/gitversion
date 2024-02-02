@@ -1,9 +1,9 @@
 import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IGitPlatformPlugin, IIntializablePlugin, IPlugin } from '../../plugin';
+import { IGitPlatform, IIntializablePlugin, IPlugin } from '../../plugin';
 
-export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin, IGitPlatformPlugin {
+export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin, IGitPlatform {
   name = 'Azure devops platform plugin';
 
   get gitPlatform() {

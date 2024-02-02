@@ -5,14 +5,14 @@ import * as t from 'typanion';
 import { BumpManifest } from '../core/bump-manifest';
 import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core/bump-utils';
 import { generateChangeLogEntry } from '../core/changelog';
-import { Configuration } from '../core/configuration';
+import { Configuration, IConfiguration } from '../core/configuration';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { LogReporter, logger } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { IWorkspace } from '../core/workspace-utils';
-import { IGitPlatformPlugin } from '../plugins/plugin';
+import { IGitPlatform } from '../plugins/plugin';
 
 import { RestoreCommand } from './restore';
 
@@ -35,7 +35,7 @@ export class BumpCommand extends RestoreCommand {
       return 1;
     }
 
-    const { project, git } = await Configuration.load(await Git.root());
+    const { project, git, configuration } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -47,18 +47,18 @@ export class BumpCommand extends RestoreCommand {
       await git.exec('fetch', '--all', '--tags', '--unshallow');
     }
 
-    const bumpManifest = await BumpManifest.new(project);
+    const bumpManifest = await BumpManifest.new(configuration);
 
-    if (!this.version && project.config.options.independentVersioning === false) {
-      this.version = await this.detectBumpForWorkspace(project, logger, bumpManifest, undefined, this.bumpType);
+    if (!this.version && configuration.options.independentVersioning === false) {
+      this.version = await this.detectBumpForWorkspace(project, configuration, logger, bumpManifest, undefined, this.bumpType);
     }
 
     const promises = project.workspaces.map(async workspace => {
       return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
-        const newVersion = await this.detectBumpForWorkspace(workspace, logger, bumpManifest, this.version, this.bumpType);
+        const newVersion = await this.detectBumpForWorkspace(workspace, configuration, logger, bumpManifest, this.version, this.bumpType);
         if (newVersion) {
           await workspace.updateVersion(newVersion, logger);
-          await project.config.pluginManager.dispatchOnBump(workspace, newVersion);
+          await configuration.pluginManager.dispatchOnBump(workspace, configuration, newVersion);
         }
       });
     });
@@ -71,41 +71,40 @@ export class BumpCommand extends RestoreCommand {
     return 0;
   }
 
-  async detectBumpForWorkspace(workspace: IWorkspace, logger: LogReporter, bumpManifest: BumpManifest, explicitVersion?: string, explicitBumpType?: BumpType) {
+  async detectBumpForWorkspace(workspace: IWorkspace, configuration: IConfiguration, logger: LogReporter, bumpManifest: BumpManifest, explicitVersion?: string, explicitBumpType?: BumpType) {
     let newVersion: string | undefined;
-    const workspaceForVersion = workspace.config.options.independentVersioning ? workspace : workspace.project;
-    const currentVersion = await this.currentVersionFromGit(workspaceForVersion);
-    const platform = await workspace.project.gitPlatform;
+    const workspaceForVersion = configuration.options.independentVersioning ? workspace : workspace.project;
+    const currentVersion = await this.currentVersionFromGit(workspaceForVersion, configuration);
 
     if (!explicitVersion) {
-      const logs = await workspace.config.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
-      const commits = parseConventionalCommits(logs, platform);
+      const logs = await configuration.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
+      const commits = parseConventionalCommits(logs, configuration.pluginManager.gitPlatform);
 
       logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
 
-      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, workspace.config);
+      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, configuration);
 
       logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
-      newVersion = executeBump(currentVersion.version, workspace.config.branch, bumpType) ?? undefined;
+      newVersion = executeBump(currentVersion.version, configuration.branch, bumpType) ?? undefined;
     } else {
       newVersion = explicitVersion;
     }
 
     if (newVersion) {
-      await this.generateChangelogForWorkspace(workspace, currentVersion, {
+      await this.generateChangelogForWorkspace(workspace, configuration, currentVersion, {
         version: newVersion,
-        hash: await workspace.config.git.currentCommit(),
-      }, platform, bumpManifest, logger);
+        hash: await configuration.git.currentCommit(),
+      }, configuration.pluginManager.gitPlatform, bumpManifest, logger);
     }
     return newVersion;
   }
 
-  private async generateChangelogForWorkspace(workspace: IWorkspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, platform: IGitPlatformPlugin, bumpManifest: BumpManifest, logger: LogReporter) {
-    const logs = await workspace.config.git.logs(fromVersion.hash, workspace.relativeCwd);
+  private async generateChangelogForWorkspace(workspace: IWorkspace, configuration: IConfiguration, fromVersion: GitSemverTag, toVersion: GitSemverTag, platform: IGitPlatform, bumpManifest: BumpManifest, logger: LogReporter) {
+    const logs = await configuration.git.logs(fromVersion.hash, workspace.relativeCwd);
     const commits = parseConventionalCommits(logs, platform);
     logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);
 
-    const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, workspace.config.pluginManager);
+    const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, configuration.pluginManager);
 
     bumpManifest.add(workspace, toVersion.version, changelogEntry, commits);
 

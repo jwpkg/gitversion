@@ -1,9 +1,9 @@
 import { IChangelogRenderFunctions } from '../plugins';
 
+import { IConfiguration } from './configuration';
 import { ConventionalCommit, parseConventionalCommits } from './conventional-commmit-utils';
 import * as md from './markdown';
 import { GitSemverTag } from './version-utils';
-import { IProject } from './workspace-utils';
 
 const HEADER = `
 # Changelog
@@ -18,11 +18,11 @@ export interface ChangelogEntry {
   body: string;
 }
 
-export async function detectChangelog(relativeCwd: string, project: IProject, from: GitSemverTag, to: GitSemverTag) {
-  const logs = await project.config.git.logs(from.hash, relativeCwd);
+export async function detectChangelog(relativeCwd: string, configuration: IConfiguration, from: GitSemverTag, to: GitSemverTag) {
+  const logs = await configuration.git.logs(from.hash, relativeCwd);
 
-  const commits = parseConventionalCommits(logs, project.gitPlatform);
-  return generateChangeLogEntry(commits, from, to, project.config.pluginManager);
+  const commits = parseConventionalCommits(logs, configuration.pluginManager.gitPlatform);
+  return generateChangeLogEntry(commits, from, to, configuration.pluginManager);
 }
 
 export function addToChangelog(entry: ChangelogEntry, version: string, changelogContent?: string) {

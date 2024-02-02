@@ -1,6 +1,6 @@
 import { RequestOptions, request } from 'https';
 
-import { VersionBranch } from '../../core/configuration';
+import { IConfiguration, VersionBranch } from '../../core/configuration';
 import { PackedPackage } from '../../core/pack-artifact';
 import { IProject } from '../../core/workspace-utils';
 import { IPlugin } from '../plugin';
@@ -10,17 +10,17 @@ import { payload } from './ms-teams-payload';
 export class MSTeamsPlugin implements IPlugin {
   name = 'MS Teams release notifications';
 
-  async onPublish(project: IProject, packedPackages: PackedPackage[]) {
-    if (project.config.options.independentVersioning) {
+  async onPublish(project: IProject, configuration: IConfiguration, packedPackages: PackedPackage[]) {
+    if (configuration.options.independentVersioning) {
       for (const packedPackage of packedPackages) {
         if (packedPackage.packFile) {
-          await this.process(project.config.branch, packedPackage);
+          await this.process(configuration.branch, packedPackage);
         }
       }
     } else {
       const projectPackage = packedPackages.find(p => p.packageRelativeCwd === project.relativeCwd)!;
       if (projectPackage) {
-        await this.process(project.config.branch, projectPackage);
+        await this.process(configuration.branch, projectPackage);
       }
     }
   }

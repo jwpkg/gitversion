@@ -1,4 +1,4 @@
-import { IBaseConfiguration } from '../core/configuration';
+import { IBaseConfiguration, IConfiguration } from '../core/configuration';
 import { GitCommit } from '../core/git';
 import { PackedPackage } from '../core/pack-artifact';
 import { GitSemverTag } from '../core/version-utils';
@@ -7,8 +7,9 @@ import { IProject, IWorkspace } from '../core/workspace-utils';
 import { AzureDevopsPlugin } from './embedded/git/azure-devops';
 import { GitPlatformDefault } from './embedded/git/default';
 import { GithubPlugin } from './embedded/git/github';
+import { NodeProject } from './embedded/node/node-project';
 
-export interface IGitPlatformPlugin {
+export interface IGitPlatform {
   currentBranch(): Promise<string | null>;
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
@@ -41,14 +42,14 @@ export type Prefix<Type, Prefix extends string> = {
 };
 
 export interface IPluginHooks {
-  onBump?(workspace: IWorkspace, version: string): Promise<void> | void;
-  onPublish?(project: IProject, packedPackage: PackedPackage[], dryRun: boolean): Promise<void> | void;
+  onBump?(workspace: IWorkspace, configuration: IConfiguration, version: string): Promise<void> | void;
+  onPublish?(project: IProject, configuration: IConfiguration, packedPackage: PackedPackage[], dryRun: boolean): Promise<void> | void;
 }
 
 export interface IPlugin extends IPluginChangelogFunctions, IPluginHooks {
   name: string;
-  gitPlatform?: IGitPlatformPlugin;
-
+  gitPlatform?: IGitPlatform;
+  project?: IProject;
 }
 
 export interface IIntializablePlugin {
@@ -60,20 +61,37 @@ export interface IIntializablePlugin {
   initialize(configuration: IBaseConfiguration): Promise<boolean> | boolean;
 }
 
-export function isInitializable(p: any): p is IIntializablePlugin {
+/**
+ * Initialize the plugin for the current configuration
+ * @param configuration The configuration ref
+ * @returns A boolean indicating of the plugin is valid for the current configuration
+ */
+export type StaticInitializablePlugin = (configuration: IBaseConfiguration) => Promise<IPlugin | null>;
+
+export type NonInitializedPlugin = StaticInitializablePlugin | IPlugin | IIntializablePlugin;
+
+export function isInitializable(p: NonInitializedPlugin): p is IIntializablePlugin {
   return 'initialize' in p && typeof p.initialize === 'function';
 }
 
+export function isStaticInitializablePlugin(p: NonInitializedPlugin): p is StaticInitializablePlugin {
+  return typeof p === 'function';
+}
+
 export class PluginManager implements IChangelogRenderFunctions {
-  plugins: IPlugin[] = [];
+  project?: IProject;
+
+  plugins: NonInitializedPlugin[] = [];
   availablePlugins: IPlugin[] = [];
 
-  gitPlatform: IGitPlatformPlugin;
+  gitPlatform: IGitPlatform;
 
   constructor() {
     this.gitPlatform = new GitPlatformDefault();
 
     // Register defaults. Should be somewhere else i gues
+    this.register(NodeProject.initialize);
+
     this.register(new GithubPlugin());
     this.register(new AzureDevopsPlugin());
   }
@@ -98,6 +116,8 @@ export class PluginManager implements IChangelogRenderFunctions {
           return plugin;
         }
         return null;
+      } else if (isStaticInitializablePlugin(plugin)) {
+        return await plugin(configuration);
       } else {
         return plugin;
       }
@@ -105,6 +125,8 @@ export class PluginManager implements IChangelogRenderFunctions {
 
     const result = await Promise.all(plugins);
     this.availablePlugins = result.filter((t): t is Awaited<IPlugin> => !!t).reverse();
+
+    this.project = this.availablePlugins.find(plugin => !!plugin.project)?.project;
 
     const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
     if (gitPlatform) {
@@ -116,7 +138,7 @@ export class PluginManager implements IChangelogRenderFunctions {
     }
   }
 
-  register(plugin: IPlugin) {
+  register(plugin: NonInitializedPlugin) {
     this.plugins.push(plugin);
   }
 
@@ -139,14 +161,14 @@ export class PluginManager implements IChangelogRenderFunctions {
     }
   }
 
-  async dispatchOnBump(workspace: IWorkspace, version: string) {
+  async dispatchOnBump(workspace: IWorkspace, configuration: IConfiguration, version: string) {
     for (const plugin of this.availablePlugins) {
-      await plugin.onBump?.(workspace, version);
+      await plugin.onBump?.(workspace, configuration, version);
     }
   }
-  async dispatchOnPublish(project: IProject, packedPackage: PackedPackage[], dryRun: boolean) {
+  async dispatchOnPublish(project: IProject, configuration: IConfiguration, packedPackage: PackedPackage[], dryRun: boolean) {
     for (const plugin of this.availablePlugins) {
-      await plugin.onPublish?.(project, packedPackage, dryRun);
+      await plugin.onPublish?.(project, configuration, packedPackage, dryRun);
     }
   }
 }

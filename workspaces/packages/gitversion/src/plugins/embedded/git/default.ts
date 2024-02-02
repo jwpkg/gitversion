@@ -1,8 +1,8 @@
 import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
-import { IGitPlatformPlugin, IIntializablePlugin } from '../../plugin';
+import { IGitPlatform, IIntializablePlugin } from '../../plugin';
 
-export class GitPlatformDefault implements IGitPlatformPlugin, IIntializablePlugin {
+export class GitPlatformDefault implements IGitPlatform, IIntializablePlugin {
   name = 'Standard git platform plugin';
 
   private configuration?: IBaseConfiguration;

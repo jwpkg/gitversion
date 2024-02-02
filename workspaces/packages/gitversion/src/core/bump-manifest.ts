@@ -3,8 +3,9 @@ import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
 import { ChangelogEntry } from './changelog';
+import { IConfiguration } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
-import { IProject, IWorkspace } from './workspace-utils';
+import { IWorkspace } from './workspace-utils';
 
 const MANIFEST_NAME = 'bump-manifest.json';
 
@@ -32,19 +33,19 @@ export class BumpManifest {
   gitStatus: BumpManifestGitStatus;
   bumps: Bump[];
 
-  private constructor(private project: IProject, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
+  private constructor(private configuration: IConfiguration, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
     this.bumps = bumps ?? [];
     this.gitStatus = gitStatus;
   }
 
-  static async load(project: IProject): Promise<BumpManifest | null> {
-    const bumpManifestFile = join(project.config.stagingFolder, MANIFEST_NAME);
+  static async load(configuration: IConfiguration): Promise<BumpManifest | null> {
+    const bumpManifestFile = join(configuration.stagingFolder, MANIFEST_NAME);
 
     if (existsSync(bumpManifestFile)) {
       const content = await readFile(bumpManifestFile, 'utf-8');
       const manifest = JSON.parse(content) as BumpManifestContent;
       return new BumpManifest(
-        project,
+        configuration,
         manifest.gitStatus,
         manifest.bumps,
       );
@@ -52,10 +53,10 @@ export class BumpManifest {
     return null;
   }
 
-  static async new(project: IProject) {
-    await this.clear(project);
-    const gitStatus = await project.config.git.gitStatusHash();
-    const result = new BumpManifest(project, {
+  static async new(configuration: IConfiguration) {
+    await this.clear(configuration);
+    const gitStatus = await configuration.git.gitStatusHash();
+    const result = new BumpManifest(configuration, {
       preBump: gitStatus,
       postBump: 'INVALID',
     });
@@ -63,8 +64,8 @@ export class BumpManifest {
     return result;
   }
 
-  static async clear(project: IProject) {
-    rm(join(project.config.stagingFolder, MANIFEST_NAME), {
+  static async clear(configuration: IConfiguration) {
+    rm(join(configuration.stagingFolder, MANIFEST_NAME), {
       force: true,
     });
   }
@@ -85,11 +86,11 @@ export class BumpManifest {
     if (!this.gitStatus.preBump) {
       throw new Error('No pre bump status hash set');
     }
-    const bumpManifestFile = join(this.project.config.stagingFolder, MANIFEST_NAME);
+    const bumpManifestFile = join(this.configuration.stagingFolder, MANIFEST_NAME);
     const content: BumpManifestContent = {
       gitStatus: {
         preBump: this.gitStatus.preBump,
-        postBump: await this.project.config.git.gitStatusHash(),
+        postBump: await this.configuration.git.gitStatusHash(),
       },
       bumps: this.bumps,
     };

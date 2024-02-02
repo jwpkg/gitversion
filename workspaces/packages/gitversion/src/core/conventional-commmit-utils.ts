@@ -1,4 +1,4 @@
-import { IGitPlatformPlugin } from '../plugins/plugin';
+import { IGitPlatform } from '../plugins/plugin';
 
 import { GitCommit } from './git';
 
@@ -26,7 +26,7 @@ export interface ConventionalCommit {
 }
 
 
-export function parseConventionalCommits(commits: GitCommit[], platform: IGitPlatformPlugin): ConventionalCommit[] {
+export function parseConventionalCommits(commits: GitCommit[], platform: IGitPlatform): ConventionalCommit[] {
   const sanitizedCommits = commits.map(platform.stripMergeMessage);
   return sanitizedCommits.map(parseConventionalCommit).filter((c): c is ConventionalCommit => !!c);
 }

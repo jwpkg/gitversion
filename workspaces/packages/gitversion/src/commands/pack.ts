@@ -25,12 +25,12 @@ export class PackCommand extends GitVersionCommand {
 
     const section = logger.beginSection('Pack step');
 
-    const bumpManifest = await BumpManifest.load(project);
+    const bumpManifest = await BumpManifest.load(configuration);
     if (!bumpManifest) {
       logger.reportError('No valid bump file found. Please run bump first');
       return 1;
     }
-    const packManifest = await PackArtifact.new(project, bumpManifest.gitStatus);
+    const packManifest = await PackArtifact.new(configuration, bumpManifest.gitStatus);
 
     if (!packManifest.validateGitStatusWithBump()) {
       logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);

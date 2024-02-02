@@ -7,7 +7,7 @@ import { IPlugin, PluginManager } from '../plugins/plugin';
 
 import { Git } from './git';
 import { logger } from './log-reporter';
-import { IProject, Project } from './workspace-utils';
+import { IProject } from './workspace-utils';
 
 export enum FeatureBumpBehavior {
   AllCommits,
@@ -148,16 +148,21 @@ export class Configuration implements IConfiguration {
 
     const git = new Git(cwd);
     const pluginManager = new PluginManager();
+    if (options.plugins) {
+      for (const plugin of options.plugins) {
+        pluginManager.register(plugin);
+      }
+    }
+
     await pluginManager.initialize({
       cwd,
       git,
       options,
     });
 
-    if (options.plugins) {
-      for (const plugin of options.plugins) {
-        pluginManager.register(plugin);
-      }
+    // We should have a project type after initialize
+    if (!pluginManager.project) {
+      throw new Error('Can\'t load project');
     }
 
     const branchName = await pluginManager.gitPlatform.currentBranch();
@@ -168,13 +173,11 @@ export class Configuration implements IConfiguration {
     const branch = this.detectVersionBranch(options, branchName);
 
     const configuration = new Configuration(cwd, options, branch);
-    const project = await Project.load(configuration);
 
-    if (!project) {
-      throw new Error('Can\'t load project');
-    }
 
-    return { configuration, project, git };
+    return {
+      configuration, project: pluginManager.project, git,
+    };
   }
 
   static async loadCustomConfig(cwd: string) {
