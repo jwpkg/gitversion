@@ -75,6 +75,7 @@ export class PluginManager implements IChangelogRenderFunctions {
   availablePlugins: IPlugin[] = [];
 
   get gitPlatform(): IGitPlatform {
+    console.log('4LKJLJKKLJKLJKLK', this._gitPlatform);
     return this._gitPlatform!;
   }
 

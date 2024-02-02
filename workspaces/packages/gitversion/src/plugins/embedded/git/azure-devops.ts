@@ -13,7 +13,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
   constructor(private configuration: IBaseConfiguration, private organizationName: string, private projectName: string, private repoName: string) { }
 
-  static async initialize2(configuration: IBaseConfiguration): Promise<AzureDevopsPlugin | null> {
+  static async initialize(configuration: IBaseConfiguration): Promise<AzureDevopsPlugin | null> {
     const gitUrl = await configuration.git.remoteUrl();
 
     if (gitUrl) {
