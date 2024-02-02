@@ -3,12 +3,12 @@ import { colorize } from 'colorize-node';
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { dirname, join } from 'path';
 
-import { BranchType, VersionBranch } from '../core/config';
+import { BranchType, Configuration, VersionBranch } from '../core/configuration';
 import { formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
-import { IProject, Project } from '../core/workspace-utils';
+import { IProject } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -21,7 +21,7 @@ export class PublishCommand extends GitVersionCommand {
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
-    const project = await Project.load(await Git.root());
+    const { project } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }

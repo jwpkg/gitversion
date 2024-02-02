@@ -1,4 +1,4 @@
-import { IBaseConfiguration } from '../../../core/config';
+import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
 import { IGitPlatformPlugin, IIntializablePlugin } from '../../plugin';
 

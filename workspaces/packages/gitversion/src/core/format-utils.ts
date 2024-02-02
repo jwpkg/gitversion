@@ -2,7 +2,7 @@ import { colorize } from 'colorize-node';
 import { SemVer } from 'semver';
 
 import { BumpType } from './bump-utils';
-import { BranchType, VersionBranch } from './config';
+import { BranchType, VersionBranch } from './configuration';
 
 export function formatDuration(duration: number) {
   if (duration > 1000 * 60) {

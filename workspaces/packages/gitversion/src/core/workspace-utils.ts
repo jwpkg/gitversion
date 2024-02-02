@@ -6,7 +6,7 @@ import { join } from 'path';
 import { IGitPlatformPlugin } from '../plugins/plugin';
 
 import { ChangelogEntry, addToChangelog } from './changelog';
-import { Configuration } from './config';
+import { Configuration } from './configuration';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
 import { formatPackageName, formatVersion } from './format-utils';
 import { Git } from './git';
@@ -120,10 +120,9 @@ export class Workspace implements IWorkspace {
 export class Project extends Workspace implements IProject {
   private _cwd: string;
   private _config: Configuration;
-  private _gitPlatform?: IGitPlatformPlugin;
 
   get gitPlatform(): IGitPlatformPlugin {
-    return this._gitPlatform!;
+    return this.config.pluginManager.gitPlatform!;
   }
 
   childWorkspaces: Workspace[] = [];
@@ -161,25 +160,18 @@ export class Project extends Workspace implements IProject {
     this.git = new Git(this.cwd);
   }
 
-  static async load(rootCwd: string): Promise<Project | null> {
-    const config = await Configuration.load(rootCwd);
-    if (!config) {
-      return null;
-    }
-    const manifest = await loadManifest(rootCwd);
-    const project = new Project(rootCwd, manifest, config);
+  static async load(configuration: Configuration): Promise<Project | null> {
+    const manifest = await loadManifest(configuration.cwd);
 
-    await config.pluginManager.initialize(config);
-
-    project._gitPlatform = config.pluginManager.gitPlatform;
+    const project = new Project(configuration.cwd, manifest, configuration);
 
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {
-        cwd: rootCwd,
+        cwd: configuration.cwd,
       });
 
       const workspacePromises = paths.map(async path => {
-        const manifest = await loadManifest(join(rootCwd, path));
+        const manifest = await loadManifest(join(configuration.cwd, path));
         if (manifest && manifest.private !== true) {
           return new Workspace(project, path, manifest);
         } else {

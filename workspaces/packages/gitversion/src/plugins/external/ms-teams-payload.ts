@@ -1,5 +1,5 @@
 import { ChangelogEntry } from '../../core/changelog';
-import { VersionBranch } from '../../core/config';
+import { VersionBranch } from '../../core/configuration';
 import { PackedPackage } from '../../core/pack-artifact';
 
 export interface PayloadUrl {

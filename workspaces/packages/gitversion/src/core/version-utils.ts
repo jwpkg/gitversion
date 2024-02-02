@@ -1,6 +1,6 @@
 import { lt, parse } from 'semver';
 
-import { BranchType, VersionBranch } from './config';
+import { BranchType, VersionBranch } from './configuration';
 import { GitTag } from './git';
 
 export type GitSemverTag = {

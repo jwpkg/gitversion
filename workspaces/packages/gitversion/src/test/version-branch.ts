@@ -1,4 +1,4 @@
-import { BranchType, VersionBranch } from '../core/config';
+import { BranchType, VersionBranch } from '../core/configuration';
 
 export class VersionBranchMock {
   static main(): VersionBranch {

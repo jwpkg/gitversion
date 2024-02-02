@@ -4,11 +4,11 @@ import { mkdir, stat } from 'fs/promises';
 import { join } from 'path';
 
 import { Bump, BumpManifest } from '../core/bump-manifest';
+import { Configuration } from '../core/configuration';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact } from '../core/pack-artifact';
-import { Project } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -18,7 +18,7 @@ export class PackCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const project = await Project.load(await Git.root());
+    const { project } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }

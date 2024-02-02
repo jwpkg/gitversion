@@ -5,12 +5,13 @@ import * as t from 'typanion';
 import { BumpManifest } from '../core/bump-manifest';
 import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core/bump-utils';
 import { generateChangeLogEntry } from '../core/changelog';
+import { Configuration } from '../core/configuration';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { LogReporter, logger } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
-import { IWorkspace, Project } from '../core/workspace-utils';
+import { IWorkspace } from '../core/workspace-utils';
 import { IGitPlatformPlugin } from '../plugins/plugin';
 
 import { RestoreCommand } from './restore';
@@ -34,7 +35,7 @@ export class BumpCommand extends RestoreCommand {
       return 1;
     }
 
-    const project = await Project.load(await Git.root());
+    const { project } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }

@@ -1,6 +1,6 @@
 import { RequestOptions, request } from 'https';
 
-import { VersionBranch } from '../../core/config';
+import { VersionBranch } from '../../core/configuration';
 import { PackedPackage } from '../../core/pack-artifact';
 import { IProject } from '../../core/workspace-utils';
 import { IPlugin } from '../plugin';

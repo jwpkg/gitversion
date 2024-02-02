@@ -1,7 +1,7 @@
 import { colorize } from 'colorize-node';
 import { inc, parse, prerelease } from 'semver';
 
-import { BranchType, Configuration, FeatureBumpBehavior, VersionBranch } from './config';
+import { BranchType, Configuration, FeatureBumpBehavior, VersionBranch } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { GitCommit } from './git';
 import { logger } from './log-reporter';

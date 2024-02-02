@@ -1,4 +1,4 @@
-import { IConfiguration } from '../core/config';
+import { IBaseConfiguration } from '../core/configuration';
 import { GitCommit } from '../core/git';
 import { PackedPackage } from '../core/pack-artifact';
 import { GitSemverTag } from '../core/version-utils';
@@ -57,7 +57,7 @@ export interface IIntializablePlugin {
    * @param configuration The configuration ref
    * @returns A boolean indicating of the plugin is valid for the current configuration
    */
-  initialize(configuration: IConfiguration): Promise<boolean> | boolean;
+  initialize(configuration: IBaseConfiguration): Promise<boolean> | boolean;
 }
 
 export function isInitializable(p: any): p is IIntializablePlugin {
@@ -90,7 +90,7 @@ export class PluginManager implements IChangelogRenderFunctions {
     return this.render('renderIssueUrl', issueId);
   }
 
-  async initialize(configuration: IConfiguration) {
+  async initialize(configuration: IBaseConfiguration) {
     const plugins = this.plugins.map(async plugin => {
       if (isInitializable(plugin)) {
         const initialize = await plugin.initialize(configuration);

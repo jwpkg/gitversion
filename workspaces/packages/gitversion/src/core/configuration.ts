@@ -7,6 +7,7 @@ import { IPlugin, PluginManager } from '../plugins/plugin';
 
 import { Git } from './git';
 import { logger } from './log-reporter';
+import { IProject, Project } from './workspace-utils';
 
 export enum FeatureBumpBehavior {
   AllCommits,
@@ -32,6 +33,19 @@ export interface PluginConfigurationOptions {
 
 export type ConfigurationOption = PluginConfigurationOptions & BaseConfigurationOptions;
 export type RequiredConfigurationOption = PluginConfigurationOptions & Required<BaseConfigurationOptions>;
+
+const DEFAULT_OPTIONS: RequiredConfigurationOption = {
+  featureBranchPatterns: [
+    '^feature/(.*)$',
+  ],
+  releaseBranchPatterns: [
+    '^release/(.*)$',
+  ],
+  mainBranch: 'main',
+  independentVersioning: false,
+  versionTagPrefix: 'v',
+  featureBumpBehavior: FeatureBumpBehavior.Normal,
+};
 
 export function defineConfig(config: ConfigurationOption): ConfigurationOption {
   return config;
@@ -121,45 +135,53 @@ export class Configuration implements IConfiguration {
     };
   }
 
-  static async load(cwd: string): Promise<Configuration | null> {
-    const defaultOptions: RequiredConfigurationOption = {
-      featureBranchPatterns: [
-        '^feature/(.*)$',
-      ],
-      releaseBranchPatterns: [
-        '^release/(.*)$',
-      ],
-      mainBranch: 'main',
-      independentVersioning: false,
-      versionTagPrefix: 'v',
-      featureBumpBehavior: FeatureBumpBehavior.Normal,
+  static async load(cwd: string): Promise<{ configuration: Configuration, project: IProject }> {
+    const options: RequiredConfigurationOption = {
+      ...DEFAULT_OPTIONS,
+      ...(await this.loadCustomConfig(cwd)),
     };
-    let options = defaultOptions;
 
+    const git = new Git(cwd);
+    const pluginManager = new PluginManager();
+    await pluginManager.initialize({
+      cwd,
+      git,
+      options,
+    });
+
+    if (options.plugins) {
+      for (const plugin of options.plugins) {
+        pluginManager.register(plugin);
+      }
+    }
+
+    const branchName = await pluginManager.gitPlatform.currentBranch();
+    if (!branchName) {
+      throw new Error('Can\'t determine current gitbranch. Breaking off');
+    }
+
+    const branch = this.detectVersionBranch(options, branchName);
+
+    const configuration = new Configuration(cwd, options, branch);
+    const project = await Project.load(configuration);
+
+    if (!project) {
+      throw new Error('Can\'t load project');
+    }
+
+    return { configuration, project };
+  }
+
+  static async loadCustomConfig(cwd: string) {
     if (existsSync(join(cwd, '.gitversion.cjs'))) {
       const config = require(join(cwd, '.gitversion.cjs'));
       if (isBaseConfigurationOptions(config)) {
-        options = {
-          ...options,
-          ...config,
-        };
+        return config;
       } else {
         logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitversion.cjs'))}`, true);
         return null;
       }
     }
-
-    const git = new Git(cwd);
-    const branch = this.detectVersionBranch(options, await git.currentBranch());
-
-    const config = new Configuration(cwd, options, branch);
-
-    if (options.plugins) {
-      for (const plugin of options.plugins) {
-        config.pluginManager.register(plugin);
-      }
-    }
-
-    return config;
+    return null;
   }
 }

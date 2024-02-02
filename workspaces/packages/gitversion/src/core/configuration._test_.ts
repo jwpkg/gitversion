@@ -1,4 +1,4 @@
-import { BranchType, Configuration, BaseConfigurationOptions, FeatureBumpBehavior } from './config';
+import { BranchType, Configuration, BaseConfigurationOptions, FeatureBumpBehavior } from './configuration';
 
 const defaultConfig: Required<BaseConfigurationOptions> = {
   featureBranchPatterns: [
