@@ -29,9 +29,11 @@ export class GithubPlugin implements IPlugin {
 
   static async initialize(configuration: IBaseConfiguration): Promise<GithubPlugin | null> {
     const gitUrl = await configuration.git.remoteUrl();
+    console.log('LKJKLJLKJLKJ', gitUrl);
 
     if (gitUrl) {
       const result = this.parseUrl(gitUrl);
+      console.log('LKJKLJLKJLKJ', result);
 
       if (result) {
         return new GithubPlugin(configuration, result.projectName, result.repoName);
