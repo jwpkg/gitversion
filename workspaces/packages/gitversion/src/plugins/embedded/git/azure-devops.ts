@@ -1,22 +1,33 @@
 import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IGitPlatform, IIntializablePlugin, IPlugin } from '../../plugin';
+import { IGitPlatform, IPlugin } from '../../plugin';
 
-export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin, IGitPlatform {
+export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   name = 'Azure devops platform plugin';
 
   get gitPlatform() {
     return this;
   }
 
-  private configuration?: IBaseConfiguration;
 
-  private organizationName: string = '';
-  private projectName: string = '';
-  private repoName: string = '';
+  constructor(private configuration: IBaseConfiguration, private organizationName: string, private projectName: string, private repoName: string) { }
 
-  parseUrl(url: string) {
+  static async initialize2(configuration: IBaseConfiguration): Promise<AzureDevopsPlugin | null> {
+    const gitUrl = await configuration.git.remoteUrl();
+
+    if (gitUrl) {
+      const result = this.parseUrl(gitUrl);
+
+      if (result) {
+        return new AzureDevopsPlugin(configuration, result.organizationName, result.projectName, result.repoName);
+      }
+    }
+    return null;
+  }
+
+
+  static parseUrl(url: string) {
     const httpsRegex = /^https:\/\/.*dev\.azure\.com\/(.*)\/(.*)\/_git\/(.*)$/;
     const sshRegex = /^git@ssh\.dev\.azure\.com:.*\/(.*)\/(.*)\/(.*)$/;
 
@@ -38,26 +49,6 @@ export class AzureDevopsPlugin implements IPlugin, IIntializablePlugin, IGitPlat
     }
     return null;
   }
-
-  async initialize(configuration: IBaseConfiguration): Promise<boolean> {
-    this.configuration = configuration;
-
-    const gitUrl = await this.configuration.git.remoteUrl();
-
-    if (gitUrl) {
-      const result = this.parseUrl(gitUrl);
-
-      if (result) {
-        this.organizationName = result.organizationName;
-        this.projectName = result.projectName;
-        this.repoName = result.repoName;
-      }
-
-      return true;
-    }
-    return false;
-  }
-
   async currentBranch(): Promise<string | null> {
     if (process.env.BUILD_SOURCEBRANCH) {
       if (process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {

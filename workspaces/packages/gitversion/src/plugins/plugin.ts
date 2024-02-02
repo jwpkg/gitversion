@@ -58,42 +58,32 @@ export interface IIntializablePlugin {
    * @param configuration The configuration ref
    * @returns A boolean indicating of the plugin is valid for the current configuration
    */
-  initialize(configuration: IBaseConfiguration): Promise<boolean> | boolean;
+  initialize(configuration: IBaseConfiguration): Promise<IPlugin | null> | IPlugin | null;
 }
 
-/**
- * Initialize the plugin for the current configuration
- * @param configuration The configuration ref
- * @returns A boolean indicating of the plugin is valid for the current configuration
- */
-export type StaticInitializablePlugin = (configuration: IBaseConfiguration) => Promise<IPlugin | null>;
-
-export type NonInitializedPlugin = StaticInitializablePlugin | IPlugin | IIntializablePlugin;
+export type NonInitializedPlugin = IPlugin | IIntializablePlugin;
 
 export function isInitializable(p: NonInitializedPlugin): p is IIntializablePlugin {
   return 'initialize' in p && typeof p.initialize === 'function';
 }
 
-export function isStaticInitializablePlugin(p: NonInitializedPlugin): p is StaticInitializablePlugin {
-  return typeof p === 'function';
-}
-
 export class PluginManager implements IChangelogRenderFunctions {
   project?: IProject;
+  private _gitPlatform?: IGitPlatform;
 
   plugins: NonInitializedPlugin[] = [];
   availablePlugins: IPlugin[] = [];
 
-  gitPlatform: IGitPlatform;
+  get gitPlatform(): IGitPlatform {
+    return this._gitPlatform!;
+  }
+
 
   constructor() {
-    this.gitPlatform = new GitPlatformDefault();
-
     // Register defaults. Should be somewhere else i gues
-    this.register(NodeProject.initialize);
-
-    this.register(new GithubPlugin());
-    this.register(new AzureDevopsPlugin());
+    this.register(NodeProject);
+    this.register(GithubPlugin);
+    this.register(AzureDevopsPlugin);
   }
 
   renderCompareUrl(from: GitSemverTag, to: GitSemverTag) {
@@ -111,13 +101,11 @@ export class PluginManager implements IChangelogRenderFunctions {
   async initialize(configuration: IBaseConfiguration) {
     const plugins = this.plugins.map(async plugin => {
       if (isInitializable(plugin)) {
-        const initialize = await plugin.initialize(configuration);
-        if (initialize) {
-          return plugin;
+        const result = await plugin.initialize(configuration);
+        if (result) {
+          return result;
         }
         return null;
-      } else if (isStaticInitializablePlugin(plugin)) {
-        return await plugin(configuration);
       } else {
         return plugin;
       }
@@ -130,11 +118,9 @@ export class PluginManager implements IChangelogRenderFunctions {
 
     const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
     if (gitPlatform) {
-      this.gitPlatform = gitPlatform.gitPlatform!;
+      this._gitPlatform = gitPlatform.gitPlatform!;
     } else {
-      const defaultGit = new GitPlatformDefault();
-      defaultGit.initialize(configuration);
-      this.gitPlatform = defaultGit;
+      this._gitPlatform = GitPlatformDefault.initialize(configuration);
     }
   }
 

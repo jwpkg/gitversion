@@ -2,12 +2,15 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 import { IBaseConfiguration } from '../../../core/configuration';
-import { IIntializablePlugin, IPlugin } from '../..';
+import { IPlugin } from '../..';
 
-export class YarnPlugin implements IPlugin, IIntializablePlugin {
+export class YarnPlugin implements IPlugin {
   name = 'Yarn package manager plugin';
 
-  initialize(configuration: IBaseConfiguration): boolean | Promise<boolean> {
-    return existsSync(join(configuration.cwd, 'yarn.lock'));
+  static initialize(configuration: IBaseConfiguration) {
+    if (existsSync(join(configuration.cwd, 'yarn.lock'))) {
+      return new YarnPlugin();
+    }
+    return null;
   }
 }

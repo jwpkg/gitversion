@@ -1,24 +1,21 @@
 import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IIntializablePlugin, IPlugin } from '../../plugin';
+import { IPlugin } from '../../plugin';
 
-export class GithubPlugin implements IPlugin, IIntializablePlugin {
+export class GithubPlugin implements IPlugin {
   name = 'Github platform plugin';
 
   get gitPlatform() {
     return this;
   }
 
-  private configuration?: IBaseConfiguration;
+  constructor(private configuration: IBaseConfiguration, private projectName: string, private repoName: string) { }
+
   /**
    * Git url has the format: https://github.com/cp-utils/gitversion.git or git@github.com:cp-utils/gitversion.git
    */
-  private gitUrl: string = 'not_initialized';
-  private projectName: string = 'not_initialized';
-  private repoName: string = 'not_initialized';
-
-  parseUrl(url: string) {
+  static parseUrl(url: string) {
     const result = /^(https:\/\/|git@)github.com(\/|:)(.+)\/(.+?)(\.git)?$/.exec(url);
 
     if (result) {
@@ -30,23 +27,17 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
     return null;
   }
 
-  async initialize(configuration: IBaseConfiguration): Promise<boolean> {
-    this.configuration = configuration;
-
-    const gitUrl = await this.configuration.git.remoteUrl();
+  static async initialize(configuration: IBaseConfiguration): Promise<GithubPlugin | null> {
+    const gitUrl = await configuration.git.remoteUrl();
 
     if (gitUrl) {
-      this.gitUrl = gitUrl;
       const result = this.parseUrl(gitUrl);
 
       if (result) {
-        this.projectName = result.projectName;
-        this.repoName = result.repoName;
+        return new GithubPlugin(configuration, result.projectName, result.repoName);
       }
-
-      return this.gitUrl.includes('github.com');
     }
-    return false;
+    return null;
   }
 
   async currentBranch(): Promise<string | null> {
@@ -58,7 +49,7 @@ export class GithubPlugin implements IPlugin, IIntializablePlugin {
       }
     }
 
-    return (await this.configuration?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return (await this.configuration.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {

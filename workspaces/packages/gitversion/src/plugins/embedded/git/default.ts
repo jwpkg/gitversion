@@ -1,15 +1,16 @@
 import { IBaseConfiguration } from '../../../core/configuration';
 import { GitCommit } from '../../../core/git';
-import { IGitPlatform, IIntializablePlugin } from '../../plugin';
+import { IGitPlatform } from '../../plugin';
 
-export class GitPlatformDefault implements IGitPlatform, IIntializablePlugin {
+export class GitPlatformDefault implements IGitPlatform {
   name = 'Standard git platform plugin';
 
-  private configuration?: IBaseConfiguration;
+  private constructor(private configuration?: IBaseConfiguration) {
 
-  initialize(configuration: IBaseConfiguration) {
-    this.configuration = configuration;
-    return true;
+  }
+
+  static initialize(configuration: IBaseConfiguration) {
+    return new GitPlatformDefault(configuration);
   }
 
   async currentBranch(): Promise<string | null> {
