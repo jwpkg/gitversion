@@ -76,7 +76,7 @@ export interface IConfiguration extends IBaseConfiguration {
 }
 
 export class Configuration implements IConfiguration {
-  pluginManager = new PluginManager();
+  pluginManager: PluginManager;
 
   cwd: string;
   git: Git;
@@ -87,11 +87,12 @@ export class Configuration implements IConfiguration {
     return join(this.cwd, 'gitversion.out');
   }
 
-  private constructor(cwd: string, options: RequiredConfigurationOption, branch: VersionBranch) {
+  private constructor(cwd: string, options: RequiredConfigurationOption, branch: VersionBranch, pluginManager: PluginManager) {
     this.cwd = cwd;
     this.options = options;
     this.branch = branch;
     this.git = new Git(cwd);
+    this.pluginManager = pluginManager;
   }
 
   static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
@@ -172,7 +173,7 @@ export class Configuration implements IConfiguration {
 
     const branch = this.detectVersionBranch(options, branchName);
 
-    const configuration = new Configuration(cwd, options, branch);
+    const configuration = new Configuration(cwd, options, branch, pluginManager);
 
 
     return {
