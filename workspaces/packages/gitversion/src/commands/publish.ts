@@ -54,7 +54,6 @@ export class PublishCommand extends GitVersionCommand {
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packedPackages, project.config.branch, packManifest.packFolder);
-      await this.updateChangelogs(packedPackages, project);
       await this.addTags(packedPackages, project.git);
 
       if (this.push) {
@@ -62,6 +61,18 @@ export class PublishCommand extends GitVersionCommand {
           logger.reportInfo('[Dry run] Would be pushing back to git');
         } else {
           logger.reportInfo('Pushing back to git');
+          await project.git.push();
+        }
+      } else {
+        logger.reportInfo('Skipping push step');
+      }
+
+      await this.updateChangelogs(packedPackages, project);
+      if (this.push) {
+        if (this.dryRun) {
+          logger.reportInfo('[Dry run] Would be pushing changelogs back to git');
+        } else {
+          logger.reportInfo('Pushing changelogs back to git');
           await project.git.push();
         }
       } else {
