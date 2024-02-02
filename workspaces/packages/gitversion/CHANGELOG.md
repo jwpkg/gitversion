@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.17](https://github.com/cp-utils/gitversion/compare/v0.0.16...v0.0.17) (Fri Feb 02 2024)
+
+### fix
+
+* Push tags before changelog so we still have a tagged release when something happens. Should be refactored to get a bit cleaner ([77bdb8c](https://github.com/cp-utils/gitversion/commit/77bdb8cd66bddb39265979ba01df68d78b4eca58))
+
 ## [0.0.15](https://github.com/cp-utils/gitversion/compare/v0.0.14...v0.0.15) (Wed Jan 31 2024)
 
 ### fix
