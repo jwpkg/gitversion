@@ -103,10 +103,12 @@ export class PluginManager implements IChangelogRenderFunctions {
       if (isInitializable(plugin)) {
         const result = await plugin.initialize(configuration);
         if (result) {
+          console.log('1KJHJKHKJHKHKJ', result);
           return result;
         }
         return null;
       } else {
+        console.log('2KJHJKHKJHKHKJ', result);
         return plugin;
       }
     });
@@ -117,6 +119,7 @@ export class PluginManager implements IChangelogRenderFunctions {
     this.project = this.availablePlugins.find(plugin => !!plugin.project)?.project;
 
     const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
+    console.log('3KJHJKHKJHKHKJ', gitPlatform);
     if (gitPlatform) {
       this._gitPlatform = gitPlatform.gitPlatform!;
     } else {
