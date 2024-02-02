@@ -72,6 +72,7 @@ export interface IBaseConfiguration {
 export interface IConfiguration extends IBaseConfiguration {
   readonly pluginManager: PluginManager;
   readonly branch: VersionBranch;
+  readonly stagingFolder: string;
 }
 
 export class Configuration implements IConfiguration {
@@ -81,6 +82,10 @@ export class Configuration implements IConfiguration {
   git: Git;
   options: RequiredConfigurationOption;
   branch: VersionBranch;
+
+  get stagingFolder() {
+    return join(this.cwd, 'gitversion.out');
+  }
 
   private constructor(cwd: string, options: RequiredConfigurationOption, branch: VersionBranch) {
     this.cwd = cwd;
@@ -135,7 +140,7 @@ export class Configuration implements IConfiguration {
     };
   }
 
-  static async load(cwd: string): Promise<{ configuration: Configuration, project: IProject }> {
+  static async load(cwd: string): Promise<{ configuration: Configuration, project: IProject, git: Git }> {
     const options: RequiredConfigurationOption = {
       ...DEFAULT_OPTIONS,
       ...(await this.loadCustomConfig(cwd)),
@@ -169,7 +174,7 @@ export class Configuration implements IConfiguration {
       throw new Error('Can\'t load project');
     }
 
-    return { configuration, project };
+    return { configuration, project, git };
   }
 
   static async loadCustomConfig(cwd: string) {

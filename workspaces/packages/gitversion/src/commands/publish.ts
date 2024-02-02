@@ -21,7 +21,7 @@ export class PublishCommand extends GitVersionCommand {
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
-    const { project } = await Configuration.load(await Git.root());
+    const { project, git } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -47,21 +47,21 @@ export class PublishCommand extends GitVersionCommand {
     if (!(await packManifest.validateGitStatusForPublish())) {
       // TODO: Reference to a correct help page to fix this
       logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
-      console.log(await project.git.exec('status'));
+      console.log(await git.exec('status'));
       return 1;
     }
 
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packedPackages, project.config.branch, packManifest.packFolder);
-      await this.addTags(packedPackages, project.git);
+      await this.addTags(packedPackages, git);
 
       if (this.push) {
         if (this.dryRun) {
           logger.reportInfo('[Dry run] Would be pushing back to git');
         } else {
           logger.reportInfo('Pushing back to git');
-          await project.git.push();
+          await git.push();
         }
       } else {
         logger.reportInfo('Skipping push step');
@@ -73,7 +73,7 @@ export class PublishCommand extends GitVersionCommand {
           logger.reportInfo('[Dry run] Would be pushing changelogs back to git');
         } else {
           logger.reportInfo('Pushing changelogs back to git');
-          await project.git.push();
+          await git.push();
         }
       } else {
         logger.reportInfo('Skipping push step');
@@ -169,7 +169,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo('[Dry run] Would be committing changelogs to git');
       } else {
         logger.reportInfo('Committing changelogs to git');
-        await project.git.addAndCommitFiles('Updated changelogs', files);
+        await project.config.git.addAndCommitFiles('Updated changelogs', files);
       }
     }
 

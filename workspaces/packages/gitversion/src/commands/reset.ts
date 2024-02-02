@@ -11,14 +11,14 @@ export class ResetCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project } = await Configuration.load(await Git.root());
+    const { project, git } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }
 
     const reset = logger.beginSection('Reset step');
 
-    await project.git.cleanChangeLogs();
+    await git.cleanChangeLogs();
 
     await Promise.all(project.workspaces.map(async workspace => {
       await workspace.updateVersion(DEFAULT_PACKAGE_VERSION, logger);

@@ -38,7 +38,7 @@ export class BumpManifest {
   }
 
   static async load(project: IProject): Promise<BumpManifest | null> {
-    const bumpManifestFile = join(project.stagingFolder, MANIFEST_NAME);
+    const bumpManifestFile = join(project.config.stagingFolder, MANIFEST_NAME);
 
     if (existsSync(bumpManifestFile)) {
       const content = await readFile(bumpManifestFile, 'utf-8');
@@ -54,7 +54,7 @@ export class BumpManifest {
 
   static async new(project: IProject) {
     await this.clear(project);
-    const gitStatus = await project.git.gitStatusHash();
+    const gitStatus = await project.config.git.gitStatusHash();
     const result = new BumpManifest(project, {
       preBump: gitStatus,
       postBump: 'INVALID',
@@ -64,7 +64,7 @@ export class BumpManifest {
   }
 
   static async clear(project: IProject) {
-    rm(join(project.stagingFolder, MANIFEST_NAME), {
+    rm(join(project.config.stagingFolder, MANIFEST_NAME), {
       force: true,
     });
   }
@@ -85,11 +85,11 @@ export class BumpManifest {
     if (!this.gitStatus.preBump) {
       throw new Error('No pre bump status hash set');
     }
-    const bumpManifestFile = join(this.project.stagingFolder, MANIFEST_NAME);
+    const bumpManifestFile = join(this.project.config.stagingFolder, MANIFEST_NAME);
     const content: BumpManifestContent = {
       gitStatus: {
         preBump: this.gitStatus.preBump,
-        postBump: await this.project.git.gitStatusHash(),
+        postBump: await this.project.config.git.gitStatusHash(),
       },
       bumps: this.bumps,
     };

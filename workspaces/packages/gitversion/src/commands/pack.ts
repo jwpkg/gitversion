@@ -18,7 +18,7 @@ export class PackCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project } = await Configuration.load(await Git.root());
+    const { project, git, configuration } = await Configuration.load(await Git.root());
     if (!project) {
       return 1;
     }
@@ -34,7 +34,7 @@ export class PackCommand extends GitVersionCommand {
 
     if (!packManifest.validateGitStatusWithBump()) {
       logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
-      console.log(await project.git.exec('status'));
+      console.log(await git.exec('status'));
     }
 
     const bumpedWorkspaces = bumpManifest.bumps.filter(b => b.private === false);
@@ -44,7 +44,7 @@ export class PackCommand extends GitVersionCommand {
         packManifest.add(projectBump);
       }
 
-      const packFolder = join(project.stagingFolder, 'pack');
+      const packFolder = join(configuration.stagingFolder, 'pack');
       await mkdir(packFolder, {
         recursive: true,
       });
@@ -67,7 +67,7 @@ export class PackCommand extends GitVersionCommand {
 
     if (!packManifest.validateGitStatusDuringPack()) {
       logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);
-      console.log(await project.git.exec('status'));
+      console.log(await git.exec('status'));
     }
 
     logger.endSection(section);

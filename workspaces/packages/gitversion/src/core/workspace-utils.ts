@@ -9,7 +9,6 @@ import { ChangelogEntry, addToChangelog } from './changelog';
 import { Configuration } from './configuration';
 import { DEFAULT_PACKAGE_VERSION } from './constants';
 import { formatPackageName, formatVersion } from './format-utils';
-import { Git } from './git';
 import { LogReporter } from './log-reporter';
 import { NodeManifest, loadManifest, persistManifest } from './node-manifest';
 
@@ -40,11 +39,8 @@ export interface IProject extends IWorkspace {
   readonly gitPlatform: IGitPlatformPlugin;
 
   readonly childWorkspaces: IWorkspace[];
-  readonly git: Git;
 
   readonly workspaces: IWorkspace[];
-
-  readonly stagingFolder: string;
 }
 
 export class Workspace implements IWorkspace {
@@ -126,7 +122,6 @@ export class Project extends Workspace implements IProject {
   }
 
   childWorkspaces: Workspace[] = [];
-  git: Git;
 
   get workspaces(): Workspace[] {
     return [
@@ -147,17 +142,11 @@ export class Project extends Workspace implements IProject {
     return this;
   }
 
-  get stagingFolder() {
-    return join(this.cwd, 'gitversion.out');
-  }
-
   private constructor(cwd: string, manifest: NodeManifest, config: Configuration) {
     super((undefined as any as Project), '.', manifest);
     this._project = this;
     this._cwd = cwd;
     this._config = config;
-
-    this.git = new Git(this.cwd);
   }
 
   static async load(configuration: Configuration): Promise<Project | null> {

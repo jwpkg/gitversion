@@ -19,7 +19,7 @@ export interface ChangelogEntry {
 }
 
 export async function detectChangelog(relativeCwd: string, project: IProject, from: GitSemverTag, to: GitSemverTag) {
-  const logs = await project.git.logs(from.hash, relativeCwd);
+  const logs = await project.config.git.logs(from.hash, relativeCwd);
 
   const commits = parseConventionalCommits(logs, project.gitPlatform);
   return generateChangeLogEntry(commits, from, to, project.config.pluginManager);

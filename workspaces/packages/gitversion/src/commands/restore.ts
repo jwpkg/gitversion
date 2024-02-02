@@ -43,7 +43,7 @@ export class RestoreCommand extends GitVersionCommand {
   }
 
   async currentVersionFromGit(workspace: IWorkspace) {
-    const tags = await workspace.project.git.versionTags(workspace.tagPrefix);
+    const tags = await workspace.config.git.versionTags(workspace.tagPrefix);
     return determineCurrentVersion(tags, workspace.config.branch, workspace.tagPrefix);
   }
 }

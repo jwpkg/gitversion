@@ -35,7 +35,7 @@ export class PackArtifact {
   packages: PackedPackage[];
 
   get packFolder() {
-    return join(this.project.stagingFolder, PACK_FOLDER);
+    return join(this.project.config.stagingFolder, PACK_FOLDER);
   }
 
   get packManifestFile() {
@@ -61,11 +61,11 @@ export class PackArtifact {
       this.gitStatus.postBump,
       this.gitStatus.prePack,
       this.gitStatus.postPack,
-    ].includes(await this.project.git.gitStatusHash());
+    ].includes(await this.project.config.git.gitStatusHash());
   }
 
   static async load(project: IProject): Promise<PackArtifact | null> {
-    const packFolder = join(project.stagingFolder, PACK_FOLDER);
+    const packFolder = join(project.config.stagingFolder, PACK_FOLDER);
     const manifestFile = join(packFolder, MANIFEST_NAME);
 
     if (existsSync(manifestFile)) {
@@ -77,7 +77,7 @@ export class PackArtifact {
   }
 
   static async new(project: IProject, bumpGitStatus: BumpManifestGitStatus) {
-    const statusHash = await project.git.gitStatusHash();
+    const statusHash = await project.config.git.gitStatusHash();
     const gitStatus: PackManifestGitStatus = {
       ...bumpGitStatus,
       prePack: statusHash,
@@ -89,7 +89,7 @@ export class PackArtifact {
   }
 
   static async clear(project: IProject) {
-    await rm(join(project.stagingFolder, 'pack'), {
+    await rm(join(project.config.stagingFolder, 'pack'), {
       force: true,
       recursive: true,
     });
@@ -100,7 +100,7 @@ export class PackArtifact {
   }
 
   async persist() {
-    this.gitStatus.postPack = await this.project.git.gitStatusHash();
+    this.gitStatus.postPack = await this.project.config.git.gitStatusHash();
     const content: PackManifestContent = {
       gitStatus: this.gitStatus,
       packages: this.packages,
