@@ -4,6 +4,22 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.18](https://github.com/cp-utils/gitversion/compare/v0.0.17...v0.0.18) (Fri Feb 02 2024)
+
+### refactor
+
+* Refactored configuration and project initialization ([9f14c46](https://github.com/cp-utils/gitversion/commit/9f14c466a5139374d68ba0d19193e3d444097a26))
+
+* Default locations of properties ([cc30097](https://github.com/cp-utils/gitversion/commit/cc300974f7316b960345d81eb9f420c60ef35e9a))
+
+* Extracted project to be a plugin based nodeproject and prepare for other project types ([cfefcf1](https://github.com/cp-utils/gitversion/commit/cfefcf146c2c4c8ab5b3d13638f60e8be77c1bee))
+
+* **plugins** Change plugin initialization for build-in plugins ([1087046](https://github.com/cp-utils/gitversion/commit/10870460fa1968c67e72308d1113269693190d23))
+
+### fix
+
+* Jest ([bdb5115](https://github.com/cp-utils/gitversion/commit/bdb5115c4dc6daabc5a0b9d6d275d1b09c843040))
+
 ## [0.0.17](https://github.com/cp-utils/gitversion/compare/v0.0.16...v0.0.17) (Fri Feb 02 2024)
 
 ### fix

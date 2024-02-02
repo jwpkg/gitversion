@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.18](https://github.com/cp-utils/gitversion/compare/v0.0.17...v0.0.18) (Fri Feb 02 2024)
+
+### fix
+
+* Jest ([bdb5115](https://github.com/cp-utils/gitversion/commit/bdb5115c4dc6daabc5a0b9d6d275d1b09c843040))
+
 ## [0.0.17](https://github.com/cp-utils/gitversion/compare/v0.0.16...v0.0.17) (Fri Feb 02 2024)
 
 
