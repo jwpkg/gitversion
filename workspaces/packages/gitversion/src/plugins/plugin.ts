@@ -108,7 +108,7 @@ export class PluginManager implements IChangelogRenderFunctions {
         }
         return null;
       } else {
-        console.log('2KJHJKHKJHKHKJ', result);
+        console.log('2KJHJKHKJHKHKJ', plugin);
         return plugin;
       }
     });
