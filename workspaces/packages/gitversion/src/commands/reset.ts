@@ -1,4 +1,4 @@
-import { Configuration } from '../core/configuration';
+import { Application } from '../core/application';
 import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
@@ -11,7 +11,7 @@ export class ResetCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project, git } = await Configuration.load(await Git.root());
+    const { project, git } = await Application.init(await Git.root());
     if (!project) {
       return 1;
     }

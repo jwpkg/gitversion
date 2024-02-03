@@ -1,14 +1,15 @@
 import { Option } from 'clipanion';
 import { colorize } from 'colorize-node';
-import { async as crossSpawnAsync } from 'cross-spawn-extra';
-import { dirname, join } from 'path';
+import { join } from 'path';
 
-import { BranchType, Configuration, IConfiguration, VersionBranch } from '../core/configuration';
+import { Application } from '../core/application';
+import { BranchType, VersionBranch } from '../core/configuration';
 import { formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
 import { IProject } from '../core/workspace-utils';
+import { IPackageManager } from '../plugins';
 
 import { GitVersionCommand } from './context';
 
@@ -21,12 +22,17 @@ export class PublishCommand extends GitVersionCommand {
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
-    const { project, git, configuration } = await Configuration.load(await Git.root());
+    const application = await Application.init(await Git.root(), {
+      dryRun: this.dryRun,
+    });
+
+    const { project, git, configuration, branch, hooks, packageManager } = application;
+
     if (!project) {
       return 1;
     }
 
-    let packManifest = await PackArtifact.load(configuration);
+    let packManifest = await PackArtifact.load(configuration, git);
 
     if (!packManifest) {
       logger.reportInfo('No pack manifest found. Running pack on current workspace');
@@ -34,7 +40,7 @@ export class PublishCommand extends GitVersionCommand {
       if (result !== 0) {
         return result;
       }
-      packManifest = await PackArtifact.load(configuration);
+      packManifest = await PackArtifact.load(configuration, git);
     } else {
       logger.reportInfo('Pack manifest found. Publishing from pack');
     }
@@ -53,7 +59,7 @@ export class PublishCommand extends GitVersionCommand {
 
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
-      await this.publishPackages(packedPackages, configuration.branch, packManifest.packFolder);
+      await this.publishPackages(packageManager, packedPackages, branch);
       await this.addTags(packedPackages, git);
 
       if (this.push) {
@@ -67,7 +73,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo('Skipping push step');
       }
 
-      await this.updateChangelogs(packedPackages, project, configuration);
+      await this.updateChangelogs(packedPackages, project, git);
       if (this.push) {
         if (this.dryRun) {
           logger.reportInfo('[Dry run] Would be pushing changelogs back to git');
@@ -79,7 +85,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo('Skipping push step');
       }
 
-      await configuration.pluginManager.dispatchOnPublish(project, configuration, packedPackages, this.dryRun);
+      await hooks.dispatchOnPublish(application, packedPackages);
     } else {
       logger.reportWarning('Nothing to publish');
     }
@@ -87,11 +93,11 @@ export class PublishCommand extends GitVersionCommand {
     return 0;
   }
 
-  async publishPackages(packedPackages: PackedPackage[], branch: VersionBranch, packFolder: string) {
+  async publishPackages(packageManager: IPackageManager, packedPackages: PackedPackage[], branch: VersionBranch) {
     const publish = logger.beginSection('Publish step');
     const promises = packedPackages.map(async packedPackage => {
       if (packedPackage.packFile) {
-        await this.publishPackage(packedPackage, join(packFolder, packedPackage.packFile), branch);
+        await this.publishPackage(packageManager, packedPackage, branch);
       }
     });
 
@@ -99,34 +105,10 @@ export class PublishCommand extends GitVersionCommand {
     logger.endSection(publish);
   }
 
-  async publishPackage(packedPackage: PackedPackage, packFile: string, branch: VersionBranch) {
-    return logger.runSection(`Publishing ${formatPackageName(packedPackage.packageName)}`, async logger => {
-      const tag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
-      logger.reportInfo([colorize.whiteBright('»'), 'npm', 'publish', packFile, '--tag', tag].join(' '));
-
-      if (this.dryRun) {
-        logger.reportWarning('Dry run active. Only simulating publish');
-      } else {
-        const output = await crossSpawnAsync('npm', ['publish', packFile, '--tag', tag, '--access', 'public', '--verbose'], {
-          cwd: dirname(packFile),
-          env: process.env,
-        });
-
-        if (output.error) {
-          if (output.error?.message) {
-            logger.reportError(`${output.error.message}`);
-          } else {
-            logger.reportError(`${output.error}`);
-          }
-          throw new Error(`Error during publish. Exit code: ${colorize.redBright(output.exitCode)}`);
-        } else if (output.exitCode !== 0) {
-          console.log(output.stdout.toString('utf-8'));
-          console.log(output.stderr.toString('utf-8'));
-          throw new Error(`Publish error: ${output.exitCode}`);
-        } else {
-          logger.reportInfo('Publish package success');
-        }
-      }
+  async publishPackage(packageManager: IPackageManager, packedPackage: PackedPackage, branch: VersionBranch) {
+    return logger.runSection(`Publishing ${formatPackageName(packedPackage.packageName)}`, async () => {
+      const releaseTag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
+      await packageManager.publish(packedPackage, releaseTag);
     });
   }
 
@@ -150,7 +132,7 @@ export class PublishCommand extends GitVersionCommand {
     logger.endSection(section);
   }
 
-  async updateChangelogs(packages: PackedPackage[], project: IProject, configuration: IConfiguration) {
+  async updateChangelogs(packages: PackedPackage[], project: IProject, git: Git) {
     const section = logger.beginSection('Updating changelogs');
 
     const files: string[] = [];
@@ -169,7 +151,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo('[Dry run] Would be committing changelogs to git');
       } else {
         logger.reportInfo('Committing changelogs to git');
-        await configuration.git.addAndCommitFiles('Updated changelogs', files);
+        await git.addAndCommitFiles('Updated changelogs', files);
       }
     }
 

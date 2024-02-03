@@ -1,5 +1,6 @@
+import { Application } from '../core/application';
 import { BumpManifest } from '../core/bump-manifest';
-import { Configuration, IConfiguration } from '../core/configuration';
+import { VersionBranch } from '../core/configuration';
 import { formatVersion, formatVersionBranch } from '../core/format-utils';
 import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
@@ -14,24 +15,24 @@ export class RestoreCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project, configuration } = await Configuration.load(await Git.root());
+    const { project, configuration, git, branch } = await Application.init(await Git.root());
     if (!project) {
       return 1;
     }
 
-    logger.reportInfo(`Branch type: ${formatVersionBranch(configuration.branch)}`);
+    logger.reportInfo(`Branch type: ${formatVersionBranch(branch)}`);
     const section = logger.beginSection('Restore step');
 
     await BumpManifest.clear(configuration);
 
     if (configuration.options.independentVersioning) {
       const promises = project.workspaces.map(async workspace => {
-        const version = await this.currentVersionFromGit(workspace, configuration);
+        const version = await this.currentVersionFromGit(workspace, git, branch);
         await workspace.updateVersion(version.version, logger);
       });
       await Promise.all(promises);
     } else {
-      const version = await this.currentVersionFromGit(project, configuration);
+      const version = await this.currentVersionFromGit(project, git, branch);
 
       logger.reportInfo(`Latest version in git tags: ${formatVersion(version.version)}`);
 
@@ -42,8 +43,8 @@ export class RestoreCommand extends GitVersionCommand {
     return 0;
   }
 
-  async currentVersionFromGit(workspace: IWorkspace, configuration: IConfiguration) {
-    const tags = await configuration.git.versionTags(workspace.tagPrefix);
-    return determineCurrentVersion(tags, configuration.branch, workspace.tagPrefix);
+  async currentVersionFromGit(workspace: IWorkspace, git: Git, branch: VersionBranch) {
+    const tags = await git.versionTags(workspace.tagPrefix);
+    return determineCurrentVersion(tags, branch, workspace.tagPrefix);
   }
 }

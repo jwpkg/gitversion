@@ -2,6 +2,7 @@ import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 
+import { IApplication } from './application';
 import { ChangelogEntry } from './changelog';
 import { IConfiguration } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
@@ -33,19 +34,19 @@ export class BumpManifest {
   gitStatus: BumpManifestGitStatus;
   bumps: Bump[];
 
-  private constructor(private configuration: IConfiguration, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
+  private constructor(private application: IApplication, gitStatus: BumpManifestGitStatus, bumps?: Bump[]) {
     this.bumps = bumps ?? [];
     this.gitStatus = gitStatus;
   }
 
-  static async load(configuration: IConfiguration): Promise<BumpManifest | null> {
-    const bumpManifestFile = join(configuration.stagingFolder, MANIFEST_NAME);
+  static async load(application: IApplication): Promise<BumpManifest | null> {
+    const bumpManifestFile = join(application.configuration.stagingFolder, MANIFEST_NAME);
 
     if (existsSync(bumpManifestFile)) {
       const content = await readFile(bumpManifestFile, 'utf-8');
       const manifest = JSON.parse(content) as BumpManifestContent;
       return new BumpManifest(
-        configuration,
+        application,
         manifest.gitStatus,
         manifest.bumps,
       );
@@ -53,10 +54,10 @@ export class BumpManifest {
     return null;
   }
 
-  static async new(configuration: IConfiguration) {
-    await this.clear(configuration);
-    const gitStatus = await configuration.git.gitStatusHash();
-    const result = new BumpManifest(configuration, {
+  static async new(application: IApplication) {
+    await this.clear(application.configuration);
+    const gitStatus = await application.git.gitStatusHash();
+    const result = new BumpManifest(application, {
       preBump: gitStatus,
       postBump: 'INVALID',
     });
@@ -86,11 +87,11 @@ export class BumpManifest {
     if (!this.gitStatus.preBump) {
       throw new Error('No pre bump status hash set');
     }
-    const bumpManifestFile = join(this.configuration.stagingFolder, MANIFEST_NAME);
+    const bumpManifestFile = join(this.application.configuration.stagingFolder, MANIFEST_NAME);
     const content: BumpManifestContent = {
       gitStatus: {
         preBump: this.gitStatus.preBump,
-        postBump: await this.configuration.git.gitStatusHash(),
+        postBump: await this.application.git.gitStatusHash(),
       },
       bumps: this.bumps,
     };

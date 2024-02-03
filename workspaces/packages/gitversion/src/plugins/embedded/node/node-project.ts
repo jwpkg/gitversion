@@ -5,12 +5,12 @@ import { join } from 'path';
 import * as t from 'typanion';
 
 import { ChangelogEntry, addToChangelog } from '../../../core/changelog';
-import { IBaseConfiguration } from '../../../core/configuration';
+import { IConfiguration } from '../../../core/configuration';
 import { DEFAULT_PACKAGE_VERSION } from '../../../core/constants';
 import { formatPackageName, formatVersion } from '../../../core/format-utils';
 import { LogReporter } from '../../../core/log-reporter';
 import { IProject, IWorkspace } from '../../../core/workspace-utils';
-import { IPlugin } from '../..';
+import { IPlugin, IPluginInitialize } from '../..';
 
 export const isNodeManifest = t.isPartial({
   version: t.isOptional(t.isString()),
@@ -110,7 +110,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
   readonly name = 'Node project';
 
   private _cwd: string;
-  private _config: IBaseConfiguration;
+  private _config: IConfiguration;
 
   get cwd(): any {
     return this._cwd;
@@ -133,21 +133,21 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
     return this;
   }
 
-  static async initialize(configuration: IBaseConfiguration): Promise<NodeProject | null> {
-    const manifest = await loadManifest(configuration.cwd);
+  static async initialize(initialize: IPluginInitialize): Promise<NodeProject | null> {
+    const manifest = await loadManifest(initialize.cwd);
     if (!manifest) {
       return null;
     }
 
-    const project = new NodeProject(configuration.cwd, manifest, configuration);
+    const project = new NodeProject(initialize.cwd, manifest, initialize);
 
     if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
       const paths = await glob(manifest.workspaces, {
-        cwd: configuration.cwd,
+        cwd: initialize.cwd,
       });
 
       const workspacePromises = paths.map(async path => {
-        const manifest = await loadManifest(join(configuration.cwd, path));
+        const manifest = await loadManifest(join(initialize.cwd, path));
         if (manifest && manifest.private !== true) {
           return new NodeWorkspace(project, path, manifest);
         } else {
@@ -161,7 +161,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
     return project;
   }
 
-  private constructor(cwd: string, manifest: NodeManifest, config: IBaseConfiguration) {
+  private constructor(cwd: string, manifest: NodeManifest, config: IConfiguration) {
     super((undefined as any as NodeProject), '.', manifest);
     this._project = this;
     this._cwd = cwd;

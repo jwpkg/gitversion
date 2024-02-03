@@ -1,7 +1,6 @@
-import { IBaseConfiguration } from '../../../core/configuration';
-import { GitCommit } from '../../../core/git';
+import { Git, GitCommit } from '../../../core/git';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IGitPlatform, IPlugin } from '../../plugin';
+import { IGitPlatform, IPlugin, IPluginInitialize } from '../../plugin';
 
 export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   name = 'Azure devops platform plugin';
@@ -11,16 +10,16 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   }
 
 
-  constructor(private configuration: IBaseConfiguration, private organizationName: string, private projectName: string, private repoName: string) { }
+  constructor(private git: Git, private organizationName: string, private projectName: string, private repoName: string) { }
 
-  static async initialize(configuration: IBaseConfiguration): Promise<AzureDevopsPlugin | null> {
-    const gitUrl = await configuration.git.remoteUrl();
+  static async initialize(initialize: IPluginInitialize): Promise<AzureDevopsPlugin | null> {
+    const gitUrl = await initialize.git.remoteUrl();
 
     if (gitUrl) {
       const result = this.parseUrl(gitUrl);
 
       if (result) {
-        return new AzureDevopsPlugin(configuration, result.organizationName, result.projectName, result.repoName);
+        return new AzureDevopsPlugin(initialize.git, result.organizationName, result.projectName, result.repoName);
       }
     }
     return null;
@@ -58,7 +57,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
       }
     }
 
-    return (await this.configuration?.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return (await this.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {

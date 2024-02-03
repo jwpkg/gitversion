@@ -1,7 +1,7 @@
 import { colorize } from 'colorize-node';
 import { inc, parse, prerelease } from 'semver';
 
-import { BranchType, Configuration, FeatureBumpBehavior, VersionBranch } from './configuration';
+import { BranchType, FeatureBumpBehavior, IConfiguration, VersionBranch } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { GitCommit } from './git';
 import { logger } from './log-reporter';
@@ -82,9 +82,9 @@ export function detectBumpType(commits: ConventionalCommit[]) {
   return current;
 }
 
-export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], config: Configuration) {
-  if (config.branch.type === BranchType.FEATURE) {
-    switch (config.options.featureBumpBehavior) {
+export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], configuration: IConfiguration, branch: VersionBranch) {
+  if (branch.type === BranchType.FEATURE) {
+    switch (configuration.options.featureBumpBehavior) {
       case FeatureBumpBehavior.Never:
         logger.reportInfo(`On feature branch with featureBumpBehavior: Never. Forcing bumptype to ${colorize.greenBright('NONE')} `);
         return BumpType.NONE;

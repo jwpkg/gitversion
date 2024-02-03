@@ -6,6 +6,7 @@ import { BumpManifestGitStatus } from './bump-manifest';
 import { ChangelogEntry } from './changelog';
 import { IConfiguration } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
+import { Git } from './git';
 
 const MANIFEST_NAME = 'pack-manifest.json';
 const PACK_FOLDER = 'pack';
@@ -42,7 +43,7 @@ export class PackArtifact {
     return join(this.packFolder, MANIFEST_NAME);
   }
 
-  private constructor(private configuration: IConfiguration, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
+  private constructor(private configuration: IConfiguration, private git: Git, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
     this.gitStatus = gitStatus;
     this.packages = packages ?? [];
   }
@@ -61,23 +62,23 @@ export class PackArtifact {
       this.gitStatus.postBump,
       this.gitStatus.prePack,
       this.gitStatus.postPack,
-    ].includes(await this.configuration.git.gitStatusHash());
+    ].includes(await this.git.gitStatusHash());
   }
 
-  static async load(configuration: IConfiguration): Promise<PackArtifact | null> {
+  static async load(configuration: IConfiguration, git: Git): Promise<PackArtifact | null> {
     const packFolder = join(configuration.stagingFolder, PACK_FOLDER);
     const manifestFile = join(packFolder, MANIFEST_NAME);
 
     if (existsSync(manifestFile)) {
       const content = await readFile(manifestFile, 'utf-8');
       const manifest = JSON.parse(content) as PackManifestContent;
-      return new PackArtifact(configuration, manifest.gitStatus, manifest.packages);
+      return new PackArtifact(configuration, git, manifest.gitStatus, manifest.packages);
     }
     return null;
   }
 
-  static async new(configuration: IConfiguration, bumpGitStatus: BumpManifestGitStatus) {
-    const statusHash = await configuration.git.gitStatusHash();
+  static async new(configuration: IConfiguration, git: Git, bumpGitStatus: BumpManifestGitStatus) {
+    const statusHash = await git.gitStatusHash();
     const gitStatus: PackManifestGitStatus = {
       ...bumpGitStatus,
       prePack: statusHash,
@@ -85,7 +86,7 @@ export class PackArtifact {
     };
 
     await this.clear(configuration);
-    return new PackArtifact(configuration, gitStatus);
+    return new PackArtifact(configuration, git, gitStatus);
   }
 
   static async clear(configuration: IConfiguration) {
@@ -100,7 +101,7 @@ export class PackArtifact {
   }
 
   async persist() {
-    this.gitStatus.postPack = await this.configuration.git.gitStatusHash();
+    this.gitStatus.postPack = await this.git.gitStatusHash();
     const content: PackManifestContent = {
       gitStatus: this.gitStatus,
       packages: this.packages,

@@ -1,4 +1,5 @@
-import { BranchType, Configuration, BaseConfigurationOptions, FeatureBumpBehavior } from './configuration';
+import { Application } from './application';
+import { BranchType, BaseConfigurationOptions, FeatureBumpBehavior } from './configuration';
 
 const defaultConfig: Required<BaseConfigurationOptions> = {
   featureBranchPatterns: [
@@ -10,19 +11,20 @@ const defaultConfig: Required<BaseConfigurationOptions> = {
   mainBranch: 'main',
   independentVersioning: false,
   versionTagPrefix: 'v',
+  dryRun: false,
   featureBumpBehavior: FeatureBumpBehavior.AllCommits,
 };
 
 describe('configuration', () => {
   describe('Branch detection', () => {
     test('Main branch', () => {
-      const result = Configuration.detectVersionBranch(defaultConfig, 'main');
+      const result = Application.detectVersionBranch(defaultConfig, 'main');
       expect(result.name).toBe('main');
       expect(result.type).toBe(BranchType.MAIN);
     });
 
     test('Feature branch', () => {
-      const result = Configuration.detectVersionBranch(defaultConfig, 'feature/new-feature');
+      const result = Application.detectVersionBranch(defaultConfig, 'feature/new-feature');
       expect(result.name).toBe('new-feature');
       expect(result.type).toBe(BranchType.FEATURE);
     });
@@ -35,21 +37,21 @@ describe('configuration', () => {
           '^prefix2-(.*)$',
         ],
       };
-      const result1 = Configuration.detectVersionBranch(config, 'prefix1-new-feature');
+      const result1 = Application.detectVersionBranch(config, 'prefix1-new-feature');
       expect(result1.name).toBe('new-feature');
       expect(result1.type).toBe(BranchType.FEATURE);
 
-      const result2 = Configuration.detectVersionBranch(config, 'prefix2-new-feature2');
+      const result2 = Application.detectVersionBranch(config, 'prefix2-new-feature2');
       expect(result2.name).toBe('new-feature2');
       expect(result2.type).toBe(BranchType.FEATURE);
 
-      const result3 = Configuration.detectVersionBranch(config, 'feature/new-feature');
+      const result3 = Application.detectVersionBranch(config, 'feature/new-feature');
       expect(result3.name).toBe('unknown');
       expect(result3.type).toBe(BranchType.UNKNOWN);
     });
 
     test('Release branch', () => {
-      const result = Configuration.detectVersionBranch(defaultConfig, 'release/alpha');
+      const result = Application.detectVersionBranch(defaultConfig, 'release/alpha');
       expect(result.name).toBe('alpha');
       expect(result.type).toBe(BranchType.RELEASE);
     });
@@ -62,15 +64,15 @@ describe('configuration', () => {
           '^(node-[0-9]+)$',
         ],
       };
-      const result1 = Configuration.detectVersionBranch(config, 'alpha');
+      const result1 = Application.detectVersionBranch(config, 'alpha');
       expect(result1.name).toBe('alpha');
       expect(result1.type).toBe(BranchType.RELEASE);
 
-      const result2 = Configuration.detectVersionBranch(config, 'node-20');
+      const result2 = Application.detectVersionBranch(config, 'node-20');
       expect(result2.name).toBe('node-20');
       expect(result2.type).toBe(BranchType.RELEASE);
 
-      const result3 = Configuration.detectVersionBranch(config, 'beta');
+      const result3 = Application.detectVersionBranch(config, 'beta');
       expect(result3.name).toBe('unknown');
       expect(result3.type).toBe(BranchType.UNKNOWN);
     });
