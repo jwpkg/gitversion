@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.19](https://github.com/cp-utils/gitversion/compare/v0.0.18...v0.0.19) (Sat Feb 03 2024)
+
+### docs
+
+* Updated docs to show the first line in npm ([5a9014e](https://github.com/cp-utils/gitversion/commit/5a9014ee4d7a0bb3d4d92a741195262ba0920a0b))
+
+### feat
+
+* Extracted yarn in the yarn package manager plugin ([35c3362](https://github.com/cp-utils/gitversion/commit/35c3362e198cd8d9f82b35b97e465a76e5edeeaa))
+
 ## [0.0.18](https://github.com/cp-utils/gitversion/compare/v0.0.17...v0.0.18) (Fri Feb 02 2024)
 
 ### refactor
