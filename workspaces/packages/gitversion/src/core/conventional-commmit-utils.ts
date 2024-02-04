@@ -1,6 +1,5 @@
-import { IGitPlatform } from './plugin-manager';
-
 import { GitCommit } from './git';
+import { IGitPlatform } from './plugin-manager';
 
 export enum ConventionalCommitFooterType {
   note,
