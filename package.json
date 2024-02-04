@@ -10,7 +10,7 @@
   "author": "Joost van der Waal <joost.vanderwaal@aegon.nl>",
   "license": "Apache-2.0",
   "workspaces": [
-    "workspaces/*/*"
+    "workspaces/packages/*"
   ],
   "scripts": {
     "build:all": "yarn validate:all && yarn build:packages",
