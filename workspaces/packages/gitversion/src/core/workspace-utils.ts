@@ -1,5 +1,4 @@
 import { ChangelogEntry } from './changelog';
-import { LogReporter } from './log-reporter';
 
 export interface IManifest {
   name: string;
@@ -24,8 +23,8 @@ export interface IWorkspace {
 
   readonly tagPrefix: string;
 
-  updateChangelog(version: string, entry: ChangelogEntry): Promise<string>;
-  updateVersion(version: string, logger: LogReporter): Promise<void>;
+  updateChangelog(entry: ChangelogEntry): Promise<string>;
+  updateVersion(version: string): Promise<void>;
 }
 
 export interface IProject extends IWorkspace {

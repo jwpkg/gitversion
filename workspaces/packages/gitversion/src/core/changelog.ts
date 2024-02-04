@@ -25,11 +25,11 @@ export async function detectChangelog(application: IApplication, relativeCwd: st
   return generateChangeLogEntry(commits, from, to, application.pluginManager);
 }
 
-export function addToChangelog(entry: ChangelogEntry, version: string, changelogContent?: string) {
+export function addToChangelog(entry: ChangelogEntry, changelogContent?: string) {
   const entries: ChangelogEntry[] = [entry];
   if (changelogContent) {
     const allEntries = parseChangelog(changelogContent);
-    entries.push(...allEntries.filter(e => e.version !== version));
+    entries.push(...allEntries.filter(e => e.version !== entry.version));
   }
   return [
     HEADER,
