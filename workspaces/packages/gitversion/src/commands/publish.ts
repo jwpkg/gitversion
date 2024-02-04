@@ -130,7 +130,7 @@ export class PublishCommand extends GitVersionCommand {
       const workspace = project.workspaces.find(w => w.relativeCwd === p.packageRelativeCwd);
       if (workspace) {
         logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(join(workspace.cwd, 'CHANGELOG.md')))}`);
-        const file = await workspace.updateChangelog(p.version, p.changeLog);
+        const file = await workspace.updateChangelog(p.changeLog);
         files.push(file);
       }
     });

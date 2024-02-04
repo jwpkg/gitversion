@@ -58,7 +58,7 @@ export class BumpCommand extends RestoreCommand {
     }
 
     const promises = project.workspaces.map(async workspace => {
-      return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
+      return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async () => {
         const newVersion = await this.detectBumpForWorkspace(application, workspace, bumpManifest, this.version, this.bumpType);
         if (newVersion) {
           await workspace.updateVersion(newVersion);
