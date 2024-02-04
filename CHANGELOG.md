@@ -4,6 +4,34 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.20](https://github.com/cp-utils/gitversion/compare/v0.0.19...v0.0.20) (Sun Feb 04 2024)
+
+### refactor
+
+* Dryrun inside persisting actions ([0de0782](https://github.com/cp-utils/gitversion/commit/0de0782b2b254295062e8d7d1043631a114846ac))
+
+* Used the context a bit better ([0a0f586](https://github.com/cp-utils/gitversion/commit/0a0f586017aa2321c5a939a4feedea2de026ada8))
+
+* Removed global logger ([064d4cc](https://github.com/cp-utils/gitversion/commit/064d4cc3089b0f0a0adf10588c8165982a0986ff))
+
+* cleanup some logger refs ([c964081](https://github.com/cp-utils/gitversion/commit/c9640819fe49127ab560e4ea1526d6690b331299))
+
+### chore
+
+* changelog test and parameter simplification ([a814c61](https://github.com/cp-utils/gitversion/commit/a814c61f806c56e33505ad0746cbdbf218970bd0))
+
+### feat
+
+* NPM Plugin ([2d0f6f9](https://github.com/cp-utils/gitversion/commit/2d0f6f976420ff6e1ecd410de8500615ee76e3b9))
+
+### fix
+
+* Fixes after param changes ([c9db1cb](https://github.com/cp-utils/gitversion/commit/c9db1cb2ea9212a5feb97eb95a9a7016f13d4e65))
+
+* TSC Errors ([b049b9e](https://github.com/cp-utils/gitversion/commit/b049b9ecae618d4efcffe159c75cc7a5ae3dc862))
+
+* Linting ([56c98e3](https://github.com/cp-utils/gitversion/commit/56c98e35f8b24ab68361fc3f47c510b691662633))
+
 ## [0.0.19](https://github.com/cp-utils/gitversion/compare/v0.0.18...v0.0.19) (Sat Feb 03 2024)
 
 ### docs
