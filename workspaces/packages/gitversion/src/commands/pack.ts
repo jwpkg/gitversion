@@ -59,7 +59,7 @@ export class PackCommand extends GitVersionCommand {
         if (workspace) {
           await workspace.updateVersion(bump.version, logger);
           await workspace.updateChangelog(bump.version, bump.changeLog);
-          await this.execPackCommand(application, workspace, packFolder, bump, packManifest);
+          await this.execPackCommand(application, workspace, bump, packManifest);
         }
       });
       await Promise.all(promises);
@@ -81,9 +81,9 @@ export class PackCommand extends GitVersionCommand {
     return 0;
   }
 
-  async execPackCommand(application: IApplication, workspace: IWorkspace, packFolder: string, bump: Bump, packManifest: PackArtifact) {
+  async execPackCommand(application: IApplication, workspace: IWorkspace, bump: Bump, packManifest: PackArtifact) {
     const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}-${bump.version}.tgz`;
-    const packFile = `${join(packFolder, normalizedPackageName)}`;
+    const packFile = `${join(application.configuration.packFolder, normalizedPackageName)}`;
 
     return application.logger.runSection(`Packing ${formatPackageName(bump.packageName)}`, async logger => {
       try {

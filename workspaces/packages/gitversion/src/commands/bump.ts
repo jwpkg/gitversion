@@ -8,7 +8,6 @@ import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core
 import { generateChangeLogEntry } from '../core/changelog';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
-import { LogReporter } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { IWorkspace } from '../core/workspace-utils';
 
@@ -55,12 +54,12 @@ export class BumpCommand extends RestoreCommand {
     const bumpManifest = await BumpManifest.new(application);
 
     if (!this.version && configuration.options.independentVersioning === false) {
-      this.version = await this.detectBumpForWorkspace(application, project, logger, bumpManifest, undefined, this.bumpType);
+      this.version = await this.detectBumpForWorkspace(application, project, bumpManifest, undefined, this.bumpType);
     }
 
     const promises = project.workspaces.map(async workspace => {
       return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
-        const newVersion = await this.detectBumpForWorkspace(application, workspace, logger, bumpManifest, this.version, this.bumpType);
+        const newVersion = await this.detectBumpForWorkspace(application, workspace, bumpManifest, this.version, this.bumpType);
         if (newVersion) {
           await workspace.updateVersion(newVersion, logger);
           await pluginManager.dispatchOnBump(application, workspace, newVersion);
@@ -76,7 +75,7 @@ export class BumpCommand extends RestoreCommand {
     return 0;
   }
 
-  async detectBumpForWorkspace(application: IApplication, workspace: IWorkspace, logger: LogReporter, bumpManifest: BumpManifest, explicitVersion?: string, explicitBumpType?: BumpType) {
+  async detectBumpForWorkspace(application: IApplication, workspace: IWorkspace, bumpManifest: BumpManifest, explicitVersion?: string, explicitBumpType?: BumpType) {
     let newVersion: string | undefined;
     const workspaceForVersion = application.configuration.options.independentVersioning ? workspace : workspace.project;
     const currentVersion = await this.currentVersionFromGit(workspaceForVersion, application.git, application.branch);
@@ -85,11 +84,11 @@ export class BumpCommand extends RestoreCommand {
       const logs = await application.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
       const commits = parseConventionalCommits(logs, application.pluginManager.gitPlatform);
 
-      logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+      application.logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
 
-      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, logger);
+      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, application.logger);
 
-      logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
+      application.logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
       newVersion = executeBump(currentVersion.version, application.branch, bumpType) ?? undefined;
     } else {
       newVersion = explicitVersion;
@@ -99,15 +98,15 @@ export class BumpCommand extends RestoreCommand {
       await this.generateChangelogForWorkspace(application, workspace, currentVersion, {
         version: newVersion,
         hash: await application.git.currentCommit(),
-      }, bumpManifest, logger);
+      }, bumpManifest);
     }
     return newVersion;
   }
 
-  private async generateChangelogForWorkspace(application: IApplication, workspace: IWorkspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, bumpManifest: BumpManifest, logger: LogReporter) {
+  private async generateChangelogForWorkspace(application: IApplication, workspace: IWorkspace, fromVersion: GitSemverTag, toVersion: GitSemverTag, bumpManifest: BumpManifest) {
     const logs = await application.git.logs(fromVersion.hash, workspace.relativeCwd);
     const commits = parseConventionalCommits(logs, application.gitPlatform);
-    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);
+    application.logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for changelog`);
 
     const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, application.pluginManager);
 
