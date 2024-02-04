@@ -1,5 +1,5 @@
 import { Git, GitCommit } from '../../../core/git';
-import { IGitPlatform, IPluginInitialize } from '../../plugin';
+import { IGitPlatform, IPluginInitialize } from '../../../core/plugin-manager';
 
 export class GitPlatformDefault implements IGitPlatform {
   name = 'Standard git platform plugin';

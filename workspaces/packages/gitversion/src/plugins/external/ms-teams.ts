@@ -3,7 +3,7 @@ import { RequestOptions, request } from 'https';
 import { IApplication } from '../../core/application';
 import { VersionBranch } from '../../core/configuration';
 import { PackedPackage } from '../../core/pack-artifact';
-import { IPlugin } from '../plugin';
+import { IPlugin } from '../../core/plugin-manager';
 
 import { payload } from './ms-teams-payload';
 

@@ -1,18 +1,18 @@
-import { IApplication } from '../core/application';
-import { IConfiguration } from '../core/configuration';
-import { IExecutor } from '../core/executor';
-import { Git, GitCommit } from '../core/git';
-import { LogReporter } from '../core/log-reporter';
-import { PackedPackage } from '../core/pack-artifact';
-import { Prefix } from '../core/type-utils';
-import { GitSemverTag } from '../core/version-utils';
-import { IProject, IWorkspace } from '../core/workspace-utils';
+import { AzureDevopsPlugin } from '../plugins/embedded/git/azure-devops';
+import { GitPlatformDefault } from '../plugins/embedded/git/default';
+import { GithubPlugin } from '../plugins/embedded/git/github';
+import { NodeProject } from '../plugins/embedded/node/node-project';
+import { YarnPlugin } from '../plugins/embedded/node/yarn';
 
-import { AzureDevopsPlugin } from './embedded/git/azure-devops';
-import { GitPlatformDefault } from './embedded/git/default';
-import { GithubPlugin } from './embedded/git/github';
-import { NodeProject } from './embedded/node/node-project';
-import { YarnPlugin } from './embedded/node/yarn';
+import { IApplication } from './application';
+import { IConfiguration } from './configuration';
+import { IExecutor } from './executor';
+import { Git, GitCommit } from './git';
+import { LogReporter } from './log-reporter';
+import { PackedPackage } from './pack-artifact';
+import { Prefix } from './type-utils';
+import { GitSemverTag } from './version-utils';
+import { IProject, IWorkspace } from './workspace-utils';
 
 export interface IGitPlatform {
   currentBranch(): Promise<string | null>;

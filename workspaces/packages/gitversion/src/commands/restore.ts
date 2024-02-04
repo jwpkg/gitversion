@@ -15,7 +15,7 @@ export class RestoreCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project, configuration, git, branch } = await Application.init(await Git.root());
+    const { project, configuration, git, branch } = await Application.init(this.context.application);
     if (!project) {
       return 1;
     }

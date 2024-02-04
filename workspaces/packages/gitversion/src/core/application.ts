@@ -1,10 +1,13 @@
+import { readFile } from 'fs/promises';
+import { resolve } from 'path';
+
 import { DispatchablePluginHooks, IGitPlatform, IPackageManager, PluginManager } from '../plugins';
 
-import { BaseConfigurationOptions, BranchType, Configuration, IConfiguration, RequiredConfigurationOption, VersionBranch } from './configuration';
+import { BaseConfigurationOptions, BranchType, Configuration, IConfiguration, RequiredConfigurationOption, VersionBranch, isUpdateableConfiguration } from './configuration';
 import { DEFAULT_CONFIGURATION_OPTIONS } from './constants';
 import { Executor, IExecutor } from './executor';
 import { Git } from './git';
-import { LogReporter, logger } from './log-reporter';
+import { LogReporter } from './log-reporter';
 import { IProject } from './workspace-utils';
 
 export interface IApplication {
@@ -71,7 +74,22 @@ export class Application {
   }
 
 
-  static async init(cwd: string, cliOptions?: CliOptions): Promise<IApplication> {
+  static async init(application?: IApplication, cliOptions?: CliOptions): Promise<IApplication> {
+    if (application) {
+      if (cliOptions && isUpdateableConfiguration(application.configuration)) {
+        application.configuration.updateOptions(cliOptions);
+      }
+
+      return application;
+    }
+
+    const logger = new LogReporter();
+
+    const version = JSON.parse(await readFile(resolve(__dirname, '../../package.json'), 'utf-8')).version;
+    logger.reportHeader(`Gitversion ${version}`);
+
+    const cwd = await Git.root();
+
     const executor = new Executor(cwd, logger);
 
     const options: RequiredConfigurationOption = {

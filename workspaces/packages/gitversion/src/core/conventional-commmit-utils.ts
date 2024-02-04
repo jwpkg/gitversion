@@ -1,4 +1,4 @@
-import { IGitPlatform } from '../plugins/plugin';
+import { IGitPlatform } from './plugin-manager';
 
 import { GitCommit } from './git';
 

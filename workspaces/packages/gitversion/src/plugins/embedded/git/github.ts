@@ -1,6 +1,6 @@
 import { Git, GitCommit } from '../../../core/git';
+import { IPlugin, IPluginInitialize } from '../../../core/plugin-manager';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IPlugin, IPluginInitialize } from '../../plugin';
 
 export class GithubPlugin implements IPlugin {
   name = 'Github platform plugin';

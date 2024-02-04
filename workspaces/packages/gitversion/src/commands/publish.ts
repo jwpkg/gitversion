@@ -22,9 +22,14 @@ export class PublishCommand extends GitVersionCommand {
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
-    const application = await Application.init(await Git.root(), {
+    const application = await Application.init(this.context.application, {
       dryRun: this.dryRun,
     });
+
+    const context = {
+      ...this.context,
+      application,
+    };
 
     const { project, git, configuration, branch, hooks, packageManager } = application;
 
@@ -36,7 +41,7 @@ export class PublishCommand extends GitVersionCommand {
 
     if (!packManifest) {
       logger.reportInfo('No pack manifest found. Running pack on current workspace');
-      const result = await this.cli.run(['pack']);
+      const result = await this.cli.run(['pack'], context);
       if (result !== 0) {
         return result;
       }

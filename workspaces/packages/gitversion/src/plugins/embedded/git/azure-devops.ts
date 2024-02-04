@@ -1,6 +1,6 @@
 import { Git, GitCommit } from '../../../core/git';
+import { IGitPlatform, IPlugin, IPluginInitialize } from '../../../core/plugin-manager';
 import { GitSemverTag } from '../../../core/version-utils';
-import { IGitPlatform, IPlugin, IPluginInitialize } from '../../plugin';
 
 export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   name = 'Azure devops platform plugin';

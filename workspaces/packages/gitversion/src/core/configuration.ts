@@ -3,9 +3,8 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import * as t from 'typanion';
 
-import { IPlugin } from '../plugins/plugin';
-
 import { logger } from './log-reporter';
+import { IPlugin } from './plugin-manager';
 
 export enum FeatureBumpBehavior {
   AllCommits,
@@ -56,7 +55,15 @@ export interface IConfiguration {
   readonly packFolder: string;
 }
 
-export class Configuration implements IConfiguration {
+export interface IUpdateableConfiguration {
+  updateOptions(options: BaseConfigurationOptions): void;
+}
+
+export function isUpdateableConfiguration(config: any): config is IUpdateableConfiguration {
+  return 'updateOptions' in config && typeof config.updateOptions === 'function';
+}
+
+export class Configuration implements IConfiguration, IUpdateableConfiguration {
   cwd: string;
   options: RequiredConfigurationOption;
 
@@ -71,6 +78,13 @@ export class Configuration implements IConfiguration {
   constructor(cwd: string, options: RequiredConfigurationOption) {
     this.cwd = cwd;
     this.options = options;
+  }
+
+  updateOptions(options: BaseConfigurationOptions) {
+    this.options = {
+      ...this.options,
+      ...options,
+    };
   }
 
   static async loadCustomConfig(cwd: string) {

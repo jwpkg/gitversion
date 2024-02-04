@@ -5,7 +5,6 @@ import { join } from 'path';
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
-import { Git } from '../core/git';
 import { logger } from '../core/log-reporter';
 import { PackArtifact } from '../core/pack-artifact';
 import { IWorkspace } from '../core/workspace-utils';
@@ -18,7 +17,13 @@ export class PackCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const application = await Application.init(await Git.root());
+    const application = await Application.init(this.context.application);
+
+    const context = {
+      ...this.context,
+      application,
+    };
+
     const { project, git, configuration } = application;
     if (!project) {
       return 1;
@@ -72,7 +77,7 @@ export class PackCommand extends GitVersionCommand {
 
     logger.endSection(section);
 
-    await this.cli.run(['reset']);
+    await this.cli.run(['reset'], context);
 
     return 0;
   }

@@ -1,9 +1,9 @@
 import { BaseContext, Command } from 'clipanion';
 
-import { LogReporter } from '../core/log-reporter';
+import { IApplication } from '../core/application';
 
 export interface GitVersionContext extends BaseContext {
-  logger: LogReporter;
+  application?: IApplication;
 }
 
 export abstract class GitVersionCommand extends Command<GitVersionContext> {

@@ -8,7 +8,6 @@ import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core
 import { generateChangeLogEntry } from '../core/changelog';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
-import { Git } from '../core/git';
 import { LogReporter, logger } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { IWorkspace } from '../core/workspace-utils';
@@ -30,11 +29,16 @@ export class BumpCommand extends RestoreCommand {
   });
 
   async execute(): Promise<number> {
-    if ((await this.cli.run(['restore'])) !== 0) {
+    const application = await Application.init(this.context.application);
+    const context = {
+      ...this.context,
+      application,
+    };
+
+    if ((await this.cli.run(['restore'], context)) !== 0) {
       return 1;
     }
 
-    const application = await Application.init(await Git.root());
     const { project, git, configuration, pluginManager } = application;
 
     if (!project) {
