@@ -61,7 +61,7 @@ export class BumpCommand extends RestoreCommand {
       return logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
         const newVersion = await this.detectBumpForWorkspace(application, workspace, bumpManifest, this.version, this.bumpType);
         if (newVersion) {
-          await workspace.updateVersion(newVersion, logger);
+          await workspace.updateVersion(newVersion);
           await pluginManager.dispatchOnBump(application, workspace, newVersion);
         }
       });
@@ -112,6 +112,6 @@ export class BumpCommand extends RestoreCommand {
 
     bumpManifest.add(workspace, toVersion.version, changelogEntry, commits);
 
-    await workspace.updateChangelog(toVersion.version, changelogEntry);
+    await workspace.updateChangelog(changelogEntry);
   }
 }

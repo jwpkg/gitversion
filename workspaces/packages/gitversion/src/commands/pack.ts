@@ -57,8 +57,8 @@ export class PackCommand extends GitVersionCommand {
       const promises = bumpedWorkspaces.map(async bump => {
         const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
         if (workspace) {
-          await workspace.updateVersion(bump.version, logger);
-          await workspace.updateChangelog(bump.version, bump.changeLog);
+          await workspace.updateVersion(bump.version);
+          await workspace.updateChangelog(bump.changeLog);
           await this.execPackCommand(application, workspace, bump, packManifest);
         }
       });
