@@ -63,24 +63,14 @@ export class PublishCommand extends GitVersionCommand {
       await this.addTags(packedPackages, git);
 
       if (this.push) {
-        if (this.dryRun) {
-          logger.reportInfo('[Dry run] Would be pushing back to git');
-        } else {
-          logger.reportInfo('Pushing back to git');
-          await git.push();
-        }
+        await git.push();
       } else {
         logger.reportInfo('Skipping push step');
       }
 
       await this.updateChangelogs(packedPackages, project, git);
       if (this.push) {
-        if (this.dryRun) {
-          logger.reportInfo('[Dry run] Would be pushing changelogs back to git');
-        } else {
-          logger.reportInfo('Pushing changelogs back to git');
-          await git.push();
-        }
+        await git.push();
       } else {
         logger.reportInfo('Skipping push step');
       }
@@ -108,7 +98,7 @@ export class PublishCommand extends GitVersionCommand {
   async publishPackage(packageManager: IPackageManager, packedPackage: PackedPackage, branch: VersionBranch) {
     return logger.runSection(`Publishing ${formatPackageName(packedPackage.packageName)}`, async () => {
       const releaseTag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
-      await packageManager.publish(packedPackage, releaseTag);
+      await packageManager.publish(packedPackage, releaseTag, this.dryRun);
     });
   }
 
@@ -121,12 +111,7 @@ export class PublishCommand extends GitVersionCommand {
     });
 
     const commands = tags.map(async tag => {
-      if (this.dryRun) {
-        logger.reportInfo(`[DryRun] Would add tag ${tag}`);
-      } else {
-        logger.reportInfo(`Adding tag: ${tag}`);
-        await git.addTag(tag, 'Tag added by gitversion');
-      }
+      await git.addTag(tag, 'Tag added by gitversion');
     });
     await Promise.all(commands);
     logger.endSection(section);
@@ -147,12 +132,7 @@ export class PublishCommand extends GitVersionCommand {
     await Promise.all(commands);
 
     if (files.length > 0) {
-      if (this.dryRun) {
-        logger.reportInfo('[Dry run] Would be committing changelogs to git');
-      } else {
-        logger.reportInfo('Committing changelogs to git');
-        await git.addAndCommitFiles('Updated changelogs', files);
-      }
+      await git.addAndCommitFiles('Updated changelogs', files);
     }
 
     logger.endSection(section);

@@ -102,6 +102,10 @@ export class LogReporter {
     this.writeLine(`${this.formatPrefix(CarotColor.White)}${colorize.bold(colorize.whiteBright(message))}`);
   }
 
+  reportDryrun(message: string) {
+    this.writeLine(`${this.formatPrefix(CarotColor.Green)}${colorize.green('[DRY-RUN] ')}${message}`);
+  }
+
   reportInfo(message: string) {
     this.writeLine(`${this.formatPrefix(CarotColor.Blue)}${message}`);
   }

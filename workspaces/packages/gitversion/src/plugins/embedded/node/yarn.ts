@@ -27,11 +27,11 @@ export class YarnPlugin implements IPlugin, IPackageManager {
     });
   }
 
-  async publish(packedPackage: PackedPackage, releaseTag: string): Promise<void> {
+  async publish(packedPackage: PackedPackage, releaseTag: string, dryRun: boolean): Promise<void> {
     if (packedPackage.packFile) {
       const fileLocation = join(this.application.packFolder, packedPackage.packFile);
-      if (this.application.options.dryRun) {
-        this.application.logger.reportInfo(`[DRY-RUN] Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
+      if (dryRun) {
+        this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
         return;
       } else {
         await this.application.executor.exec(['npm', 'publish', fileLocation, '--tag', releaseTag, '--access', 'public', '--verbose'], {

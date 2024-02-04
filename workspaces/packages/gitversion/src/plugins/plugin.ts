@@ -21,7 +21,7 @@ export interface IGitPlatform {
 
 export interface IPackageManager {
   pack(workspace: IWorkspace, output: string): Promise<void>;
-  publish(packedPackage: PackedPackage, releaseTag: string): Promise<void>;
+  publish(packedPackage: PackedPackage, releaseTag: string, dryRun: boolean): Promise<void>;
 }
 
 

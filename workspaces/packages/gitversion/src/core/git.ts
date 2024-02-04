@@ -1,6 +1,8 @@
 import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { createHash } from 'crypto';
 
+import { LogReporter } from './log-reporter';
+
 const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3';
 const delim2 = '25B7DA41-228B-4679-B2A2-86E328D3C3DE';
 const endRegex = new RegExp(`${delim2}\\r?\\n?$`);
@@ -42,7 +44,7 @@ export class Git {
     return gitExec(['rev-parse', '--show-toplevel']);
   }
 
-  constructor(private cwd: string) {
+  constructor(private cwd: string, private dryRun: boolean, private logger: LogReporter) {
   }
 
   async exec(...args: string[]) {
@@ -124,17 +126,32 @@ export class Git {
   }
 
   async addTag(tag: string, message: string) {
-    await this.exec('tag', '-a', tag, '-m', message);
+    if (this.dryRun) {
+      this.logger.reportDryrun(`Would be adding git tag '${tag}' with message '${message}'`);
+      return;
+    } else {
+      await this.exec('tag', '-a', tag, '-m', message);
+    }
   }
 
   async addAndCommitFiles(message: string, files: string[]) {
-    await this.exec('add', ...files);
-    await this.exec('commit', '-m', `${message} [skip ci]`, '--', ...files);
+    if (this.dryRun) {
+      this.logger.reportDryrun(`Would be adding files to git: \n${files.map(f => `    - ${f}`).join('\n')}`);
+      this.logger.reportDryrun(`Would commit added files to git with message: '${message}'`);
+      return;
+    } else {
+      await this.exec('add', ...files);
+      await this.exec('commit', '-m', `${message} [skip ci]`, '--', ...files);
+    }
   }
 
 
   async push() {
-    await this.exec('push', 'origin', '--follow-tags');
+    if (this.dryRun) {
+      this.logger.reportDryrun(`Would be pushing git to remote: ${await this.remoteName()}`);
+    } else {
+      await this.exec('push', await this.remoteName(), '--follow-tags');
+    }
   }
 
   async currentBranch() {
