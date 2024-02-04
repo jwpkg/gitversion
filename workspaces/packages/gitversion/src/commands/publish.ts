@@ -6,7 +6,7 @@ import { Application } from '../core/application';
 import { BranchType, VersionBranch } from '../core/configuration';
 import { formatPackageName } from '../core/format-utils';
 import { Git } from '../core/git';
-import { logger } from '../core/log-reporter';
+import { LogReporter } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
 import { IProject } from '../core/workspace-utils';
 import { IPackageManager } from '../plugins';
@@ -31,7 +31,7 @@ export class PublishCommand extends GitVersionCommand {
       application,
     };
 
-    const { project, git, configuration, branch, hooks, packageManager } = application;
+    const { project, git, configuration, branch, hooks, packageManager, logger } = application;
 
     if (!project) {
       return 1;
@@ -64,8 +64,8 @@ export class PublishCommand extends GitVersionCommand {
 
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
-      await this.publishPackages(packageManager, packedPackages, branch);
-      await this.addTags(packedPackages, git);
+      await this.publishPackages(packageManager, packedPackages, branch, logger);
+      await this.addTags(packedPackages, git, logger);
 
       if (this.push) {
         await git.push();
@@ -73,7 +73,7 @@ export class PublishCommand extends GitVersionCommand {
         logger.reportInfo('Skipping push step');
       }
 
-      await this.updateChangelogs(packedPackages, project, git);
+      await this.updateChangelogs(packedPackages, project, git, logger);
       if (this.push) {
         await git.push();
       } else {
@@ -88,11 +88,11 @@ export class PublishCommand extends GitVersionCommand {
     return 0;
   }
 
-  async publishPackages(packageManager: IPackageManager, packedPackages: PackedPackage[], branch: VersionBranch) {
+  async publishPackages(packageManager: IPackageManager, packedPackages: PackedPackage[], branch: VersionBranch, logger: LogReporter) {
     const publish = logger.beginSection('Publish step');
     const promises = packedPackages.map(async packedPackage => {
       if (packedPackage.packFile) {
-        await this.publishPackage(packageManager, packedPackage, branch);
+        await this.publishPackage(packageManager, packedPackage, branch, logger);
       }
     });
 
@@ -100,14 +100,14 @@ export class PublishCommand extends GitVersionCommand {
     logger.endSection(publish);
   }
 
-  async publishPackage(packageManager: IPackageManager, packedPackage: PackedPackage, branch: VersionBranch) {
+  async publishPackage(packageManager: IPackageManager, packedPackage: PackedPackage, branch: VersionBranch, logger: LogReporter) {
     return logger.runSection(`Publishing ${formatPackageName(packedPackage.packageName)}`, async () => {
       const releaseTag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
       await packageManager.publish(packedPackage, releaseTag, this.dryRun);
     });
   }
 
-  async addTags(packages: PackedPackage[], git: Git) {
+  async addTags(packages: PackedPackage[], git: Git, logger: LogReporter) {
     const section = logger.beginSection('Tagging step');
 
     const allTags = packages.map(p => p.tag);
@@ -122,7 +122,7 @@ export class PublishCommand extends GitVersionCommand {
     logger.endSection(section);
   }
 
-  async updateChangelogs(packages: PackedPackage[], project: IProject, git: Git) {
+  async updateChangelogs(packages: PackedPackage[], project: IProject, git: Git, logger: LogReporter) {
     const section = logger.beginSection('Updating changelogs');
 
     const files: string[] = [];

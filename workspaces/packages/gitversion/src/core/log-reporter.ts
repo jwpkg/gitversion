@@ -146,4 +146,4 @@ export class LogReporter {
   }
 }
 
-export const logger = new LogReporter();
+// export const logger = new LogReporter();

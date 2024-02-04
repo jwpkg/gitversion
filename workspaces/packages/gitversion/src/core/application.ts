@@ -94,7 +94,7 @@ export class Application {
 
     const options: RequiredConfigurationOption = {
       ...DEFAULT_CONFIGURATION_OPTIONS,
-      ...(await Configuration.loadCustomConfig(cwd)),
+      ...(await Configuration.loadCustomConfig(cwd, logger)),
       ...cliOptions,
     };
 

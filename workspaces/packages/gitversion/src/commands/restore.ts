@@ -3,7 +3,6 @@ import { BumpManifest } from '../core/bump-manifest';
 import { VersionBranch } from '../core/configuration';
 import { formatVersion, formatVersionBranch } from '../core/format-utils';
 import { Git } from '../core/git';
-import { logger } from '../core/log-reporter';
 import { determineCurrentVersion } from '../core/version-utils';
 import { IWorkspace } from '../core/workspace-utils';
 
@@ -15,7 +14,7 @@ export class RestoreCommand extends GitVersionCommand {
   ];
 
   async execute(): Promise<number> {
-    const { project, configuration, git, branch } = await Application.init(this.context.application);
+    const { project, configuration, git, branch, logger } = await Application.init(this.context.application);
     if (!project) {
       return 1;
     }

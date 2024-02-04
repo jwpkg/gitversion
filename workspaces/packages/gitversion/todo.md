@@ -1,2 +1,0 @@
-- command context
-- remove logger global

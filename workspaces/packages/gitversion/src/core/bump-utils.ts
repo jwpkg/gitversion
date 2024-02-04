@@ -4,7 +4,7 @@ import { inc, parse, prerelease } from 'semver';
 import { BranchType, FeatureBumpBehavior, IConfiguration, VersionBranch } from './configuration';
 import { ConventionalCommit } from './conventional-commmit-utils';
 import { GitCommit } from './git';
-import { logger } from './log-reporter';
+import { LogReporter } from './log-reporter';
 
 export enum BumpType {
   NONE = 'NONE',
@@ -82,7 +82,7 @@ export function detectBumpType(commits: ConventionalCommit[]) {
   return current;
 }
 
-export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], configuration: IConfiguration, branch: VersionBranch) {
+export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], configuration: IConfiguration, branch: VersionBranch, logger: LogReporter) {
   if (branch.type === BranchType.FEATURE) {
     switch (configuration.options.featureBumpBehavior) {
       case FeatureBumpBehavior.Never:

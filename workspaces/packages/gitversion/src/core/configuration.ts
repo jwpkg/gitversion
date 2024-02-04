@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import * as t from 'typanion';
 
-import { logger } from './log-reporter';
+import { LogReporter } from './log-reporter';
 import { IPlugin } from './plugin-manager';
 
 export enum FeatureBumpBehavior {
@@ -87,7 +87,7 @@ export class Configuration implements IConfiguration, IUpdateableConfiguration {
     };
   }
 
-  static async loadCustomConfig(cwd: string) {
+  static async loadCustomConfig(cwd: string, logger: LogReporter) {
     if (existsSync(join(cwd, '.gitversion.cjs'))) {
       const config = require(join(cwd, '.gitversion.cjs'));
       if (isBaseConfigurationOptions(config)) {

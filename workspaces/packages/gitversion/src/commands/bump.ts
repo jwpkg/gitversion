@@ -8,7 +8,7 @@ import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core
 import { generateChangeLogEntry } from '../core/changelog';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
-import { LogReporter, logger } from '../core/log-reporter';
+import { LogReporter } from '../core/log-reporter';
 import { GitSemverTag } from '../core/version-utils';
 import { IWorkspace } from '../core/workspace-utils';
 
@@ -39,7 +39,7 @@ export class BumpCommand extends RestoreCommand {
       return 1;
     }
 
-    const { project, git, configuration, pluginManager } = application;
+    const { project, git, configuration, pluginManager, logger } = application;
 
     if (!project) {
       return 1;
@@ -87,7 +87,7 @@ export class BumpCommand extends RestoreCommand {
 
       logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
 
-      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch);
+      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, logger);
 
       logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
       newVersion = executeBump(currentVersion.version, application.branch, bumpType) ?? undefined;

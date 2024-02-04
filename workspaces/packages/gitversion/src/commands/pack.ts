@@ -5,7 +5,6 @@ import { join } from 'path';
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
-import { logger } from '../core/log-reporter';
 import { PackArtifact } from '../core/pack-artifact';
 import { IWorkspace } from '../core/workspace-utils';
 
@@ -24,7 +23,7 @@ export class PackCommand extends GitVersionCommand {
       application,
     };
 
-    const { project, git, configuration } = application;
+    const { project, git, configuration, logger } = application;
     if (!project) {
       return 1;
     }
@@ -86,7 +85,7 @@ export class PackCommand extends GitVersionCommand {
     const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}-${bump.version}.tgz`;
     const packFile = `${join(packFolder, normalizedPackageName)}`;
 
-    return logger.runSection(`Packing ${formatPackageName(bump.packageName)}`, async logger => {
+    return application.logger.runSection(`Packing ${formatPackageName(bump.packageName)}`, async logger => {
       try {
         await application.packageManager.pack(workspace, packFile);
         const stats = await stat(packFile);
