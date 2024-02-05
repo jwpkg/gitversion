@@ -37,7 +37,7 @@ export class Git {
 
   async execSilent(...args: string[]) {
     try {
-      return this.executor.exec(['git', ...args], {
+      return await this.executor.exec(['git', ...args], {
         silent: true,
         cwd: this.cwd,
       });
