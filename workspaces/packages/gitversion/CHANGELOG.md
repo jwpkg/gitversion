@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.22](https://github.com/cp-utils/gitversion/compare/v0.0.21...v0.0.22) (Mon Feb 05 2024)
+
+### fix
+
+* Npm and invalid origin reset ([8264003](https://github.com/cp-utils/gitversion/commit/826400353f725a902ac5577f9ac45b1697390165))
+
 ## [0.0.21](https://github.com/cp-utils/gitversion/compare/v0.0.20...v0.0.21) (Mon Feb 05 2024)
 
 ### fix
