@@ -10,5 +10,6 @@
   "eslint.nodePath": ".yarn/sdks",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "files.insertFinalNewline": true
+  "files.insertFinalNewline": true,
+  "testing.openTesting": "neverOpen",
 }

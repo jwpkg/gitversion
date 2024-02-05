@@ -100,7 +100,7 @@ export class Application {
 
     const configuration = new Configuration(cwd, options);
 
-    const git = new Git(cwd, configuration.options.dryRun, logger);
+    const git = new Git(cwd, configuration.options.dryRun, logger, executor);
     const pluginManager = new PluginManager();
     if (options.plugins) {
       for (const plugin of options.plugins) {

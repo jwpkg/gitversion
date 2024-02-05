@@ -9,6 +9,7 @@ export interface IExecutorExecOptions {
   cwd?: string;
   silent?: boolean;
   echo?: boolean;
+  ignoreErrors?: boolean;
 }
 
 export interface IExecutor {
@@ -19,29 +20,36 @@ export class Executor implements IExecutor {
   constructor(private cwd: string, private logger: LogReporter) { }
 
   async exec(commandAndArgs: string[], options?: IExecutorExecOptions | undefined): Promise<string> {
-    const result = await crossSpawnAsync(commandAndArgs[0], commandAndArgs.splice(1), {
-      cwd: options?.cwd ?? this.cwd,
-      env: process.env,
-    });
+    try {
+      const result = await crossSpawnAsync(commandAndArgs[0], commandAndArgs.splice(1), {
+        cwd: options?.cwd ?? this.cwd,
+        env: process.env,
+      });
 
-    if (result.error) {
-      this.logError(`${result.error}`);
+      if (result.error) {
+        this.logError(`${result.error}`);
+        throw error;
+      }
+      if (result.exitCode !== 0) {
+        this.logError(`Executing command non-zero exit code: ${result.exitCode}`);
+        this.logError(`Executed command: [${commandAndArgs.join(' ')}]`);
+        this.logError(`Error output: ${result.output.toString()}`);
+        throw new Error('Non-zero exitcode');
+      }
+
+      if (options?.normalizeOutput === false) {
+        return stdout.toString();
+      } else {
+        return result.stdout
+          .toString()
+          .replace(/\\r?\\n?$/, '')
+          .trim();
+      }
+    } catch (error) {
+      if (options?.ignoreErrors === true) {
+        return '';
+      }
       throw error;
-    }
-    if (result.exitCode !== 0) {
-      this.logError(`Executing command non-zero exit code: ${result.exitCode}`);
-      this.logError(`Executed command: [${commandAndArgs.join(' ')}]`);
-      this.logError(`Error output: ${result.output.toString()}`);
-      throw new Error('Non-zero exitcode');
-    }
-
-    if (options?.normalizeOutput === false) {
-      return stdout.toString();
-    } else {
-      return result.stdout
-        .toString()
-        .replace(/\\r?\\n?$/, '')
-        .trim();
     }
   }
 

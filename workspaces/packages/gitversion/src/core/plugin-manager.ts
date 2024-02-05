@@ -2,6 +2,7 @@ import { AzureDevopsPlugin } from '../plugins/embedded/git/azure-devops';
 import { GitPlatformDefault } from '../plugins/embedded/git/default';
 import { GithubPlugin } from '../plugins/embedded/git/github';
 import { NodeProject } from '../plugins/embedded/node/node-project';
+import { NpmPlugin } from '../plugins/embedded/node/npm';
 import { YarnPlugin } from '../plugins/embedded/node/yarn';
 
 import { IApplication } from './application';
@@ -95,6 +96,7 @@ export class PluginManager implements IChangelogRenderFunctions, DispatchablePlu
     // Register defaults. Should be somewhere else i gues
     this.register(NodeProject);
     this.register(YarnPlugin);
+    this.register(NpmPlugin);
     this.register(GithubPlugin);
     this.register(AzureDevopsPlugin);
   }

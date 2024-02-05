@@ -17,7 +17,7 @@ export class NpmPlugin implements IPlugin, IPackageManager {
   private constructor(private application: IPluginInitialize) { }
 
   static initialize(initialize: IPluginInitialize) {
-    if (existsSync(join(initialize.cwd, 'package.lock'))) {
+    if (existsSync(join(initialize.cwd, 'package-lock.json'))) {
       return new NpmPlugin(initialize);
     }
     return null;

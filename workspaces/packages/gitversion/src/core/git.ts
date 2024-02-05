@@ -1,6 +1,6 @@
-import { async as crossSpawnAsync } from 'cross-spawn-extra';
 import { createHash } from 'crypto';
 
+import { Executor, IExecutorExecOptions } from './executor';
 import { LogReporter } from './log-reporter';
 
 const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3';
@@ -18,37 +18,28 @@ export interface GitTag {
   hash?: string;
 }
 
-async function gitExec(args: string[], cwd?: string) {
-  // console.log('>>', 'git', ...args);
-  const output = await crossSpawnAsync('git', args, {
-    cwd,
-  });
-  if (output.error) {
-    throw output.error;
-  }
-  if (output.exitCode !== 0) {
-    console.log(output.stderr.toString());
-    console.log(output.stdout.toString());
-    throw new Error(`Invalid status code from git output: ${output.exitCode}`);
-  }
-  return output.stdout
-    .toString()
-    .replace(/\\r?\\n?$/, '')
-    .trim();
-}
-
 export class Git {
   private commandCache: Map<string, string> = new Map();
 
   static async root(): Promise<string> {
-    return gitExec(['rev-parse', '--show-toplevel']);
+    const executor = new Executor(process.cwd(), new LogReporter());
+    return executor.exec(['git', 'rev-parse', '--show-toplevel']);
   }
 
-  constructor(private cwd: string, private dryRun: boolean, private logger: LogReporter) {
+  constructor(private cwd: string, private dryRun: boolean, private logger: LogReporter, private executor: Executor) {
   }
 
   async exec(...args: string[]) {
-    return gitExec(args, this.cwd);
+    return this.executor.exec(['git', ...args], {
+      cwd: this.cwd,
+    });
+  }
+
+  async execExtra(args: string[], options: IExecutorExecOptions) {
+    return this.executor.exec(['git', ...args], {
+      ...options,
+      cwd: this.cwd,
+    });
   }
 
   async logs(sinceHash?: string, relativeCwd?: string): Promise<GitCommit[]> {
@@ -184,9 +175,14 @@ export class Git {
   }
 
   async cleanChangeLogs() {
-    await this.exec('clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md');
-    await this.exec('checkout', 'CHANGELOG.md');
-    await this.exec('checkout', '**/CHANGELOG.md');
+    const options: IExecutorExecOptions = {
+      silent: true,
+      ignoreErrors: true,
+    };
+
+    await this.execExtra(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], options);
+    await this.execExtra(['checkout', 'CHANGELOG.md'], options);
+    await this.execExtra(['checkout', '**/CHANGELOG.md'], options);
   }
 
   async remoteName() {

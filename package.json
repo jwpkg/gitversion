@@ -19,7 +19,10 @@
     "validate:constraints": "yarn constraints",
     "validate:lint": "yarn eslint",
     "validate:tests": "yarn jest",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@cp-utils/constraints-config": "^0.0.7",
@@ -32,7 +35,8 @@
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitepress": "^1.0.0-rc.41"
   },
   "packageManager": "yarn@4.0.2",
   "private": true,
