@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.21](https://github.com/cp-utils/gitversion/compare/v0.0.20...v0.0.21) (Mon Feb 05 2024)
+
+### fix
+
+* Follow existing eol at end of file ([d6333fa](https://github.com/cp-utils/gitversion/commit/d6333fa3630405d9b1ccbf1c470a75ed2c3db645))
+
 ## [0.0.20](https://github.com/cp-utils/gitversion/compare/v0.0.19...v0.0.20) (Sun Feb 04 2024)
 
 ### refactor
