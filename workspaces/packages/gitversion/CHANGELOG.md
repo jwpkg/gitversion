@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.23](https://github.com/cp-utils/gitversion/compare/v0.0.22...v0.0.23) (Mon Feb 05 2024)
+
+### fix
+
+* Added no remote support ([c24aa3c](https://github.com/cp-utils/gitversion/commit/c24aa3ccc75e8635de5534b5ce807296fc69aea4))
+
 ## [0.0.22](https://github.com/cp-utils/gitversion/compare/v0.0.21...v0.0.22) (Mon Feb 05 2024)
 
 ### fix
