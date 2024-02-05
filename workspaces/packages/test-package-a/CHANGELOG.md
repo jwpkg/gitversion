@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file
 
 ## [0.0.24](https://github.com/cp-utils/gitversion/compare/v0.0.23...v0.0.24) (Mon Feb 05 2024)
 
+### fix
 
+* Restucture logging ([c29983a](https://github.com/cp-utils/gitversion/commit/c29983ab3779b001f98326193d614b14d02b7c43))
 
 ## [0.0.22](https://github.com/cp-utils/gitversion/compare/v0.0.21...v0.0.22) (Mon Feb 05 2024)
 
