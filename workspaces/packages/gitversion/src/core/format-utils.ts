@@ -48,9 +48,9 @@ export function formatPackageName(name: string) {
   const regex = /^(@.*\/)?(.*)$/;
   const result = regex.exec(name);
   if (result && result[1]) {
-    return `${colorize.redBright(result[1])}${colorize.red(result[2])}`;
+    return `${colorize.magenta(result[1])}${colorize.magentaBright(result[2])}`;
   }
-  return `${colorize.red(name)}`;
+  return `${colorize.magenta(name)}`;
 }
 
 export function formatFileSize(size: number) {

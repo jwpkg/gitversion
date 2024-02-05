@@ -7,8 +7,6 @@ import * as t from 'typanion';
 import { ChangelogEntry, addToChangelog } from '../../../core/changelog';
 import { IConfiguration } from '../../../core/configuration';
 import { DEFAULT_PACKAGE_VERSION } from '../../../core/constants';
-import { formatPackageName, formatVersion } from '../../../core/format-utils';
-import { LogReporter } from '../../../core/log-reporter';
 import { IProject, IWorkspace } from '../../../core/workspace-utils';
 import { IPlugin, IPluginInitialize } from '../..';
 
@@ -51,7 +49,6 @@ export async function persistManifest(folder: string, manifestContent: NodeManif
 
 export class NodeWorkspace implements IWorkspace {
   protected _project: NodeProject;
-  private logger: LogReporter;
   private manifestContent: NodeManifestContent;
 
   get manifest() {
@@ -92,9 +89,8 @@ export class NodeWorkspace implements IWorkspace {
     }
   }
 
-  constructor(project: NodeProject, logger: LogReporter, relativeCwd: string, manifestContent: NodeManifestContent) {
+  constructor(project: NodeProject, relativeCwd: string, manifestContent: NodeManifestContent) {
     this.manifestContent = manifestContent;
-    this.logger = logger;
 
     if (!this.manifest.name) {
       throw new Error(`Invalid manifest. Package at '${relativeCwd}' does not have a name`);
@@ -121,7 +117,6 @@ export class NodeWorkspace implements IWorkspace {
     };
     this.manifestContent.manifest = newManifest;
 
-    this.logger.reportInfo(`Update package ${formatPackageName(this.packageName)} to version ${formatVersion(version)}`);
     await persistManifest(this.cwd, this.manifestContent);
   }
 }
@@ -159,7 +154,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
       return null;
     }
 
-    const project = new NodeProject(initialize.cwd, initialize.logger, manifestContent, initialize);
+    const project = new NodeProject(initialize.cwd, manifestContent, initialize);
 
     if (project.manifest.workspaces && Array.isArray(project.manifest.workspaces)) {
       const paths = await glob(project.manifest.workspaces, {
@@ -169,7 +164,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
       const workspacePromises = paths.map(async path => {
         const worspaceManifestContent = await loadManifest(join(initialize.cwd, path));
         if (worspaceManifestContent && worspaceManifestContent.manifest.private !== true) {
-          return new NodeWorkspace(project, initialize.logger, path, worspaceManifestContent);
+          return new NodeWorkspace(project, path, worspaceManifestContent);
         } else {
           return undefined;
         }
@@ -181,8 +176,8 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
     return project;
   }
 
-  private constructor(cwd: string, logger: LogReporter, manifestContent: NodeManifestContent, config: IConfiguration) {
-    super((undefined as any as NodeProject), logger, '.', manifestContent);
+  private constructor(cwd: string, manifestContent: NodeManifestContent, config: IConfiguration) {
+    super((undefined as any as NodeProject), '.', manifestContent);
     this._project = this;
     this._cwd = cwd;
     this._config = config;

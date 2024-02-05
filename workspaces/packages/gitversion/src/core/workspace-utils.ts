@@ -1,4 +1,6 @@
 import { ChangelogEntry } from './changelog';
+import { formatPackageName, formatVersion } from './format-utils';
+import { LogReporter } from './log-reporter';
 
 export interface IManifest {
   name: string;
@@ -31,4 +33,9 @@ export interface IProject extends IWorkspace {
   readonly childWorkspaces: IWorkspace[];
 
   readonly workspaces: IWorkspace[];
+}
+
+export async function updateWorkspaceVersion(workspace: IWorkspace, logger: LogReporter, version: string) {
+  logger.reportInfo(`Update package ${formatPackageName(workspace.packageName)} to version ${formatVersion(version)}`);
+  workspace.updateVersion(version);
 }

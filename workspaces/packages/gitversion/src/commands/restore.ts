@@ -4,7 +4,7 @@ import { VersionBranch } from '../core/configuration';
 import { formatVersion, formatVersionBranch } from '../core/format-utils';
 import { Git } from '../core/git';
 import { determineCurrentVersion } from '../core/version-utils';
-import { IWorkspace } from '../core/workspace-utils';
+import { IWorkspace, updateWorkspaceVersion } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -35,7 +35,7 @@ export class RestoreCommand extends GitVersionCommand {
 
       logger.reportInfo(`Latest version in git tags: ${formatVersion(version.version)}`);
 
-      await Promise.all(project.workspaces.map(w => w.updateVersion(version.version)));
+      await Promise.all(project.workspaces.map(w => updateWorkspaceVersion(w, logger, version.version)));
     }
 
     logger.endSection(section);

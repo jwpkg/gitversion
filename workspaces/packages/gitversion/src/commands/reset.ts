@@ -1,5 +1,6 @@
 import { Application } from '../core/application';
 import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
+import { updateWorkspaceVersion } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
 
@@ -19,7 +20,7 @@ export class ResetCommand extends GitVersionCommand {
     await git.cleanChangeLogs();
 
     await Promise.all(project.workspaces.map(async workspace => {
-      await workspace.updateVersion(DEFAULT_PACKAGE_VERSION);
+      await updateWorkspaceVersion(workspace, logger, DEFAULT_PACKAGE_VERSION);
     }));
 
     logger.endSection(reset);
