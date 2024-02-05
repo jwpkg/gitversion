@@ -21,26 +21,42 @@ export const isNodeManifest = t.isPartial({
 
 export type NodeManifest = t.InferType<typeof isNodeManifest>;
 
+export interface NodeManifestContent {
+  manifest: NodeManifest;
+  eofInEnd: boolean;
+}
+
 const NODE_MANIFEST_NAME = 'package.json';
 
-export async function loadManifest(folder: string): Promise<NodeManifest | null> {
-  const content = JSON.parse(await readFile(join(folder, NODE_MANIFEST_NAME), 'utf-8'));
+export async function loadManifest(folder: string): Promise<NodeManifestContent | null> {
+  const stringContent = await readFile(join(folder, NODE_MANIFEST_NAME), 'utf-8');
+  const content = JSON.parse(stringContent);
   const errors: string[] = [];
   if (isNodeManifest(content, { errors })) {
-    return content;
+    return {
+      eofInEnd: stringContent.endsWith('\n'),
+      manifest: content,
+    };
   }
   return null;
 }
 
-export async function persistManifest(folder: string, manifest: NodeManifest) {
-  await writeFile(join(folder, NODE_MANIFEST_NAME), JSON.stringify(manifest, null, 2), 'utf-8');
+export async function persistManifest(folder: string, manifestContent: NodeManifestContent) {
+  let stringContent = JSON.stringify(manifestContent.manifest, null, 2);
+  if (manifestContent.eofInEnd) {
+    stringContent += '\n';
+  }
+  await writeFile(join(folder, NODE_MANIFEST_NAME), stringContent, 'utf-8');
 }
 
 export class NodeWorkspace implements IWorkspace {
   protected _project: NodeProject;
   private logger: LogReporter;
+  private manifestContent: NodeManifestContent;
 
-  manifest: NodeManifest;
+  get manifest() {
+    return this.manifestContent.manifest;
+  }
 
   readonly relativeCwd: string;
 
@@ -76,11 +92,11 @@ export class NodeWorkspace implements IWorkspace {
     }
   }
 
-  constructor(project: NodeProject, logger: LogReporter, relativeCwd: string, manifest: NodeManifest) {
-    this.manifest = manifest;
+  constructor(project: NodeProject, logger: LogReporter, relativeCwd: string, manifestContent: NodeManifestContent) {
+    this.manifestContent = manifestContent;
     this.logger = logger;
 
-    if (!manifest.name) {
+    if (!this.manifest.name) {
       throw new Error(`Invalid manifest. Package at '${relativeCwd}' does not have a name`);
     }
     this.relativeCwd = relativeCwd;
@@ -103,9 +119,10 @@ export class NodeWorkspace implements IWorkspace {
       ...this.manifest,
       version,
     };
+    this.manifestContent.manifest = newManifest;
+
     this.logger.reportInfo(`Update package ${formatPackageName(this.packageName)} to version ${formatVersion(version)}`);
-    await persistManifest(this.cwd, newManifest);
-    this.manifest = newManifest;
+    await persistManifest(this.cwd, this.manifestContent);
   }
 }
 
@@ -137,22 +154,22 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
   }
 
   static async initialize(initialize: IPluginInitialize): Promise<NodeProject | null> {
-    const manifest = await loadManifest(initialize.cwd);
-    if (!manifest) {
+    const manifestContent = await loadManifest(initialize.cwd);
+    if (!manifestContent) {
       return null;
     }
 
-    const project = new NodeProject(initialize.cwd, initialize.logger, manifest, initialize);
+    const project = new NodeProject(initialize.cwd, initialize.logger, manifestContent, initialize);
 
-    if (manifest?.workspaces && Array.isArray(manifest.workspaces)) {
-      const paths = await glob(manifest.workspaces, {
+    if (project.manifest.workspaces && Array.isArray(project.manifest.workspaces)) {
+      const paths = await glob(project.manifest.workspaces, {
         cwd: initialize.cwd,
       });
 
       const workspacePromises = paths.map(async path => {
-        const manifest = await loadManifest(join(initialize.cwd, path));
-        if (manifest && manifest.private !== true) {
-          return new NodeWorkspace(project, initialize.logger, path, manifest);
+        const worspaceManifestContent = await loadManifest(join(initialize.cwd, path));
+        if (worspaceManifestContent && worspaceManifestContent.manifest.private !== true) {
+          return new NodeWorkspace(project, initialize.logger, path, worspaceManifestContent);
         } else {
           return undefined;
         }
@@ -164,8 +181,8 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
     return project;
   }
 
-  private constructor(cwd: string, logger: LogReporter, manifest: NodeManifest, config: IConfiguration) {
-    super((undefined as any as NodeProject), logger, '.', manifest);
+  private constructor(cwd: string, logger: LogReporter, manifestContent: NodeManifestContent, config: IConfiguration) {
+    super((undefined as any as NodeProject), logger, '.', manifestContent);
     this._project = this;
     this._cwd = cwd;
     this._config = config;
