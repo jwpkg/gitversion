@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 
-import { Executor, IExecutorExecOptions } from './executor';
+import { Executor } from './executor';
 import { LogReporter } from './log-reporter';
 
 const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3';
@@ -35,11 +35,15 @@ export class Git {
     });
   }
 
-  async execExtra(args: string[], options: IExecutorExecOptions) {
-    return this.executor.exec(['git', ...args], {
-      ...options,
-      cwd: this.cwd,
-    });
+  async execSilent(...args: string[]) {
+    try {
+      return this.executor.exec(['git', ...args], {
+        silent: true,
+        cwd: this.cwd,
+      });
+    } catch (_error) {
+      return null;
+    }
   }
 
   async logs(sinceHash?: string, relativeCwd?: string): Promise<GitCommit[]> {
@@ -138,10 +142,16 @@ export class Git {
 
 
   async push() {
-    if (this.dryRun) {
-      this.logger.reportDryrun(`Would be pushing git to remote: ${await this.remoteName()}`);
+    const remoteName = await this.remoteName();
+
+    if (remoteName) {
+      if (this.dryRun) {
+        this.logger.reportDryrun(`Would be pushing git to remote: '${remoteName}'`);
+      } else {
+        await this.exec('push', remoteName, '--follow-tags');
+      }
     } else {
-      await this.exec('push', await this.remoteName(), '--follow-tags');
+      this.logger.reportWarning('No remote found, can\'t push changes');
     }
   }
 
@@ -175,23 +185,21 @@ export class Git {
   }
 
   async cleanChangeLogs() {
-    const options: IExecutorExecOptions = {
-      silent: true,
-      ignoreErrors: true,
-    };
-
-    await this.execExtra(['clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md'], options);
-    await this.execExtra(['checkout', 'CHANGELOG.md'], options);
-    await this.execExtra(['checkout', '**/CHANGELOG.md'], options);
+    await this.execSilent('clean', '-f', '**/CHANGELOG.md', 'CHANGELOG.md');
+    await this.execSilent('checkout', 'CHANGELOG.md');
+    await this.execSilent('checkout', '**/CHANGELOG.md');
   }
 
-  async remoteName() {
+  async remoteName(): Promise<string | null> {
     const result = this.commandCache.get('remote_name');
     if (result) {
       return result;
     }
 
-    const remotes = (await this.exec('remote')).split('\n');
+    const gitRemotes = await this.execSilent('remote');
+    if (!gitRemotes) return null;
+
+    const remotes = gitRemotes.split('\n');
     if (remotes.length > 0) {
       this.commandCache.set('remote_name', remotes[0]);
       return remotes[0];
@@ -199,7 +207,7 @@ export class Git {
     throw new Error('Invalid git, currently can\'t work with multiple remotes');
   }
 
-  async remoteUrl() {
+  async remoteUrl(): Promise<string | null> {
     const result = this.commandCache.get('remote_url');
     if (result) {
       return result;
@@ -207,6 +215,8 @@ export class Git {
 
     try {
       const remoteName = await this.remoteName();
+      if (!remoteName) return null;
+
       const result = await this.exec('config', '--get', `remote.${remoteName}.url`);
       if (result) {
         this.commandCache.set('remote_url', result);

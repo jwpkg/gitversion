@@ -9,7 +9,6 @@ export interface IExecutorExecOptions {
   cwd?: string;
   silent?: boolean;
   echo?: boolean;
-  ignoreErrors?: boolean;
 }
 
 export interface IExecutor {
@@ -20,41 +19,34 @@ export class Executor implements IExecutor {
   constructor(private cwd: string, private logger: LogReporter) { }
 
   async exec(commandAndArgs: string[], options?: IExecutorExecOptions | undefined): Promise<string> {
-    try {
-      const result = await crossSpawnAsync(commandAndArgs[0], commandAndArgs.splice(1), {
-        cwd: options?.cwd ?? this.cwd,
-        env: process.env,
-      });
+    const result = await crossSpawnAsync(commandAndArgs[0], commandAndArgs.splice(1), {
+      cwd: options?.cwd ?? this.cwd,
+      env: process.env,
+    });
 
-      if (result.error) {
-        this.logError(`${result.error}`);
-        throw error;
-      }
-      if (result.exitCode !== 0) {
-        this.logError(`Executing command non-zero exit code: ${result.exitCode}`);
-        this.logError(`Executed command: [${commandAndArgs.join(' ')}]`);
-        this.logError(`Error output: ${result.output.toString()}`);
-        throw new Error('Non-zero exitcode');
-      }
-
-      if (options?.normalizeOutput === false) {
-        return stdout.toString();
-      } else {
-        return result.stdout
-          .toString()
-          .replace(/\\r?\\n?$/, '')
-          .trim();
-      }
-    } catch (error) {
-      if (options?.ignoreErrors === true) {
-        return '';
-      }
+    if (result.error) {
+      this.logError(`${result.error}`, options);
       throw error;
+    }
+    if (result.exitCode !== 0) {
+      this.logError(`Executing command non-zero exit code: ${result.exitCode}`, options);
+      this.logError(`Executed command: [${commandAndArgs.join(' ')}]`, options);
+      this.logError(`Error output: ${result.output.toString()}`, options);
+      throw new Error('Non-zero exitcode');
+    }
+
+    if (options?.normalizeOutput === false) {
+      return stdout.toString();
+    } else {
+      return result.stdout
+        .toString()
+        .replace(/\\r?\\n?$/, '')
+        .trim();
     }
   }
 
   logError(message: string, options?: IExecutorExecOptions) {
-    if (options?.silent !== false) {
+    if (options?.silent !== true) {
       this.logger.reportError(message);
     }
   }
