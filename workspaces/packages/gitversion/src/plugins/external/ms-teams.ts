@@ -13,7 +13,7 @@ export class MSTeamsPlugin implements IPlugin {
   async onPublish(application: IApplication, packedPackages: PackedPackage[]) {
     if (application.configuration.options.independentVersioning) {
       for (const packedPackage of packedPackages) {
-        if (packedPackage.packFile) {
+        if (packedPackage.packFiles) {
           await this.process(application.branch, packedPackage);
         }
       }

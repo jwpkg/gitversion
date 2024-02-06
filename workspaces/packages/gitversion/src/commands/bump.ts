@@ -23,7 +23,7 @@ export class BumpCommand extends RestoreCommand {
     description: 'Bump with an explicit version',
   });
 
-  bumpType: BumpType | undefined = Option.String('--bumpType', {
+  bumpType: BumpType | undefined = Option.String('--bump-type', {
     description: 'Bump with an explicit version',
     validator: t.isEnum([BumpType.GRADUATE, BumpType.MAJOR, BumpType.MINOR, BumpType.PATCH]),
   });

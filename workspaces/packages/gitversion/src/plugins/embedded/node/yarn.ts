@@ -3,12 +3,13 @@ import { join } from 'path';
 
 import { PackedPackage } from '../../../core/pack-artifact';
 import { IWorkspace } from '../../../core/workspace-utils';
-import { IPackageManager, IPlugin, IPluginInitialize } from '../..';
+import { IPackManager, IPlugin, IPluginInitialize } from '../..';
 
-export class YarnPlugin implements IPlugin, IPackageManager {
-  name = 'Yarn package manager plugin';
+export class YarnBerryPlugin implements IPlugin, IPackManager {
+  name = 'Yarn berry package manager plugin';
+  ident = 'yarn-berry';
 
-  get packageManager() {
+  get packManager() {
     return this;
   }
 
@@ -16,28 +17,29 @@ export class YarnPlugin implements IPlugin, IPackageManager {
 
   static initialize(initialize: IPluginInitialize) {
     if (existsSync(join(initialize.cwd, 'yarn.lock'))) {
-      return new YarnPlugin(initialize);
+      return new YarnBerryPlugin(initialize);
     }
     return null;
   }
 
-  async pack(workspace: IWorkspace, output: string) {
-    await this.application.executor.exec(['yarn', 'pack', '-o', output], {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string> {
+    const normalizedPackageName = `${workspace.packageName.replace(/@/g, '').replace(/\//g, '-')}-${workspace.version}.tgz`;
+    const outFile = join(outputFolder, normalizedPackageName);
+
+    await this.application.executor.exec(['yarn', 'pack', '-o', outFile], {
       cwd: workspace.cwd,
     });
+    return outFile;
   }
 
-  async publish(packedPackage: PackedPackage, releaseTag: string, dryRun: boolean): Promise<void> {
-    if (packedPackage.packFile) {
-      const fileLocation = join(this.application.packFolder, packedPackage.packFile);
-      if (dryRun) {
-        this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
-        return;
-      } else {
-        await this.application.executor.exec(['npm', 'publish', fileLocation, '--tag', releaseTag, '--access', 'public', '--verbose'], {
-          cwd: this.application.packFolder,
-        });
-      }
+  async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
+    if (dryRun) {
+      this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
+      return;
+    } else {
+      await this.application.executor.exec(['npm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
+        cwd: this.application.packFolder,
+      });
     }
   }
 }

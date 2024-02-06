@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
-import { DispatchablePluginHooks, IGitPlatform, IPackageManager, PluginManager } from '../plugins';
+import { DispatchablePluginHooks, IGitPlatform, IPackManager, PluginManager } from '../plugins';
 
 import { BaseConfigurationOptions, BranchType, Configuration, IConfiguration, RequiredConfigurationOption, VersionBranch, isUpdateableConfiguration } from './configuration';
 import { DEFAULT_CONFIGURATION_OPTIONS } from './constants';
@@ -19,7 +19,7 @@ export interface IApplication {
   readonly git: Git;
   readonly logger: LogReporter;
   readonly gitPlatform: IGitPlatform;
-  readonly packageManager: IPackageManager;
+  readonly packManagers: IPackManager[];
   readonly hooks: DispatchablePluginHooks;
   readonly pluginManager: PluginManager;
 }
@@ -123,8 +123,8 @@ export class Application {
       throw new Error('Can\'t load project');
     }
 
-    if (!pluginManager.packageManager) {
-      throw new Error('Can\'t load packagemanager');
+    if (pluginManager.packManagers.length == 0) {
+      throw new Error('No pack managers found for current project');
     }
 
     const branchName = await pluginManager.gitPlatform.currentBranch();
@@ -145,7 +145,7 @@ export class Application {
       project: pluginManager.project,
       gitPlatform: pluginManager.gitPlatform,
       hooks: pluginManager,
-      packageManager: pluginManager.packageManager,
+      packManagers: pluginManager.packManagers,
       git,
     };
   }

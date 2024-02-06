@@ -1,6 +1,6 @@
 import { colorize } from 'colorize-node';
 import { mkdir, stat } from 'fs/promises';
-import { join } from 'path';
+import { join, relative } from 'path';
 
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
@@ -80,22 +80,35 @@ export class PackCommand extends GitVersionCommand {
   }
 
   async execPackCommand(application: IApplication, workspace: IWorkspace, bump: Bump, packManifest: PackArtifact) {
-    const normalizedPackageName = `${bump.packageName.replace(/@/g, '').replace(/\//g, '-')}-${bump.version}.tgz`;
-    const packFile = `${join(application.configuration.packFolder, normalizedPackageName)}`;
-
     return application.logger.runSection(`Packing ${formatPackageName(bump.packageName)}`, async logger => {
       try {
-        await application.packageManager.pack(workspace, packFile);
-        const stats = await stat(packFile);
-        logger.reportInfo(`Generated package: ${packFile}`);
-        logger.reportInfo(`Generated package size: ${formatFileSize(stats.size)}`);
+        const packCommands = application.packManagers.map(async packManager => {
+          const folder = join(application.configuration.packFolder, packManager.ident);
+          await mkdir(folder, {
+            recursive: true,
+          });
+          const packFile = await packManager.pack(workspace, folder);
+          const stats = await stat(packFile);
+          logger.reportInfo(`Generated package: ./${relative(application.cwd, packFile)} (${formatFileSize(stats.size)})`);
+          return {
+            [packManager.ident]: packFile,
+          };
+        });
+
+        const files = (await Promise.all(packCommands)).reduce((p, c) => {
+          return {
+            ...p,
+            ...c,
+          };
+        }, {});
+
+        packManifest.add({
+          packFiles: files,
+          ...bump,
+        });
       } catch (error) {
         logger.reportError(`Error during pack: ${colorize.redBright(`${error}`)}`);
       }
-      packManifest.add({
-        packFile: normalizedPackageName,
-        ...bump,
-      });
     });
   }
 }

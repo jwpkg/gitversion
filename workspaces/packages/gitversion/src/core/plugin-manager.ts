@@ -1,9 +1,5 @@
-import { AzureDevopsPlugin } from '../plugins/embedded/git/azure-devops';
 import { GitPlatformDefault } from '../plugins/embedded/git/default';
-import { GithubPlugin } from '../plugins/embedded/git/github';
-import { NodeProject } from '../plugins/embedded/node/node-project';
-import { NpmPlugin } from '../plugins/embedded/node/npm';
-import { YarnPlugin } from '../plugins/embedded/node/yarn';
+import { embeddedPlugins } from '../plugins/embedded';
 
 import { IApplication } from './application';
 import { IConfiguration } from './configuration';
@@ -20,9 +16,10 @@ export interface IGitPlatform {
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
 
-export interface IPackageManager {
-  pack(workspace: IWorkspace, output: string): Promise<void>;
-  publish(packedPackage: PackedPackage, releaseTag: string, dryRun: boolean): Promise<void>;
+export interface IPackManager {
+  ident: string;
+  pack(workspace: IWorkspace, outputFolder: string): Promise<string>;
+  publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void>;
 }
 
 
@@ -55,7 +52,7 @@ export interface IPlugin extends IPluginChangelogFunctions, IPluginHooks {
   name: string;
   gitPlatform?: IGitPlatform;
   project?: IProject;
-  packageManager?: IPackageManager;
+  packManager?: IPackManager;
 }
 
 export interface IPluginInitialize extends IConfiguration {
@@ -81,7 +78,7 @@ export function isInitializable(p: NonInitializedPlugin): p is IIntializablePlug
 
 export class PluginManager implements IChangelogRenderFunctions, DispatchablePluginHooks {
   project?: IProject;
-  packageManager?: IPackageManager;
+  packManagers: IPackManager[] = [];
 
   private _gitPlatform?: IGitPlatform;
 
@@ -93,12 +90,10 @@ export class PluginManager implements IChangelogRenderFunctions, DispatchablePlu
   }
 
   constructor() {
-    // Register defaults. Should be somewhere else i gues
-    this.register(NodeProject);
-    this.register(YarnPlugin);
-    this.register(NpmPlugin);
-    this.register(GithubPlugin);
-    this.register(AzureDevopsPlugin);
+    // Register embedded plugins. Should be somewhere else i gues
+    embeddedPlugins.forEach(plugin => {
+      this.register(plugin);
+    });
   }
 
   renderCompareUrl(from: GitSemverTag, to: GitSemverTag) {
@@ -130,7 +125,9 @@ export class PluginManager implements IChangelogRenderFunctions, DispatchablePlu
     this.availablePlugins = result.filter((t): t is Awaited<IPlugin> => !!t).reverse();
 
     this.project = this.availablePlugins.find(plugin => !!plugin.project)?.project;
-    this.packageManager = this.availablePlugins.find(plugin => !!plugin.packageManager)?.packageManager;
+    this.packManagers = this.availablePlugins
+      .map(plugin => plugin.packManager)
+      .filter((packManager): packManager is IPackManager => !!packManager);
 
     const gitPlatform = this.availablePlugins.find(plugin => !!plugin.gitPlatform);
     if (gitPlatform) {
