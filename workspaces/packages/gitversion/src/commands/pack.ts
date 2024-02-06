@@ -39,7 +39,6 @@ export class PackCommand extends GitVersionCommand {
 
     if (!packManifest.validateGitStatusWithBump()) {
       logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
-      console.log(await git.exec('status'));
     }
 
     const bumpedWorkspaces = bumpManifest.bumps.filter(b => b.private === false);
@@ -71,7 +70,6 @@ export class PackCommand extends GitVersionCommand {
 
     if (!packManifest.validateGitStatusDuringPack()) {
       logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);
-      console.log(await git.exec('status'));
     }
 
     logger.endSection(section);

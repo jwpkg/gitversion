@@ -129,9 +129,11 @@ export class PublishCommand extends GitVersionCommand {
     const commands = packages.map(async p => {
       const workspace = project.workspaces.find(w => w.relativeCwd === p.packageRelativeCwd);
       if (workspace) {
-        logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(join(workspace.cwd, 'CHANGELOG.md')))}`);
         const file = await workspace.updateChangelog(p.changeLog);
-        files.push(file);
+        if (!files.includes(file)) {
+          logger.reportInfo(`Updating: ${colorize.yellow(colorize.underline(join(workspace.cwd, 'CHANGELOG.md')))}`);
+          files.push(file);
+        }
       }
     });
     await Promise.all(commands);
