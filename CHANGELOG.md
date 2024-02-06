@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.26](https://github.com/cp-utils/gitversion/compare/v0.0.25...v0.0.26) (Tue Feb 06 2024)
+
+### feat
+
+* Multiple pack managers simultanious + pnpm ([4e792d2](https://github.com/cp-utils/gitversion/commit/4e792d2ffc314b3981e6a38ed8a1d269d3a233f8))
+
+### fix
+
+* Pack locations ([541887a](https://github.com/cp-utils/gitversion/commit/541887aa3eb030f6fd421c64ebaae46ddaed0c56))
+
 ## [0.0.25](https://github.com/cp-utils/gitversion/compare/v0.0.24...v0.0.25) (Tue Feb 06 2024)
 
 ### fix
