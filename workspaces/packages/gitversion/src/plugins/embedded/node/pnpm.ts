@@ -1,13 +1,13 @@
 import { existsSync } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 import { PackedPackage } from '../../../core/pack-artifact';
 import { IWorkspace } from '../../../core/workspace-utils';
 import { IPackManager, IPlugin, IPluginInitialize } from '../..';
 
 export class PNpmPlugin implements IPlugin, IPackManager {
-  name = 'NPM package manager plugin';
-  ident = 'npm';
+  name = 'PNPM package manager plugin';
+  ident = 'pnpm';
 
   get packManager() {
     return this;
@@ -27,10 +27,12 @@ export class PNpmPlugin implements IPlugin, IPackManager {
       cwd: workspace.cwd,
     });
 
-    if (result.length > 0) {
-      return result;
+    const filename = basename(result);
+
+    if (filename.length > 0) {
+      return filename;
     }
-    throw new Error('Invalid npm output');
+    throw new Error('Invalid pnpm output');
   }
 
   async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
@@ -38,7 +40,7 @@ export class PNpmPlugin implements IPlugin, IPackManager {
       this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
       return;
     } else {
-      await this.application.executor.exec(['npm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
+      await this.application.executor.exec(['pnpm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
         cwd: this.application.packFolder,
       });
     }
