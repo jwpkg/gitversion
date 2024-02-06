@@ -88,8 +88,9 @@ export class PackCommand extends GitVersionCommand {
             recursive: true,
           });
           const packFile = await packManager.pack(workspace, folder);
-          const stats = await stat(packFile);
-          logger.reportInfo(`Generated package: ./${relative(application.cwd, packFile)} (${formatFileSize(stats.size)})`);
+          const fullName = join(folder, packFile);
+          const stats = await stat(fullName);
+          logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
           return {
             [packManager.ident]: packFile,
           };

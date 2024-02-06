@@ -29,12 +29,12 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
     await this.application.executor.exec(['yarn', 'pack', '-o', outFile], {
       cwd: workspace.cwd,
     });
-    return outFile;
+    return normalizedPackageName;
   }
 
-  async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
+  async publish(_packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
     if (dryRun) {
-      this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
+      this.application.logger.reportDryrun(`Would be publishing ${fileName} using release tag ${releaseTag}`);
       return;
     } else {
       await this.application.executor.exec(['npm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
