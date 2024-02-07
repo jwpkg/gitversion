@@ -156,14 +156,7 @@ export class Git {
   }
 
   async currentBranch() {
-    // azure devops lookup
-    if (process.env.BUILD_SOURCEBRANCHNAME) {
-      return process.env.BUILD_SOURCEBRANCHNAME;
-    }
-
-    const output = await this.exec('rev-parse', '--abbrev-ref', 'HEAD');
-
-    return output.replace(/\n*$/, '');
+    return await this.execSilent('rev-parse', '--abbrev-ref', 'HEAD');
   }
 
   async gitStatusHash() {

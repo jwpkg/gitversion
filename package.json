@@ -68,6 +68,8 @@
     }
   },
   "dependencies": {
-    "@cp-utils/gitversion": "workspace:^"
+    "@cp-utils/gitversion": "workspace:^",
+    "asciinema-player": "^3.6.3",
+    "vue": "^3.4.15"
   }
 }

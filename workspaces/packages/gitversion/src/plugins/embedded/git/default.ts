@@ -13,7 +13,7 @@ export class GitPlatformDefault implements IGitPlatform {
   }
 
   async currentBranch(): Promise<string | null> {
-    return (await this.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return (await this.git.currentBranch() ?? null;
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {
