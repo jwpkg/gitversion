@@ -1,3 +1,8 @@
+import { getPluginConfiguration } from '@yarnpkg/cli';
+import { Project as YarnProject, Configuration as YarnConfiguration } from '@yarnpkg/core';
+import { npath } from '@yarnpkg/fslib';
+import { npmConfigUtils, npmHttpUtils, npmPublishUtils } from '@yarnpkg/plugin-npm';
+import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
@@ -13,11 +18,14 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
     return this;
   }
 
-  private constructor(private application: IPluginInitialize) { }
+  private constructor(private application: IPluginInitialize, private yarnProject: YarnProject, private yarnConfiguration: YarnConfiguration) { }
 
-  static initialize(initialize: IPluginInitialize) {
+  static async initialize(initialize: IPluginInitialize) {
     if (existsSync(join(initialize.cwd, 'yarn.lock'))) {
-      return new YarnBerryPlugin(initialize);
+      const yarnConfig = await YarnConfiguration.find(npath.toPortablePath(initialize.cwd), getPluginConfiguration());
+
+      const { project } = await YarnProject.find(yarnConfig, npath.toPortablePath(initialize.cwd));
+      return new YarnBerryPlugin(initialize, project, yarnConfig);
     }
     return null;
   }
@@ -33,13 +41,37 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
   }
 
   async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
-    if (dryRun) {
-      this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
-      return;
+    const yarnWorkspace = this.yarnProject.workspaces.find(w => w.relativeCwd === packedPackage.packageRelativeCwd);
+    if (!yarnWorkspace) {
+      throw new Error('Mismatch between yarn workspace and gitversion workspace. Please file a bug with your package folder details at https://github.com/cp-utils/gitversion/issues');
     } else {
-      await this.application.executor.exec(['npm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
-        cwd: this.application.packFolder,
-      });
+      if (dryRun) {
+        this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
+        return;
+      } else {
+        const registry = npmConfigUtils.getPublishRegistry(yarnWorkspace.manifest, { configuration: this.yarnConfiguration });
+
+        const gitHead = await npmPublishUtils.getGitHead(yarnWorkspace.cwd);
+
+        const buffer = await readFile(fileName);
+
+        const body = await npmPublishUtils.makePublishBody(yarnWorkspace, buffer, {
+          tag: releaseTag,
+          access: undefined,
+          registry,
+          gitHead,
+        });
+
+        if (yarnWorkspace.manifest.name) {
+          await npmHttpUtils.put(npmHttpUtils.getIdentUrl(yarnWorkspace.manifest.name), body, {
+            configuration: this.yarnConfiguration,
+            registry,
+            ident: yarnWorkspace.manifest.name,
+            // otp: this.otp,
+            jsonResponse: true,
+          });
+        }
+      }
     }
   }
 }
