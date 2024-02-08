@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.29](https://github.com/cp-utils/gitversion/compare/v0.0.28...v0.0.29) (Thu Feb 08 2024)
+
+### feat
+
+* Yarn berry native publish through package import (#36) ([96233f0](https://github.com/cp-utils/gitversion/commit/96233f0165ea8106a0024b5ab11ebd7136b203f3))
+
 ## [0.0.29-gh-35.0](https://github.com/cp-utils/gitversion/compare/v0.0.28...v0.0.29-gh-35.0) (Thu Feb 08 2024)
 
 
