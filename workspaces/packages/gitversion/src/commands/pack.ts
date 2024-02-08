@@ -1,6 +1,10 @@
+import { Option } from 'clipanion';
 import { colorize } from 'colorize-node';
 import { mkdir, stat } from 'fs/promises';
+import { cpus } from 'os';
 import { join, relative } from 'path';
+import Queue from 'queue-promise';
+import { cascade, isAtLeast, isNumber } from 'typanion';
 
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
@@ -14,6 +18,10 @@ export class PackCommand extends GitVersionCommand {
   static paths = [
     ['pack'],
   ];
+
+  maxConcurrency = Option.String('-m,--max-concurrency', {
+    validator: cascade(isNumber(), isAtLeast(1)),
+  });
 
   async execute(): Promise<number> {
     const application = await Application.init(this.context.application);
@@ -53,15 +61,25 @@ export class PackCommand extends GitVersionCommand {
         recursive: true,
       });
 
-      const promises = bumpedWorkspaces.map(async bump => {
-        const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
-        if (workspace) {
-          await workspace.updateVersion(bump.version);
-          await workspace.updateChangelog(bump.changeLog);
-          await this.execPackCommand(application, workspace, bump, packManifest);
-        }
+      const queue = new Queue({
+        concurrent: this.maxConcurrency ?? cpus().length,
+        start: false,
       });
-      await Promise.all(promises);
+
+      bumpedWorkspaces.forEach(bump => {
+        queue.enqueue(async () => {
+          const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
+          if (workspace) {
+            await workspace.updateVersion(bump.version);
+            await workspace.updateChangelog(bump.changeLog);
+            await this.execPackCommand(application, workspace, bump, packManifest);
+          }
+        });
+      });
+
+      while (queue.shouldRun) {
+        await queue.dequeue();
+      }
     } else {
       logger.reportWarning('Nothing to pack');
     }
