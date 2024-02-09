@@ -148,7 +148,7 @@ export class Git {
       if (this.dryRun) {
         this.logger.reportDryrun(`Would be pushing git to remote: '${remoteName}'`);
       } else {
-        await this.exec('push', remoteName, '--follow-tags');
+        await this.exec('push', remoteName, '--follow-tags', `HEAD:${await this.currentBranch()}`);
       }
     } else {
       this.logger.reportWarning('No remote found, can\'t push changes');
