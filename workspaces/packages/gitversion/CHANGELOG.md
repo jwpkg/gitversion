@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.31](https://github.com/cp-utils/gitversion/compare/v0.0.30...v0.0.31) (Fri Feb 09 2024)
+
+### feat
+
+* Multiple main branch patterns accepted to make it more autodetect ([16a7b23](https://github.com/cp-utils/gitversion/commit/16a7b2323ab06aad34be979665563ffe7916b137))
+
+### fix
+
+* unit test ([37f7a6e](https://github.com/cp-utils/gitversion/commit/37f7a6ecd8e127fc071284a06d067bbf02c9fcf4))
+
 ## [0.0.30](https://github.com/cp-utils/gitversion/compare/v0.0.29...v0.0.30) (Thu Feb 08 2024)
 
 ### feat
