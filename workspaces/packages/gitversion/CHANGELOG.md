@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.32](https://github.com/cp-utils/gitversion/compare/v0.0.31...v0.0.32) (Fri Feb 09 2024)
+
+### feat
+
+* testing with push back from detached head ([a69435d](https://github.com/cp-utils/gitversion/commit/a69435d38f0bd0c328f178b105f6bab62f5117c9))
+
 ## [0.0.31](https://github.com/cp-utils/gitversion/compare/v0.0.30...v0.0.31) (Fri Feb 09 2024)
 
 ### feat
