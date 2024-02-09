@@ -57,7 +57,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
       }
     }
 
-    return (await this.git.exec('rev-parse', '--abbrev-ref', 'HEAD')) ?? null;
+    return this.git.currentBranch();
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {

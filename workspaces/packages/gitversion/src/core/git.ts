@@ -156,7 +156,7 @@ export class Git {
   }
 
   async currentBranch() {
-    return await this.execSilent('rev-parse', '--abbrev-ref', 'HEAD');
+    return await this.execSilent('branch', '--show-current');
   }
 
   async gitStatusHash() {

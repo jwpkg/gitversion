@@ -15,7 +15,7 @@ export enum FeatureBumpBehavior {
 export const isBaseConfigurationOptions = t.isPartial({
   featureBranchPatterns: t.isOptional(t.isArray(t.isString())),
   releaseBranchPatterns: t.isOptional(t.isArray(t.isString())),
-  mainBranch: t.isOptional(t.isString()),
+  mainBranchPattern: t.isOptional(t.isString()),
   independentVersioning: t.isOptional(t.isBoolean()),
   versionTagPrefix: t.isOptional(t.isString()),
   dryRun: t.isOptional(t.isBoolean()),

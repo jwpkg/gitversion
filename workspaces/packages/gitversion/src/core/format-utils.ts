@@ -21,8 +21,8 @@ export function formatDuration(duration: number) {
 // eslint-disable-next-line consistent-return
 export function formatVersionBranch(branch: VersionBranch) {
   switch (branch.type) {
-    case BranchType.UNKNOWN: return colorize.redBright('Unknown');
-    case BranchType.MAIN: return colorize.greenBright('main');
+    case BranchType.UNKNOWN: return `${colorize.yellowBright('unknown')} (${colorize.magentaBright(branch.name)})`;
+    case BranchType.MAIN: return `${colorize.yellowBright('main')} (${colorize.magentaBright(branch.name)})`;
     case BranchType.FEATURE: return `${colorize.yellowBright('feature')} (${colorize.magentaBright(branch.name)})`;
     case BranchType.RELEASE: return `${colorize.yellowBright('release')} (${colorize.magentaBright(branch.name)})`;
   }

@@ -28,7 +28,8 @@ export type CliOptions = Partial<BaseConfigurationOptions>;
 
 export class Application {
   static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
-    if (configOptions.mainBranch === branchName) {
+    const mainBranchRegex = new RegExp(configOptions.mainBranchPattern);
+    if (mainBranchRegex.test(branchName)) {
       return {
         type: BranchType.MAIN,
         name: branchName,

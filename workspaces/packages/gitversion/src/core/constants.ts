@@ -9,7 +9,7 @@ export const DEFAULT_CONFIGURATION_OPTIONS: RequiredConfigurationOption = {
   releaseBranchPatterns: [
     '^release/(.*)$',
   ],
-  mainBranch: 'main',
+  mainBranchPattern: '^(main|master)$',
   independentVersioning: false,
   versionTagPrefix: 'v',
   dryRun: false,
