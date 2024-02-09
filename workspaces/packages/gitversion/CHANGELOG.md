@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.30](https://github.com/cp-utils/gitversion/compare/v0.0.29...v0.0.30) (Thu Feb 08 2024)
+
+### feat
+
+* Max concurrent pack commands ([1c699a2](https://github.com/cp-utils/gitversion/commit/1c699a245dc2a9e7fa04d0cb00a50628246c174f))
+
 ## [0.0.29](https://github.com/cp-utils/gitversion/compare/v0.0.28...v0.0.29) (Thu Feb 08 2024)
 
 ### feat
