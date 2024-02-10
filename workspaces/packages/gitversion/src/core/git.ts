@@ -125,7 +125,10 @@ export class Git {
       this.logger.reportDryrun(`Would be adding git tag '${tag}' with message '${message}'`);
       return;
     } else {
-      await this.exec('tag', '-a', tag, '-m', message);
+      await this.exec(
+        '-c', 'user.name=Gitversion release [bot]',
+        '-c', 'user.email=42103905+github-actions[bot]@users.noreply.github.com',
+        'tag', '-a', tag, '-m', message);
     }
   }
 
@@ -136,7 +139,11 @@ export class Git {
       return;
     } else {
       await this.exec('add', ...files);
-      await this.exec('commit', '-m', `${message} [skip ci]`, '--', ...files);
+      await this.exec(
+        '-c', 'user.name=Gitversion release [bot]',
+        '-c', 'user.email=42103905+github-actions[bot]@users.noreply.github.com',
+        'commit', '-m', `${message} [skip ci]`, '--', ...files,
+      );
     }
   }
 
