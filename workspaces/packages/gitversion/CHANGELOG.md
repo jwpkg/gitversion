@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.33](https://github.com/cp-utils/gitversion/compare/v0.0.32...v0.0.33) (Sat Feb 10 2024)
+
+### feat
+
+* Added git credentials ([a2d548c](https://github.com/cp-utils/gitversion/commit/a2d548c4d0740cdb5f18009cca5d14ee16512ac3))
+
 ## [0.0.32](https://github.com/cp-utils/gitversion/compare/v0.0.31...v0.0.32) (Fri Feb 09 2024)
 
 ### feat
