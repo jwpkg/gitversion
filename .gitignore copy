@@ -1,8 +1,0 @@
-.yarn/*
-!.yarn/releases
-!.yarn/plugins
-
-lib
-dist
-tsconfig.tsbuildinfo
-.npmignore
