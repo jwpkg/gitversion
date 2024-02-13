@@ -4,6 +4,20 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.35](https://github.com/cp-utils/gitversion/compare/v0.0.34...v0.0.35) (Tue Feb 13 2024)
+
+### docs
+
+* Added branch explanations ([a663bfa](https://github.com/cp-utils/gitversion/commit/a663bfa503d6294196603f6f4579ddf3bc202c75))
+
+### chore
+
+* Removed [bot] from push back git name ([ed48e5a](https://github.com/cp-utils/gitversion/commit/ed48e5a85a6e5493c4753bad08ef9475dc67908a))
+
+### feat
+
+* Added additional branch detection patterns ([2ceba48](https://github.com/cp-utils/gitversion/commit/2ceba48b43367d931f99e0e4737b845392058508))
+
 ## [0.0.34](https://github.com/cp-utils/gitversion/compare/v0.0.33...v0.0.34) (Mon Feb 12 2024)
 
 ### docs
