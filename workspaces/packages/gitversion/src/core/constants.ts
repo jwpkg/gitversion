@@ -5,11 +5,16 @@ export const DEFAULT_PACKAGE_VERSION = '0.0.0';
 export const DEFAULT_CONFIGURATION_OPTIONS: RequiredConfigurationOption = {
   featureBranchPatterns: [
     '^feature/(.*)$',
+    '^bugfix/(.*)$',
+    '^hotfix/(.*)$',
   ],
   releaseBranchPatterns: [
     '^release/(.*)$',
   ],
-  mainBranchPattern: '^(main|master)$',
+  mainBranchPatterns: [
+    '^(main)$',
+    '^(master)$',
+  ],
   independentVersioning: false,
   versionTagPrefix: 'v',
   dryRun: false,

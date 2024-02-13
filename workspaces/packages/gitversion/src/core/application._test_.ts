@@ -8,7 +8,10 @@ const defaultConfig: Required<BaseConfigurationOptions> = {
   releaseBranchPatterns: [
     '^release/(.*)$',
   ],
-  mainBranchPattern: '^(main|master)$',
+  mainBranchPatterns: [
+    '^(main)$',
+    '^(master)$',
+  ],
   independentVersioning: false,
   versionTagPrefix: 'v',
   dryRun: false,

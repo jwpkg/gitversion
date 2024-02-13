@@ -28,12 +28,15 @@ export type CliOptions = Partial<BaseConfigurationOptions>;
 
 export class Application {
   static detectVersionBranch(configOptions: RequiredConfigurationOption, branchName: string): VersionBranch {
-    const mainBranchRegex = new RegExp(configOptions.mainBranchPattern);
-    if (mainBranchRegex.test(branchName)) {
-      return {
-        type: BranchType.MAIN,
-        name: branchName,
-      };
+    const mainBranchPatterns = configOptions.mainBranchPatterns.map(pattern => new RegExp(pattern));
+
+    for (const branchPattern of mainBranchPatterns) {
+      if (branchPattern.test(branchName)) {
+        return {
+          type: BranchType.MAIN,
+          name: branchName,
+        };
+      }
     }
 
     const featureBranchPatterns = configOptions.featureBranchPatterns.map(pattern => new RegExp(pattern));
