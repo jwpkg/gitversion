@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.34](https://github.com/cp-utils/gitversion/compare/v0.0.33...v0.0.34) (Mon Feb 12 2024)
+
+### docs
+
+* Add contribution docs ([96ae793](https://github.com/cp-utils/gitversion/commit/96ae79301f0a245ab67344554eef55a3a71f302a))
+
+### fix
+
+* user email ([994db2a](https://github.com/cp-utils/gitversion/commit/994db2a7b3429249357d0bfdf1ba5da5ca1324a5))
+
 ## [0.0.33](https://github.com/cp-utils/gitversion/compare/v0.0.32...v0.0.33) (Sat Feb 10 2024)
 
 ### feat
