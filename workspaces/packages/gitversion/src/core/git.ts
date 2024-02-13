@@ -126,7 +126,7 @@ export class Git {
       return;
     } else {
       await this.exec(
-        '-c', 'user.name=Gitversion release [bot]',
+        '-c', 'user.name=Gitversion release',
         '-c', 'user.email=153614361+github-actions[bot]@users.noreply.github.com',
         'tag', '-a', tag, '-m', message);
     }
@@ -140,7 +140,7 @@ export class Git {
     } else {
       await this.exec('add', ...files);
       await this.exec(
-        '-c', 'user.name=Gitversion release [bot]',
+        '-c', 'user.name=Gitversion release',
         '-c', 'user.email=153614361+github-actions[bot]@users.noreply.github.com',
         'commit', '-m', `${message} [skip ci]`, '--', ...files,
       );
