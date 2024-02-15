@@ -37,9 +37,9 @@
     "postpack": "rm -rf lib"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.11.16",
-    "@types/semver": "^7.5.6",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.19",
+    "@types/semver": "^7.5.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
@@ -72,7 +72,7 @@
     "cross-spawn-extra": "^2.1.0",
     "glob": "^10.3.10",
     "queue-promise": "^2.2.1",
-    "semver": "^7.5.4",
+    "semver": "^7.6.0",
     "typanion": "^3.14.0"
   },
   "version": "0.0.0"

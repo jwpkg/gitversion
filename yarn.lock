@@ -1364,8 +1364,8 @@ __metadata:
     "@cp-utils/gitversion": "workspace:^"
     "@types/archiver": "npm:^6"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.17"
-    "@types/semver": "npm:^7"
+    "@types/node": "npm:^20.11.19"
+    "@types/semver": "npm:^7.5.7"
     archiver: "npm:^6.0.1"
     glob: "npm:^10.3.10"
     semver: "npm:^7.6.0"
@@ -1378,9 +1378,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cp-utils/gitversion@workspace:workspaces/packages/gitversion"
   dependencies:
-    "@types/jest": "npm:^29.5.11"
-    "@types/node": "npm:^20.11.16"
-    "@types/semver": "npm:^7.5.6"
+    "@types/jest": "npm:^29.5.12"
+    "@types/node": "npm:^20.11.19"
+    "@types/semver": "npm:^7.5.7"
     "@yarnpkg/cli": "npm:^4.1.0"
     "@yarnpkg/core": "npm:^4.0.3"
     "@yarnpkg/fslib": "npm:^3.0.2"
@@ -1394,7 +1394,7 @@ __metadata:
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
     queue-promise: "npm:^2.2.1"
-    semver: "npm:^7.5.4"
+    semver: "npm:^7.6.0"
     ts-node: "npm:^10.9.2"
     typanion: "npm:^3.14.0"
     typescript: "npm:^5.3.3"
@@ -2945,16 +2945,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.11":
-  version: 29.5.11
-  resolution: "@types/jest@npm:29.5.11"
-  dependencies:
-    expect: "npm:^29.0.0"
-    pretty-format: "npm:^29.0.0"
-  checksum: 524a3394845214581278bf4d75055927261fbeac7e1a89cd621bd0636da37d265fe0a85eac58b5778758faad1cbd7c7c361dfc190c78ebde03a91cce33463261
-  languageName: node
-  linkType: hard
-
 "@types/jest@npm:^29.5.12":
   version: 29.5.12
   resolution: "@types/jest@npm:29.5.12"
@@ -3032,21 +3022,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.16":
-  version: 20.11.16
-  resolution: "@types/node@npm:20.11.16"
+"@types/node@npm:^20.11.19":
+  version: 20.11.19
+  resolution: "@types/node@npm:20.11.19"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 4886b90278e9c877a84efd3edd4667cd990e032d77268d2a798b99ebc1901ea336fa7dfbe9eaf4ad6ad1da9ce2ec31baf300038a3905838692362eb19904ebde
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^20.11.17":
-  version: 20.11.17
-  resolution: "@types/node@npm:20.11.17"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 1f30dae80b416cbf38f133a619ffb0e9fb9e7bc58f82d900bf73816ae5781740c4640892bf5971dd9c12570d5d05241646be3e7540bb4e059322ec6af4e51e15
+  checksum: f451ef0a1d78f29c57bad7b77e49ebec945f2a6d0d7a89851d7e185ee9fe7ad94d651c0dfbcb7858c9fa791310c8b40a881e2260f56bd3c1b7e7ae92723373ae
   languageName: node
   linkType: hard
 
@@ -3068,17 +3049,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7":
-  version: 7.5.7
-  resolution: "@types/semver@npm:7.5.7"
-  checksum: fb72d8b86a7779650f14ae89542f1da2ab624adb8188d98754b1d29a2fe3d41f0348bf9435b60ad145df1812fd2a09b3256779aa23b532c199f3dee59619a1eb
-  languageName: node
-  linkType: hard
-
-"@types/semver@npm:^7.1.0, @types/semver@npm:^7.3.12, @types/semver@npm:^7.5.6":
+"@types/semver@npm:^7.1.0, @types/semver@npm:^7.3.12":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 196dc32db5f68cbcde2e6a42bb4aa5cbb100fa2b7bd9c8c82faaaf3e03fbe063e205dbb4f03c7cdf53da2edb70a0d34c9f2e601b54281b377eb8dc1743226acd
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.5.7":
+  version: 7.5.7
+  resolution: "@types/semver@npm:7.5.7"
+  checksum: fb72d8b86a7779650f14ae89542f1da2ab624adb8188d98754b1d29a2fe3d41f0348bf9435b60ad145df1812fd2a09b3256779aa23b532c199f3dee59619a1eb
   languageName: node
   linkType: hard
 
@@ -8790,8 +8771,8 @@ __metadata:
     "@cp-utils/gitversion": "workspace:^"
     "@cp-utils/gitversion-s3publish": "workspace:^"
     "@types/eslint": "npm:^8.44.9"
-    "@types/jest": "npm:^29.5.11"
-    "@types/node": "npm:^20.11.16"
+    "@types/jest": "npm:^29.5.12"
+    "@types/node": "npm:^20.11.19"
     "@yarnpkg/types": "npm:^4.0.0"
     asciinema-player: "npm:^3.6.3"
     eslint: "npm:^8.55.0"
