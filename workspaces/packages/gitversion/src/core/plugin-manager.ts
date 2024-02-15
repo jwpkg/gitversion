@@ -18,7 +18,7 @@ export interface IGitPlatform {
 
 export interface IPackManager {
   ident: string;
-  pack(workspace: IWorkspace, outputFolder: string): Promise<string>;
+  pack(workspace: IWorkspace, outputFolder: string): Promise<string | null>;
   publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void>;
 }
 

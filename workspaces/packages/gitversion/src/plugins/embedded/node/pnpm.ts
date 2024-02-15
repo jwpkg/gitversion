@@ -22,7 +22,11 @@ export class PNpmPlugin implements IPlugin, IPackManager {
     return null;
   }
 
-  async pack(workspace: IWorkspace, outputFolder: string): Promise<string> {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (workspace.private) {
+      return null;
+    }
+
     const result = await this.application.executor.exec(['pnpm', 'pack', '--pack-destination', outputFolder], {
       cwd: workspace.cwd,
     });

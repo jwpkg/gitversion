@@ -6,21 +6,69 @@ import { ConventionalCommit } from './conventional-commmit-utils';
 import { GitCommit } from './git';
 import { LogReporter } from './log-reporter';
 
-export enum BumpType {
-  NONE = 'NONE',
-  PATCH = 'PATCH',
-  MINOR = 'MINOR',
-  MAJOR = 'MAJOR',
-  GRADUATE = 'GRADUATE',
-}
 
-const bumpIndex: Record<BumpType, number> = {
-  [BumpType.NONE]: 0,
-  [BumpType.PATCH]: 1,
-  [BumpType.MINOR]: 2,
-  [BumpType.MAJOR]: 3,
-  [BumpType.GRADUATE]: 4,
-};
+export class BumpType {
+  private precedence: number;
+  public readonly explicitVersion?: string;
+
+  static readonly SKIP = new BumpType(100);
+  static readonly NONE = new BumpType(0);
+  static readonly PATCH = new BumpType(1);
+  static readonly MINOR = new BumpType(2);
+  static readonly MAJOR = new BumpType(3);
+  static readonly GRADUATE = new BumpType(4);
+
+  static explicit(version: string) {
+    return new BumpType(10, version);
+  }
+
+  static parse(bumpTypeName: string) {
+    switch (bumpTypeName.toLowerCase()) {
+      case 'major': return BumpType.MAJOR;
+      case 'minor': return BumpType.MINOR;
+      case 'patch': return BumpType.PATCH;
+      case 'graduate': return BumpType.GRADUATE;
+      case 'none': return BumpType.NONE;
+      case 'skip': return BumpType.SKIP;
+    }
+
+    if (parse(bumpTypeName)) {
+      return BumpType.explicit(bumpTypeName);
+    }
+    return BumpType.NONE;
+  }
+
+  static tryParse(bumpTypeName?: string) {
+    if (bumpTypeName) {
+      return this.parse(bumpTypeName);
+    }
+    return undefined;
+  }
+
+  toString() {
+    switch (this) {
+      case BumpType.MAJOR: return 'major';
+      case BumpType.MINOR: return 'major';
+      case BumpType.PATCH: return 'major';
+      case BumpType.GRADUATE: return 'major';
+      case BumpType.NONE: return 'none';
+      case BumpType.SKIP: return 'skip';
+    }
+    if (this.explicitVersion) {
+      return this.explicitVersion;
+    }
+    return 'none';
+  }
+
+  gt(compare: BumpType) {
+    return this.precedence > compare.precedence;
+  }
+
+  private constructor(precedence: number, explicitVersion?: string) {
+    this.precedence = precedence;
+    this.explicitVersion = explicitVersion;
+  }
+}
 
 const bumpMap: Record<string, BumpType> = {
   fix: BumpType.PATCH,
@@ -64,6 +112,7 @@ export function executeBump(version: string, branch: VersionBranch, bumpType: Bu
       case BumpType.PATCH: return inc(version, `${preReleasePrefix}patch`, preReleaseName);
     }
   }
+  return null;
 }
 
 
@@ -75,7 +124,7 @@ export function detectBumpType(commits: ConventionalCommit[]) {
     }
 
     const detected = bumpMap[commit.type];
-    if (detected && bumpIndex[detected] > bumpIndex[current]) {
+    if (detected && detected.gt(current)) {
       current = detected;
     }
   }

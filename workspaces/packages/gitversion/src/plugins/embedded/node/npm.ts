@@ -24,7 +24,11 @@ export class NpmPlugin implements IPlugin, IPackManager {
     return null;
   }
 
-  async pack(workspace: IWorkspace, outputFolder: string): Promise<string> {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (workspace.private) {
+      return null;
+    }
+
     let tmpDir: string | undefined;
     try {
       tmpDir = await mkdtemp(join(tmpdir(), 'gitversion-npm'));

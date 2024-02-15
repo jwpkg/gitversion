@@ -49,8 +49,7 @@ export class PackCommand extends GitVersionCommand {
       logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
     }
 
-    const bumpedWorkspaces = bumpManifest.bumps.filter(b => b.private === false);
-    if (bumpedWorkspaces.length > 0) {
+    if (bumpManifest.bumps.length > 0) {
       const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
       if (projectBump) {
         packManifest.add(projectBump);
@@ -66,7 +65,7 @@ export class PackCommand extends GitVersionCommand {
         start: false,
       });
 
-      bumpedWorkspaces.forEach(bump => {
+      bumpManifest.bumps.forEach(bump => {
         queue.enqueue(async () => {
           const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
           if (workspace) {
@@ -106,12 +105,16 @@ export class PackCommand extends GitVersionCommand {
             recursive: true,
           });
           const packFile = await packManager.pack(workspace, folder);
-          const fullName = join(folder, packFile);
-          const stats = await stat(fullName);
-          logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
-          return {
-            [packManager.ident]: packFile,
-          };
+          if (packFile) {
+            const fullName = join(folder, packFile);
+            const stats = await stat(fullName);
+            logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+            return {
+              [packManager.ident]: packFile,
+            };
+          } else {
+            return {};
+          }
         });
 
         const files = (await Promise.all(packCommands)).reduce((p, c) => {

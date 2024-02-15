@@ -41,7 +41,9 @@ export function formatBumpType(bumpType: BumpType) {
     case BumpType.MINOR: return colorize.yellowBright('MINOR');
     case BumpType.PATCH: return colorize.greenBright('PATCH');
     case BumpType.NONE: return colorize.greenBright('NONE');
+    case BumpType.SKIP: return colorize.gray('SKIP');
   }
+  return colorize.green(`explicit (${bumpType.explicitVersion})`);
 }
 
 export function formatPackageName(name: string) {

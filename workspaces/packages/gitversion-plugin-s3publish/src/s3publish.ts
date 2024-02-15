@@ -1,0 +1,83 @@
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { LogReporter } from '@cp-utils/gitversion/src/core/log-reporter';
+import { PackedPackage } from '@cp-utils/gitversion/src/core/pack-artifact';
+import { IWorkspace } from '@cp-utils/gitversion/src/core/workspace-utils';
+import { IPackManager, IPlugin, IPluginInitialize } from '@cp-utils/gitversion';
+import archiver from 'archiver';
+import { createReadStream, createWriteStream } from 'fs';
+import { join } from 'path';
+import { parse } from 'semver';
+
+export interface S3PublishProps {
+  bucketName: string;
+  baseFolder?: string;
+  fileNameTemplate?: string;
+  files: string[];
+}
+
+export class S3Publish implements IPlugin, IPackManager {
+  ident = 's3';
+  name = 'S3 publication plugin';
+  fileNameTemplate: string;
+  private logger?: LogReporter;
+
+  get packManager() {
+    return this;
+  }
+
+  constructor(private props: S3PublishProps) {
+    this.fileNameTemplate = props.fileNameTemplate ?? 'output';
+  }
+
+  initialize(configuration: IPluginInitialize) {
+    this.logger = configuration.logger;
+    return this;
+  }
+
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (workspace.relativeCwd === '.') {
+      const outputFileName = `${this.name}.zip`;
+      const outputFile = createWriteStream(join(outputFolder, outputFileName));
+      const archive = archiver('zip');
+      archive.pipe(outputFile);
+      const folder = this.props.baseFolder ? join(workspace.project.cwd, this.props.baseFolder) : workspace.project.cwd;
+
+      for (const pattern of this.props.files) {
+        archive.glob(pattern, {
+          cwd: folder,
+        });
+      }
+      await archive.finalize();
+      return outputFileName;
+    }
+    return null;
+  }
+
+  async publish(packedPackage: PackedPackage, fileName: string, _releaseTag: string, dryRun: boolean): Promise<void> {
+    const keyName = this.generateFilename(packedPackage.version);
+    if (dryRun) {
+      this.logger?.reportDryrun(`Would be publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
+      return;
+    } else {
+      this.logger?.reportInfo(`Publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
+      const s3 = new S3Client({});
+      await s3.send(new PutObjectCommand({
+        Bucket: this.props.bucketName,
+        Key: keyName,
+        Body: createReadStream(fileName),
+      }));
+    }
+  }
+
+  generateFilename(version: string) {
+    const semver = parse(version);
+    if (!semver) {
+      return this.fileNameTemplate;
+    }
+    return this.fileNameTemplate
+      .replace('{version.major}', `${semver.major}`)
+      .replace('{version.minor}', `${semver.minor}`)
+      .replace('{version.patch}', `${semver.patch}`)
+      .replace('{version}', version);
+  }
+}

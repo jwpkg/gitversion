@@ -30,7 +30,11 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
     return null;
   }
 
-  async pack(workspace: IWorkspace, outputFolder: string): Promise<string> {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (workspace.private) {
+      return null;
+    }
+
     const normalizedPackageName = `${workspace.packageName.replace(/@/g, '').replace(/\//g, '-')}-${workspace.version}.tgz`;
     const outFile = join(outputFolder, normalizedPackageName);
 

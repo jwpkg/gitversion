@@ -23,9 +23,13 @@ export class BumpCommand extends RestoreCommand {
     description: 'Bump with an explicit version',
   });
 
-  bumpType: BumpType | undefined = Option.String('--bump-type', {
+  bumpType: string | undefined = Option.String('--bump-type', {
     description: 'Bump with an explicit version',
-    validator: t.isEnum([BumpType.GRADUATE, BumpType.MAJOR, BumpType.MINOR, BumpType.PATCH]),
+    validator: t.isOneOf([
+      t.isEnum(['graduate', 'major', 'minor', 'patch']),
+      t.cascade(t.isString(), t.matchesRegExp(/[0-9]+\\.[0-9]+\\.[0-9]+/)),
+    ],
+    ),
   });
 
   async execute(): Promise<number> {
@@ -55,7 +59,7 @@ export class BumpCommand extends RestoreCommand {
     const bumpManifest = await BumpManifest.new(application);
 
     const projectBump = logger.beginSection('Bumping root workspace');
-    const newVersion = await this.detectBumpForWorkspace(application, logger, project, bumpManifest, this.version, this.bumpType);
+    const newVersion = await this.detectBumpForWorkspace(application, logger, project, bumpManifest, this.version, BumpType.tryParse(this.bumpType));
     if (newVersion) {
       await updateWorkspaceVersion(project, logger, newVersion);
       await pluginManager.dispatchOnBump(application, project, newVersion);
@@ -69,7 +73,7 @@ export class BumpCommand extends RestoreCommand {
 
     const promises = project.childWorkspaces.map(async workspace => {
       return await logger.runSection(`Bumping package ${formatPackageName(workspace.packageName)}`, async logger => {
-        const newVersion = await this.detectBumpForWorkspace(application, logger, workspace, bumpManifest, this.version, this.bumpType);
+        const newVersion = await this.detectBumpForWorkspace(application, logger, workspace, bumpManifest, this.version, BumpType.tryParse(this.bumpType));
         if (newVersion) {
           await updateWorkspaceVersion(workspace, logger, newVersion);
           await pluginManager.dispatchOnBump(application, workspace, newVersion);
@@ -87,6 +91,7 @@ export class BumpCommand extends RestoreCommand {
 
   async detectBumpForWorkspace(application: IApplication, logger: LogReporter, workspace: IWorkspace, bumpManifest: BumpManifest, explicitVersion?: string, explicitBumpType?: BumpType) {
     let newVersion: string | undefined;
+
     const workspaceForVersion = application.configuration.options.independentVersioning ? workspace : workspace.project;
     const currentVersion = await this.currentVersionFromGit(workspaceForVersion, application.git, application.branch);
 

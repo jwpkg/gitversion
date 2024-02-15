@@ -13,6 +13,7 @@
     "workspaces/packages/*"
   ],
   "scripts": {
+    "aws:login": "aws sso login --profile cp-utils-prod",
     "build:all": "yarn validate:all && yarn build:packages",
     "build:packages": "yarn workspaces foreach -A run build",
     "validate:all": "yarn validate:constraints && yarn validate:lint && yarn validate:tests",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@cp-utils/constraints-config": "^0.0.7",
     "@cp-utils/eslint-config": "^0.0.6",
+    "@cp-utils/gitversion-s3publish": "workspace:^",
     "@types/eslint": "^8.44.9",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.11.16",

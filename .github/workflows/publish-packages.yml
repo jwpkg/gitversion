@@ -30,6 +30,13 @@ jobs:
       - name: Build 🔧
         run: yarn build:all
 
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::202821071962:role/www-cputils-com-website-gitversionpublishdocsA3C0C6-f9KlnEDH0OdS
+          role-session-name: upload-docs
+          aws-region: eu-west-1
+
       - name: Publish
         run: yarn gitversion publish
         env:

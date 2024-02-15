@@ -3,6 +3,7 @@
   "packageManager": "yarn@4.0.2",
   "bin": "bin/index-typescript.js",
   "type": "commonjs",
+  "description": "Gitversion is a complete customizable git-based release management system",
   "keywords": [
     "git",
     "npm",
