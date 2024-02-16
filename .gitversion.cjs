@@ -10,7 +10,7 @@ module.exports = defineConfig({
       baseFolder: 'docs',
       fileNameTemplate: [
         'gitversion/{version.major}.{version.minor}.x.zip',
-        'gitversion/latest.zip',
+        'gitversion/{releaseChannel}.zip',
       ],
       files: [
         '**/*.md'

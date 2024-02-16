@@ -53,10 +53,10 @@ export class S3Publish implements IPlugin, IPackManager {
     return null;
   }
 
-  async publish(packedPackage: PackedPackage, fileName: string, _releaseTag: string, dryRun: boolean): Promise<void> {
+  async publish(packedPackage: PackedPackage, fileName: string, releaseChannel: string, dryRun: boolean): Promise<void> {
     const templates = Array.isArray(this.fileNameTemplate) ? this.fileNameTemplate : [this.fileNameTemplate];
     for (const template of templates) {
-      const keyName = this.generateFilename(template, packedPackage.version);
+      const keyName = this.generateFilename(template, packedPackage.version, releaseChannel);
       if (dryRun) {
         this.logger?.reportDryrun(`Would be publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
         return;
@@ -72,15 +72,18 @@ export class S3Publish implements IPlugin, IPackManager {
     }
   }
 
-  generateFilename(template: string, version: string) {
+  generateFilename(template: string, version: string, releaseChannel: string) {
+    let result = template;
+
+    result = result.replace('{releaseChannel}', releaseChannel)
+
     const semver = parse(version);
-    if (!semver) {
-      return template;
+    if (semver) {
+      result = result.replace('{version.major}', `${semver.major}`)
+        .replace('{version.minor}', `${semver.minor}`)
+        .replace('{version.patch}', `${semver.patch}`)
+        .replace('{version}', version);
     }
-    return template
-      .replace('{version.major}', `${semver.major}`)
-      .replace('{version.minor}', `${semver.minor}`)
-      .replace('{version.patch}', `${semver.patch}`)
-      .replace('{version}', version);
+    return result;
   }
 }
