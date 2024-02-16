@@ -12,8 +12,8 @@ module.exports = defineConfig({
         'gitversion/{version.major}.{version.minor}.x.zip',
         'gitversion/{releaseChannel}.zip',
       ],
-      files: [
-        '**/*.md'
+      exclude: [
+        ".vitepress",
       ],
     })
   ]

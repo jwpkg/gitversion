@@ -12,7 +12,8 @@ export interface S3PublishProps {
   bucketName: string;
   baseFolder?: string;
   fileNameTemplate?: string | string[];
-  files: string[];
+  files?: string[];
+  exclude?: string[];
 }
 
 export class S3Publish implements IPlugin, IPackManager {
@@ -42,9 +43,10 @@ export class S3Publish implements IPlugin, IPackManager {
       archive.pipe(outputFile);
       const folder = this.props.baseFolder ? join(workspace.project.cwd, this.props.baseFolder) : workspace.project.cwd;
 
-      for (const pattern of this.props.files) {
+      for (const pattern of this.props.files ?? ['**']) {
         archive.glob(pattern, {
           cwd: folder,
+          ignore: this.props.exclude
         });
       }
       await archive.finalize();
