@@ -46,7 +46,7 @@ export class S3Publish implements IPlugin, IPackManager {
       for (const pattern of this.props.files ?? ['**']) {
         archive.glob(pattern, {
           cwd: folder,
-          ignore: this.props.exclude
+          ignore: this.props.exclude,
         });
       }
       await archive.finalize();
@@ -77,7 +77,7 @@ export class S3Publish implements IPlugin, IPackManager {
   generateFilename(template: string, version: string, releaseChannel: string) {
     let result = template;
 
-    result = result.replace('{releaseChannel}', releaseChannel)
+    result = result.replace('{releaseChannel}', releaseChannel);
 
     const semver = parse(version);
     if (semver) {
