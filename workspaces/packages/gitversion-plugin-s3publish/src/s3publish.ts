@@ -11,14 +11,14 @@ import { parse } from 'semver';
 export interface S3PublishProps {
   bucketName: string;
   baseFolder?: string;
-  fileNameTemplate?: string;
+  fileNameTemplate?: string | string[];
   files: string[];
 }
 
 export class S3Publish implements IPlugin, IPackManager {
   ident = 's3';
   name = 'S3 publication plugin';
-  fileNameTemplate: string;
+  fileNameTemplate: string | string[];
   private logger?: LogReporter;
 
   get packManager() {
@@ -54,27 +54,30 @@ export class S3Publish implements IPlugin, IPackManager {
   }
 
   async publish(packedPackage: PackedPackage, fileName: string, _releaseTag: string, dryRun: boolean): Promise<void> {
-    const keyName = this.generateFilename(packedPackage.version);
-    if (dryRun) {
-      this.logger?.reportDryrun(`Would be publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
-      return;
-    } else {
-      this.logger?.reportInfo(`Publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
-      const s3 = new S3Client({});
-      await s3.send(new PutObjectCommand({
-        Bucket: this.props.bucketName,
-        Key: keyName,
-        Body: createReadStream(fileName),
-      }));
+    const templates = Array.isArray(this.fileNameTemplate) ? this.fileNameTemplate : [this.fileNameTemplate];
+    for (const template of templates) {
+      const keyName = this.generateFilename(template, packedPackage.version);
+      if (dryRun) {
+        this.logger?.reportDryrun(`Would be publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
+        return;
+      } else {
+        this.logger?.reportInfo(`Publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
+        const s3 = new S3Client({});
+        await s3.send(new PutObjectCommand({
+          Bucket: this.props.bucketName,
+          Key: keyName,
+          Body: createReadStream(fileName),
+        }));
+      }
     }
   }
 
-  generateFilename(version: string) {
+  generateFilename(template: string, version: string) {
     const semver = parse(version);
     if (!semver) {
-      return this.fileNameTemplate;
+      return template;
     }
-    return this.fileNameTemplate
+    return template
       .replace('{version.major}', `${semver.major}`)
       .replace('{version.minor}', `${semver.minor}`)
       .replace('{version.patch}', `${semver.patch}`)
