@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.36](https://github.com/cp-utils/gitversion/compare/v0.0.35...v0.0.36) (Thu Feb 15 2024)
+
+### feat
+
+* Added S3 publish plugin ([5c28685](https://github.com/cp-utils/gitversion/commit/5c28685fd28d0709bc4dcc93b81adac0233b3a14))
+
+### chore
+
+* Fixed pipeline ([d1101b7](https://github.com/cp-utils/gitversion/commit/d1101b7966250ac7199042abea50a22f7ba1f2ac))
+
 ## [0.0.35](https://github.com/cp-utils/gitversion/compare/v0.0.34...v0.0.35) (Tue Feb 13 2024)
 
 ### docs
