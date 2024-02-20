@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.38](https://github.com/cp-utils/gitversion/compare/v0.0.37...v0.0.38) (Fri Feb 16 2024)
+
+### feat
+
+* Added release channel support for S3 plugin ([c890b0d](https://github.com/cp-utils/gitversion/commit/c890b0dc53c37e639e615771350d0d369dd1c8d1))
+
+* Added exclusion ([4992c46](https://github.com/cp-utils/gitversion/commit/4992c46f518924aabc565b18904fab688d1e70b5))
+
 ## [0.0.37](https://github.com/cp-utils/gitversion/compare/v0.0.36...v0.0.37) (Fri Feb 16 2024)
 
 ### feat
