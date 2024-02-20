@@ -27,7 +27,12 @@ export interface NodeManifestContent {
 const NODE_MANIFEST_NAME = 'package.json';
 
 export async function loadManifest(folder: string): Promise<NodeManifestContent | null> {
-  const stringContent = await readFile(join(folder, NODE_MANIFEST_NAME), 'utf-8');
+  const manifestLocation = join(folder, NODE_MANIFEST_NAME);
+  if (!existsSync(manifestLocation)) {
+    return null;
+  }
+
+  const stringContent = await readFile(manifestLocation, 'utf-8');
   const content = JSON.parse(stringContent);
   const errors: string[] = [];
   if (isNodeManifest(content, { errors })) {
