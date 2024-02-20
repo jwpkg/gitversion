@@ -64,11 +64,6 @@
       ]
     }
   },
-  "dependenciesMeta": {
-    "execa@8.0.1": {
-      "unplugged": true
-    }
-  },
   "dependencies": {
     "@cp-utils/gitversion": "workspace:^",
     "asciinema-player": "^3.6.4",

@@ -54,7 +54,6 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
         return;
       } else {
         const registry = npmConfigUtils.getPublishRegistry(yarnWorkspace.manifest, { configuration: this.yarnConfiguration });
-
         const gitHead = await npmPublishUtils.getGitHead(yarnWorkspace.cwd);
 
         const buffer = await readFile(fileName);
@@ -67,7 +66,8 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
         });
 
         if (yarnWorkspace.manifest.name) {
-          await npmHttpUtils.put(npmHttpUtils.getIdentUrl(yarnWorkspace.manifest.name), body, {
+          const url = npmHttpUtils.getIdentUrl(yarnWorkspace.manifest.name);
+          await npmHttpUtils.put(url, body, {
             configuration: this.yarnConfiguration,
             registry,
             ident: yarnWorkspace.manifest.name,

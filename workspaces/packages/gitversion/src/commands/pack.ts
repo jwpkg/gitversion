@@ -26,11 +26,6 @@ export class PackCommand extends GitVersionCommand {
   async execute(): Promise<number> {
     const application = await Application.init(this.context.application);
 
-    const context = {
-      ...this.context,
-      application,
-    };
-
     const { project, git, configuration, logger } = application;
     if (!project) {
       return 1;
@@ -90,8 +85,6 @@ export class PackCommand extends GitVersionCommand {
     }
 
     logger.endSection(section);
-
-    await this.cli.run(['reset'], context);
 
     return 0;
   }

@@ -8901,9 +8901,6 @@ __metadata:
     vitepress: "npm:^1.0.0-rc.41"
     vue: "npm:^3.4.15"
     vue3-asciinema-player: "npm:^0.0.3"
-  dependenciesMeta:
-    execa@8.0.1:
-      unplugged: true
   languageName: unknown
   linkType: soft
 
