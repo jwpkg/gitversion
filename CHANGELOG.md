@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.40](https://github.com/cp-utils/gitversion/compare/v0.0.39...v0.0.40) (Tue Feb 20 2024)
+
+### fix
+
+* Don't reset after pack for now ([2c9d27a](https://github.com/cp-utils/gitversion/commit/2c9d27ae19a3bde1eb45bc2f1965c5217a03902d))
+
 ## [0.0.39](https://github.com/cp-utils/gitversion/compare/v0.0.38...v0.0.39) (Tue Feb 20 2024)
 
 ### fix
