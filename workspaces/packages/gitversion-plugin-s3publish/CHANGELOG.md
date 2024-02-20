@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.39](https://github.com/cp-utils/gitversion/compare/v0.0.38...v0.0.39) (Tue Feb 20 2024)
+
+### feat
+
+* Changed feature bump behavior to a string based version ([f1cd71c](https://github.com/cp-utils/gitversion/commit/f1cd71c950b5eb67e2d7b88442dcf40f3c5aae4b))
+
+### fix
+
+* Changed back dry run ([f17be45](https://github.com/cp-utils/gitversion/commit/f17be4534b1939a4d68d959a8750aefa0328be60))
+
 ## [0.0.38](https://github.com/cp-utils/gitversion/compare/v0.0.37...v0.0.38) (Fri Feb 16 2024)
 
 ### feat
