@@ -4,6 +4,24 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.39](https://github.com/cp-utils/gitversion/compare/v0.0.38...v0.0.39) (Tue Feb 20 2024)
+
+### fix
+
+* Don't crash on non-existent node manifest ([00c4a01](https://github.com/cp-utils/gitversion/commit/00c4a011a60c6f3fecf1e813689147488a3887c9))
+
+* Changed back dry run ([f17be45](https://github.com/cp-utils/gitversion/commit/f17be4534b1939a4d68d959a8750aefa0328be60))
+
+* Added error reporting details ([337764e](https://github.com/cp-utils/gitversion/commit/337764e48e68c2727c15aa6e3926e9dc35f33c54))
+
+### docs
+
+* Updated docs with configuration ([ffdd7b4](https://github.com/cp-utils/gitversion/commit/ffdd7b48f8ff1892874393330c37121f258f7c64))
+
+### feat
+
+* Changed feature bump behavior to a string based version ([f1cd71c](https://github.com/cp-utils/gitversion/commit/f1cd71c950b5eb67e2d7b88442dcf40f3c5aae4b))
+
 ## [0.0.38](https://github.com/cp-utils/gitversion/compare/v0.0.37...v0.0.38) (Fri Feb 16 2024)
 
 ### feat
