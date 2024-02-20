@@ -105,7 +105,12 @@ export class PublishCommand extends GitVersionCommand {
       const releaseTag = branch.type === BranchType.MAIN ? 'latest' : branch.name;
       const publishCommands = packManagers.map(async packManager => {
         if (packedPackage.packFiles?.[packManager.ident]) {
-          await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, packedPackage.packFiles[packManager.ident]), releaseTag, this.dryRun);
+          try {
+            await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, packedPackage.packFiles[packManager.ident]), releaseTag, this.dryRun);
+          } catch (error) {
+            logger.reportError(`Error publishing ${formatPackageName(packedPackage.packageName)} with plugin ${colorize.yellowBright('name' in packManager && typeof packManager.name === 'string' ? packManager.name : packManager.ident)}`, true);
+            throw error;
+          }
         }
       });
 
