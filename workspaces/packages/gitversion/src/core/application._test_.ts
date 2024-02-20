@@ -1,5 +1,5 @@
 import { Application } from './application';
-import { BranchType, BaseConfigurationOptions, FeatureBumpBehavior } from './configuration';
+import { BranchType, BaseConfigurationOptions } from './configuration';
 
 const defaultConfig: Required<BaseConfigurationOptions> = {
   featureBranchPatterns: [
@@ -15,7 +15,7 @@ const defaultConfig: Required<BaseConfigurationOptions> = {
   independentVersioning: false,
   versionTagPrefix: 'v',
   dryRun: false,
-  featureBumpBehavior: FeatureBumpBehavior.AllCommits,
+  featureBumpBehavior: 'never',
 };
 
 describe('configuration', () => {

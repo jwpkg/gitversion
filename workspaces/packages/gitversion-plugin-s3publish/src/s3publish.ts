@@ -59,7 +59,7 @@ export class S3Publish implements IPlugin, IPackManager {
     const templates = Array.isArray(this.fileNameTemplate) ? this.fileNameTemplate : [this.fileNameTemplate];
     for (const template of templates) {
       const keyName = this.generateFilename(template, packedPackage.version, releaseChannel);
-      if (dryRun) {
+      if (!dryRun) {
         this.logger?.reportDryrun(`Would be publishing ${keyName} to s3 bucket ${this.props.bucketName}`);
         return;
       } else {

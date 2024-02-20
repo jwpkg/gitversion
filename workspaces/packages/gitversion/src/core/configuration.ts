@@ -6,11 +6,8 @@ import * as t from 'typanion';
 import { LogReporter } from './log-reporter';
 import { IPlugin } from './plugin-manager';
 
-export enum FeatureBumpBehavior {
-  AllCommits,
-  Never,
-  Normal,
-}
+const FeatureBumpBehaviorItems = ['always', 'never', 'normal'] as const;
+export type FeatureBumpBehavior = typeof FeatureBumpBehaviorItems[number];
 
 export const isBaseConfigurationOptions = t.isPartial({
   featureBranchPatterns: t.isOptional(t.isArray(t.isString())),
@@ -19,7 +16,7 @@ export const isBaseConfigurationOptions = t.isPartial({
   independentVersioning: t.isOptional(t.isBoolean()),
   versionTagPrefix: t.isOptional(t.isString()),
   dryRun: t.isOptional(t.isBoolean()),
-  featureBumpBehavior: t.isOptional(t.isEnum(FeatureBumpBehavior)),
+  featureBumpBehavior: t.isOptional(t.isEnum(FeatureBumpBehaviorItems)),
 });
 
 

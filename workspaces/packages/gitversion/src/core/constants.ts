@@ -1,4 +1,4 @@
-import { FeatureBumpBehavior, RequiredConfigurationOption } from './configuration';
+import { RequiredConfigurationOption } from './configuration';
 
 export const DEFAULT_PACKAGE_VERSION = '0.0.0';
 
@@ -18,5 +18,5 @@ export const DEFAULT_CONFIGURATION_OPTIONS: RequiredConfigurationOption = {
   independentVersioning: false,
   versionTagPrefix: 'v',
   dryRun: false,
-  featureBumpBehavior: FeatureBumpBehavior.Normal,
+  featureBumpBehavior: 'never',
 };

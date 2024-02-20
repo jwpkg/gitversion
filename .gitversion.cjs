@@ -3,7 +3,7 @@ const { S3Publish } = require('@cp-utils/gitversion-s3publish');
 
 module.exports = defineConfig({
   independentVersioning: false,
-  featureBumpBehavior: FeatureBumpBehavior.AllCommits,
+  featureBumpBehavior: 'always',
   plugins: [
     new S3Publish({
       bucketName: 'www-cputils-com-website-docspublishbucket31a61f6d-pixklxvi0wye',
