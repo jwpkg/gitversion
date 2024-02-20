@@ -3,7 +3,7 @@ outline: deep
 ---
 
 <script setup>
-  import AsciinemaPlayer from '../vue/asciinema-player.vue'
+// import AsciinemaPlayer from '../vue/asciinema-player.vue'
 </script>
 
 # Getting started
@@ -70,9 +70,9 @@ $ pnpm gitversion bump
 ```
 :::
 
-::: details See output
+<!-- ::: details See output
 <AsciinemaPlayer data='./assets/bump.cast'/>
-:::
+::: -->
 
 ::: info
 At this moment we operate in 0.x.x version mode. See [0.x.x releases](../explanation/0.x.x-releases) for more details.

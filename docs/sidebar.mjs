@@ -1,19 +1,13 @@
-import { DefaultTheme } from 'vitepress';
-
-export const sidebar: DefaultTheme.SidebarItem[] = [
+export const sidebar = [
   {
     text: 'Gitversion', items: [
       { text: 'Introduction', link: '/' },
       { text: 'Getting started', link: '/tutorials/getting-started' },
+      { text: 'Configuration', link: '/reference/configuration' },
       {
         text: 'How to\'s', items: [
           { text: 'Setup demo git', link: '/how-to/setup-demo-git' },
           { text: 'Working with branches', link: '/how-to/working-with-branches' },
-        ],
-      },
-      {
-        text: 'Reference', items: [
-          { text: 'Configuration', link: '/reference/configuration' },
         ],
       },
       {
