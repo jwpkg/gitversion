@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.41](https://github.com/cp-utils/gitversion/compare/v0.0.40...v0.0.41) (Wed Mar 27 2024)
+
+### feat
+
+* **config** Added git flags ([dce7bc8](https://github.com/cp-utils/gitversion/commit/dce7bc8a695d3fa103805de6fdf1ac4a92abaf55))
+
+### fix
+
+* Default values ([f4e8646](https://github.com/cp-utils/gitversion/commit/f4e864670c72afe3761921609be9687fd3392987))
+
+* Tests ([1e17c1d](https://github.com/cp-utils/gitversion/commit/1e17c1decb1c87f7b4ff7616e7576cbceb6bacbd))
+
 ## [0.0.40](https://github.com/cp-utils/gitversion/compare/v0.0.39...v0.0.40) (Tue Feb 20 2024)
 
 ### fix
