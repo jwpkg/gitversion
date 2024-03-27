@@ -33,6 +33,9 @@ export class GithubPlugin implements IPlugin {
       const result = this.parseUrl(gitUrl);
 
       if (result) {
+        initialize.git.addConfiguration('user.name', 'Gitversion release');
+        initialize.git.addConfiguration('user.email', '153614361+github-actions[bot]@users.noreply.github.com');
+
         return new GithubPlugin(initialize.git, result.projectName, result.repoName);
       }
     }

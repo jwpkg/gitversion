@@ -1,4 +1,4 @@
-const { defineConfig, FeatureBumpBehavior } = require("@cp-utils/gitversion");
+const { defineConfig } = require("@cp-utils/gitversion");
 const { S3Publish } = require('@cp-utils/gitversion-s3publish');
 
 module.exports = defineConfig({

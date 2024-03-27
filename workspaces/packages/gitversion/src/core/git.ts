@@ -20,6 +20,11 @@ export interface GitTag {
 
 export class Git {
   private commandCache: Map<string, string> = new Map();
+  private extraArgs: string[] = [];
+
+  addConfiguration(key: string, value: string) {
+    this.extraArgs.push('-c', `${key}=${value}`);
+  }
 
   static async root(): Promise<string> {
     const executor = new Executor(process.cwd(), new LogReporter());
@@ -30,7 +35,7 @@ export class Git {
   }
 
   async exec(...args: string[]) {
-    return this.executor.exec(['git', ...args], {
+    return this.executor.exec(['git', ...this.extraArgs, ...args], {
       cwd: this.cwd,
     });
   }
@@ -126,8 +131,6 @@ export class Git {
       return;
     } else {
       await this.exec(
-        '-c', 'user.name=Gitversion release',
-        '-c', 'user.email=153614361+github-actions[bot]@users.noreply.github.com',
         'tag', '-a', tag, '-m', message);
     }
   }

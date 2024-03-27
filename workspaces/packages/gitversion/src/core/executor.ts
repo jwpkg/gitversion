@@ -19,6 +19,7 @@ export class Executor implements IExecutor {
   constructor(private cwd: string, private logger: LogReporter) { }
 
   async exec(commandAndArgs: string[], options?: IExecutorExecOptions | undefined): Promise<string> {
+    const fullCommand = commandAndArgs.join(' ');
     const result = await crossSpawnAsync(commandAndArgs[0], commandAndArgs.splice(1), {
       cwd: options?.cwd ?? this.cwd,
       env: process.env,
@@ -30,7 +31,7 @@ export class Executor implements IExecutor {
     }
     if (result.exitCode !== 0) {
       this.logError(`Executing command non-zero exit code: ${result.exitCode}`, options);
-      this.logError(`Executed command: [${commandAndArgs.join(' ')}]`, options);
+      this.logError(`Executed command: [${fullCommand}]`, options);
       this.logError(`Error output: ${result.output.toString()}`, options);
       throw new Error('Non-zero exitcode');
     }
