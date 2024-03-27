@@ -52,8 +52,10 @@ export class BumpCommand extends RestoreCommand {
     const bump = logger.beginSection('Bump step');
     const isShallow = await git.exec('rev-parse', '--is-shallow-repository');
     if (isShallow === 'true') {
-      logger.reportInfo('Fetching refs');
-      await git.exec('fetch', '--all', '--tags', '--unshallow');
+      logger.reportInfo('Unshallowing');
+      if (!(await git.execSilent('fetch', '--unshallow'))) {
+        await git.execSilent('fetch', '--all');
+      }
     }
 
     const bumpManifest = await BumpManifest.new(application);
