@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.42](https://github.com/cp-utils/gitversion/compare/v0.0.41...v0.0.42) (Wed Mar 27 2024)
+
+### fix
+
+* **azuredevops** Current branch from environment ([d220a00](https://github.com/cp-utils/gitversion/commit/d220a00d9ea2f72bfed0035720b31a4d92cdeb14))
+
 ## [0.0.41](https://github.com/cp-utils/gitversion/compare/v0.0.40...v0.0.41) (Wed Mar 27 2024)
 
 ### feat
