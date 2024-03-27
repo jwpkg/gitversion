@@ -19,6 +19,9 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
       const result = this.parseUrl(gitUrl);
 
       if (result) {
+        if (process.env.BUILD_SOURCEBRANCHNAME) {
+          initialize.git.overrideCurrentBranch = process.env.BUILD_SOURCEBRANCHNAME;
+        }
         return new AzureDevopsPlugin(initialize.git, result.organizationName, result.projectName, result.repoName);
       }
     }

@@ -21,9 +21,14 @@ export interface GitTag {
 export class Git {
   private commandCache: Map<string, string> = new Map();
   private extraArgs: string[] = [];
+  private _overrideCurrentBranch?: string;
 
   addConfiguration(key: string, value: string) {
-    this.extraArgs.push('-c', `${key}=${value}`);
+    this.extraArgs.push('-c', `${key}='${value}'`);
+  }
+
+  set overrideCurrentBranch(branch: string) {
+    this._overrideCurrentBranch = branch;
   }
 
   static async root(): Promise<string> {
@@ -143,8 +148,6 @@ export class Git {
     } else {
       await this.exec('add', ...files);
       await this.exec(
-        '-c', 'user.name=Gitversion release',
-        '-c', 'user.email=153614361+github-actions[bot]@users.noreply.github.com',
         'commit', '-m', `${message} [skip ci]`, '--', ...files,
       );
     }
@@ -166,6 +169,9 @@ export class Git {
   }
 
   async currentBranch() {
+    if (this._overrideCurrentBranch) {
+      return this._overrideCurrentBranch;
+    }
     return await this.execSilent('branch', '--show-current');
   }
 
