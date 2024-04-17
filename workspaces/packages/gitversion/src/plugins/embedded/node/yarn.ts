@@ -49,6 +49,7 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
     if (!yarnWorkspace) {
       throw new Error('Mismatch between yarn workspace and gitversion workspace. Please file a bug with your package folder details at https://github.com/cp-utils/gitversion/issues');
     } else {
+      yarnWorkspace.manifest.version = packedPackage.version;
       if (dryRun) {
         this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
         return;
