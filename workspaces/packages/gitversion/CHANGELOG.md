@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.43](https://github.com/cp-utils/gitversion/compare/v0.0.42...v0.0.43) (Wed Mar 27 2024)
+
+### fix
+
+* **bump** Unshallowing ([13a7461](https://github.com/cp-utils/gitversion/commit/13a746171657b92dded6c410c313e5456682a4cd))
+
 ## [0.0.42](https://github.com/cp-utils/gitversion/compare/v0.0.41...v0.0.42) (Wed Mar 27 2024)
 
 ### fix
