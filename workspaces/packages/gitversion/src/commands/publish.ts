@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import { Application } from '../core/application';
 import { BranchType, IConfiguration, VersionBranch } from '../core/configuration';
-import { formatPackageName } from '../core/format-utils';
+import { formatPackageName, formatVersion } from '../core/format-utils';
 import { Git } from '../core/git';
 import { LogReporter } from '../core/log-reporter';
 import { PackArtifact, PackedPackage } from '../core/pack-artifact';
@@ -58,7 +58,8 @@ export class PublishCommand extends GitVersionCommand {
     if (!(await packManifest.validateGitStatusForPublish())) {
       // TODO: Reference to a correct help page to fix this
       logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
-      console.log(await git.exec('status'));
+      console.log('Git status output:');
+      console.log(await git.exec('status', '--porcelain'));
       return 1;
     }
 
@@ -108,7 +109,7 @@ export class PublishCommand extends GitVersionCommand {
           try {
             await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, packedPackage.packFiles[packManager.ident]), releaseTag, this.dryRun);
           } catch (error) {
-            logger.reportError(`Error publishing ${formatPackageName(packedPackage.packageName)} with plugin ${colorize.yellowBright('name' in packManager && typeof packManager.name === 'string' ? packManager.name : packManager.ident)}`, true);
+            logger.reportError(`Error publishing ${formatPackageName(packedPackage.packageName)}@${formatVersion(packedPackage.version)} with plugin ${colorize.yellowBright('name' in packManager && typeof packManager.name === 'string' ? packManager.name : packManager.ident)}`, true);
             throw error;
           }
         }
