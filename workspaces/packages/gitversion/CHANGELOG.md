@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.45](https://github.com/cp-utils/gitversion/compare/v0.0.44...v0.0.45) (Wed Apr 17 2024)
+
+### fix
+
+* Use default access ([c64646c](https://github.com/cp-utils/gitversion/commit/c64646c87b7e665f6c1b24690cd380076520b858))
+
+* reverted access change ([95dfa8d](https://github.com/cp-utils/gitversion/commit/95dfa8dc29b57525f8512d8abf7bedb5118f85bf))
+
 ## [0.0.44](https://github.com/cp-utils/gitversion/compare/v0.0.43...v0.0.44) (Wed Apr 17 2024)
 
 ### fix
