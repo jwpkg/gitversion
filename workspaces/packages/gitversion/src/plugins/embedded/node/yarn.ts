@@ -60,7 +60,7 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
 
         const body = await npmPublishUtils.makePublishBody(yarnWorkspace, buffer, {
           tag: releaseTag,
-          access: undefined,
+          access: 'default',
           registry,
           gitHead,
         });
