@@ -22,6 +22,14 @@ export class RestoreCommand extends GitVersionCommand {
     logger.reportInfo(`Branch type: ${formatVersionBranch(branch)}`);
     const section = logger.beginSection('Restore step');
 
+    const isShallow = await git.exec('rev-parse', '--is-shallow-repository');
+    if (isShallow === 'true') {
+      logger.reportInfo('Unshallowing');
+      if (!(await git.execSilent('fetch', '--unshallow'))) {
+        await git.execSilent('fetch', '--all');
+      }
+    }
+
     await BumpManifest.clear(configuration);
 
     if (configuration.options.independentVersioning) {
