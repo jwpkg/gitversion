@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.47](https://github.com/cp-utils/gitversion/compare/v0.0.46...v0.0.47) (Thu Apr 18 2024)
+
+### fix
+
+* Moved unshallow to restore step ([c08f211](https://github.com/cp-utils/gitversion/commit/c08f211cf66b2603b66c9215090ddeb326764c87))
+
 ## [0.0.46](https://github.com/cp-utils/gitversion/compare/v0.0.45...v0.0.46) (Wed Apr 17 2024)
 
 ### fix
