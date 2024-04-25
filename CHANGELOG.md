@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.48](https://github.com/cp-utils/gitversion/compare/v0.0.47...v0.0.48) (Thu Apr 25 2024)
+
+### fix
+
+* **azure** Fixed merge header detection ([e85bdbd](https://github.com/cp-utils/gitversion/commit/e85bdbd6b5e4da4c46325136ccb56d150a077a8f))
+
 ## [0.0.47](https://github.com/cp-utils/gitversion/compare/v0.0.46...v0.0.47) (Thu Apr 18 2024)
 
 ### fix
