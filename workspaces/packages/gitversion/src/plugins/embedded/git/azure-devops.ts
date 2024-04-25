@@ -64,10 +64,10 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   }
 
   stripMergeMessage(commit: GitCommit): GitCommit {
-    if (commit.message.match(/^Merged PR \\d+: /)) {
+    if (commit.message.match(/^Merged PR \d+: /)) {
       return {
         ...commit,
-        message: commit.message.replace(/^Merged PR \\d+: /, ''),
+        message: commit.message.replace(/^Merged PR \d+: /, ''),
       };
     } else {
       return commit;
