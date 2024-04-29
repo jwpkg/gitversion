@@ -5,6 +5,7 @@ import { DispatchablePluginHooks, IGitPlatform, IPackManager, PluginManager } fr
 
 import { BaseConfigurationOptions, BranchType, Configuration, IConfiguration, RequiredConfigurationOption, VersionBranch, isUpdateableConfiguration } from './configuration';
 import { DEFAULT_CONFIGURATION_OPTIONS } from './constants';
+import { UnexpectedError } from './error-utils';
 import { Executor, IExecutor } from './executor';
 import { Git } from './git';
 import { LogReporter } from './log-reporter';
@@ -140,7 +141,7 @@ export class Application {
 
     const branchName = await pluginManager.gitPlatform.currentBranch();
     if (!branchName) {
-      throw new Error('Can\'t determine current gitbranch. Breaking off');
+      throw new UnexpectedError('Can\'t determine current gitbranch. Breaking off');
     }
 
     const branch = this.detectVersionBranch(options, branchName);
