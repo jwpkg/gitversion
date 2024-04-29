@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.49](https://github.com/cp-utils/gitversion/compare/v0.0.48...v0.0.49) (Mon Apr 29 2024)
+
+### feat
+
+* Added debug logging on errors ([77a6886](https://github.com/cp-utils/gitversion/commit/77a6886f8674eefe3dd55769e2aee78a46c1e80b))
+
+### fix
+
+* Cli handling ([a77368c](https://github.com/cp-utils/gitversion/commit/a77368c8019d380b98cb6d9b4a3a2ccacbfdd026))
+
 ## [0.0.48](https://github.com/cp-utils/gitversion/compare/v0.0.47...v0.0.48) (Thu Apr 25 2024)
 
 ### fix
