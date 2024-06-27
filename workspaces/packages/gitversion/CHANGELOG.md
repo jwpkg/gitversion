@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.50](https://github.com/cp-utils/gitversion/compare/v0.0.49...v0.0.50) (Thu Jun 27 2024)
+
+### chroe
+
+* Changed unit tests ([6d05d4c](https://github.com/cp-utils/gitversion/commit/6d05d4c4d4466d2c42b019bde5996bee5d86ad38))
+
+### feat
+
+* Added push changelogs options for features (#39) ([d5e1e7c](https://github.com/cp-utils/gitversion/commit/d5e1e7c0dd3f6a548c2f81f8e1e7f31c8bc33b81))
+
 ## [0.0.49](https://github.com/cp-utils/gitversion/compare/v0.0.48...v0.0.49) (Mon Apr 29 2024)
 
 ### feat

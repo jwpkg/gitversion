@@ -4,6 +4,10 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.0.50](https://github.com/cp-utils/gitversion/compare/v0.0.49...v0.0.50) (Thu Jun 27 2024)
+
+
+
 ## [0.0.49](https://github.com/cp-utils/gitversion/compare/v0.0.48...v0.0.49) (Mon Apr 29 2024)
 
 
