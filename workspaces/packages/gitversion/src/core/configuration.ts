@@ -17,6 +17,7 @@ export const isBaseConfigurationOptions = t.isPartial({
   versionTagPrefix: t.isOptional(t.isString()),
   dryRun: t.isOptional(t.isBoolean()),
   featureBumpBehavior: t.isOptional(t.isEnum(FeatureBumpBehaviorItems)),
+  featurePushChangelogs: t.isOptional(t.isBoolean()),
   gitFlags: t.isOptional(t.isRecord(t.isString())),
 });
 
