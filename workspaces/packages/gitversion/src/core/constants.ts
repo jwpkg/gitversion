@@ -19,5 +19,6 @@ export const DEFAULT_CONFIGURATION_OPTIONS: RequiredConfigurationOption = {
   versionTagPrefix: 'v',
   dryRun: false,
   featureBumpBehavior: 'never',
+  featurePushChangelogs: false,
   gitFlags: {},
 };

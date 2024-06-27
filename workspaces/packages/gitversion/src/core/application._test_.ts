@@ -16,6 +16,7 @@ const defaultConfig: Required<BaseConfigurationOptions> = {
   versionTagPrefix: 'v',
   dryRun: false,
   featureBumpBehavior: 'never',
+  featurePushChangelogs: false,
   gitFlags: {},
 };
 

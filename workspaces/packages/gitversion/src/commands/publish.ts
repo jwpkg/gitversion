@@ -75,7 +75,9 @@ export class PublishCommand extends GitVersionCommand {
       }
 
       await this.updateChangelogs(packedPackages, project, git, logger);
-      if (this.push) {
+      const isDefaultChangelogBranch = application.branch.type !== BranchType.FEATURE;
+      const shouldPushChangelogs = this.push && (isDefaultChangelogBranch || configuration.options.featurePushChangelogs);
+      if (shouldPushChangelogs) {
         await git.push();
       } else {
         logger.reportInfo('Skipping push step');
