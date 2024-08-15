@@ -6,9 +6,9 @@ import { Git } from '../core/git';
 import { determineCurrentVersion } from '../core/version-utils';
 import { IWorkspace, updateWorkspaceVersion } from '../core/workspace-utils';
 
-import { GitBumpCommand } from './context';
+import { GitVersionCommand } from './context';
 
-export class RestoreCommand extends GitBumpCommand {
+export class RestoreCommand extends GitVersionCommand {
   static paths = [
     ['restore'],
   ];

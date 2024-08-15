@@ -12,7 +12,7 @@ export class GithubPlugin implements IPlugin {
   constructor(private git: Git, private projectName: string, private repoName: string) { }
 
   /**
-   * Git url has the format: https://github.com/jwpkg/gitbump.git or git@github.com:cp-utils/gitversion.git
+   * Git url has the format: https://github.com/jwpkg/gitversion.git or git@github.com:cp-utils/gitversion.git
    */
   static parseUrl(url: string) {
     const result = /^(https:\/\/|git@)github.com(\/|:)(.+)\/(.+?)(\.git)?$/.exec(url);

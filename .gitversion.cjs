@@ -1,4 +1,4 @@
-const { defineConfig } = require('gitbump');
+const { defineConfig } = require('gitversion');
 
 module.exports = defineConfig({
   independentVersioning: false,
@@ -8,8 +8,8 @@ module.exports = defineConfig({
     //   bucketName: 'www-cputils-com-website-docspublishbucket31a61f6d-pixklxvi0wye',
     //   baseFolder: 'docs',
     //   fileNameTemplate: [
-    //     'gitbump/{version.major}.{version.minor}.x.zip',
-    //     'gitbump/{releaseChannel}.zip',
+    //     'gitversion/{version.major}.{version.minor}.x.zip',
+    //     'gitversion/{releaseChannel}.zip',
     //   ],
     //   exclude: [
     //     ".vitepress",

@@ -91,7 +91,7 @@ export class Application {
     const logger = new LogReporter();
 
     const version = JSON.parse(await readFile(resolve(__dirname, '../../package.json'), 'utf-8')).version;
-    logger.reportHeader(`Gitbump ${version}`);
+    logger.reportHeader(`Gitversion ${version}`);
 
     const cwd = await Git.root();
 

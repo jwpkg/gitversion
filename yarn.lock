@@ -1950,21 +1950,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jwpkg/gitbump-s3publish@workspace:^, @jwpkg/gitbump-s3publish@workspace:workspaces/packages/gitbump-plugin-s3publish":
+"@jwpkg/gitversion-s3publish@workspace:^, @jwpkg/gitversion-s3publish@workspace:workspaces/packages/gitversion-plugin-s3publish":
   version: 0.0.0-use.local
-  resolution: "@jwpkg/gitbump-s3publish@workspace:workspaces/packages/gitbump-plugin-s3publish"
+  resolution: "@jwpkg/gitversion-s3publish@workspace:workspaces/packages/gitversion-plugin-s3publish"
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.515.0"
+    "@jwpkg/gitversion": "workspace:^"
     "@types/archiver": "npm:^6"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
     "@types/semver": "npm:^7.5.7"
     archiver: "npm:^6.0.1"
-    gitbump: "workspace:^"
     glob: "npm:^10.3.10"
     semver: "npm:^7.6.0"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
+  languageName: unknown
+  linkType: soft
+
+"@jwpkg/gitversion@workspace:^, @jwpkg/gitversion@workspace:workspaces/packages/gitversion":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg/gitversion@workspace:workspaces/packages/gitversion"
+  dependencies:
+    "@types/jest": "npm:^29.5.12"
+    "@types/node": "npm:^20.11.19"
+    "@types/semver": "npm:^7.5.7"
+    "@yarnpkg/cli": "npm:^4.1.0"
+    "@yarnpkg/core": "npm:^4.0.3"
+    "@yarnpkg/fslib": "npm:^3.0.2"
+    "@yarnpkg/plugin-npm": "npm:^3.0.1"
+    "@yarnpkg/plugin-pack": "npm:^4.0.0"
+    axios: "npm:^1.6.5"
+    ci-info: "npm:^4.0.0"
+    clipanion: "npm:^4.0.0-rc.2"
+    colorize-node: "npm:^0.5.0"
+    cross-spawn: "npm:^7.0.3"
+    cross-spawn-extra: "npm:^2.1.0"
+    glob: "npm:^10.3.10"
+    queue-promise: "npm:^2.2.1"
+    semver: "npm:^7.6.0"
+    ts-node: "npm:^10.9.2"
+    typanion: "npm:^3.14.0"
+    typescript: "npm:^5.3.3"
+  bin:
+    gitversion: bin/index-typescript.js
   languageName: unknown
   linkType: soft
 
@@ -6385,35 +6414,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gitbump@workspace:^, gitbump@workspace:workspaces/packages/gitbump":
-  version: 0.0.0-use.local
-  resolution: "gitbump@workspace:workspaces/packages/gitbump"
-  dependencies:
-    "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.19"
-    "@types/semver": "npm:^7.5.7"
-    "@yarnpkg/cli": "npm:^4.1.0"
-    "@yarnpkg/core": "npm:^4.0.3"
-    "@yarnpkg/fslib": "npm:^3.0.2"
-    "@yarnpkg/plugin-npm": "npm:^3.0.1"
-    "@yarnpkg/plugin-pack": "npm:^4.0.0"
-    axios: "npm:^1.6.5"
-    ci-info: "npm:^4.0.0"
-    clipanion: "npm:^4.0.0-rc.2"
-    colorize-node: "npm:^0.5.0"
-    cross-spawn: "npm:^7.0.3"
-    cross-spawn-extra: "npm:^2.1.0"
-    glob: "npm:^10.3.10"
-    queue-promise: "npm:^2.2.1"
-    semver: "npm:^7.6.0"
-    ts-node: "npm:^10.9.2"
-    typanion: "npm:^3.14.0"
-    typescript: "npm:^5.3.3"
-  bin:
-    gitbump: bin/index-typescript.js
-  languageName: unknown
-  linkType: soft
-
 "glob-parent@npm:^5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -9234,14 +9234,14 @@ __metadata:
   dependencies:
     "@jwpkg/constraints-config": "npm:^0.1.1"
     "@jwpkg/eslint-config": "npm:^0.1.1"
-    "@jwpkg/gitbump-s3publish": "workspace:^"
+    "@jwpkg/gitversion": "workspace:^"
+    "@jwpkg/gitversion-s3publish": "workspace:^"
     "@types/eslint": "npm:^8.44.9"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
     "@yarnpkg/types": "npm:^4.0.0"
     asciinema-player: "npm:^3.6.4"
     eslint: "npm:^9.9.0"
-    gitbump: "workspace:^"
     husky: "npm:^8.0.3"
     jest: "npm:^29.7.0"
     ts-jest: "npm:^29.1.2"

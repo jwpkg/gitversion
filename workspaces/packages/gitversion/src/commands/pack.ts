@@ -12,9 +12,9 @@ import { formatFileSize, formatPackageName } from '../core/format-utils';
 import { PackArtifact } from '../core/pack-artifact';
 import { IWorkspace } from '../core/workspace-utils';
 
-import { GitBumpCommand } from './context';
+import { GitVersionCommand } from './context';
 
-export class PackCommand extends GitBumpCommand {
+export class PackCommand extends GitVersionCommand {
   static paths = [
     ['pack'],
   ];
@@ -81,7 +81,7 @@ export class PackCommand extends GitBumpCommand {
     await packManifest.persist();
 
     if (!packManifest.validateGitStatusDuringPack()) {
-      logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitbump.out) are correctly ignored in .gitignore`, true);
+      logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);
     }
 
     logger.endSection(section);

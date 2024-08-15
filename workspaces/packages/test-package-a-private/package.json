@@ -5,7 +5,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/jwpkg/gitbump",
+    "url": "https://github.com/jwpkg/gitversion",
     "directory": "workspaces/packages/test-package-a-private"
   },
   "engines": {

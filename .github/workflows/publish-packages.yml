@@ -40,7 +40,7 @@ jobs:
         run: yarn
 
       - name: Bump
-        run: yarn gitbump bump $BUMP_TYPE
+        run: yarn gitversion bump $BUMP_TYPE
 
       - name: Build 🔧
         run: yarn build:all
@@ -53,7 +53,7 @@ jobs:
       #     aws-region: eu-west-1
 
       - name: Publish
-        run: yarn gitbump publish
+        run: yarn gitversion publish
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 

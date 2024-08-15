@@ -18,7 +18,7 @@ Gitversion currently searches for the following file:
 This has to be a commonjs file with the following basics:
 
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   // configuration options
@@ -52,7 +52,7 @@ Changelogs are always generated on a per workspace base. Therefor independent ve
 
 ::: details Example .gitversion.cjs
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   independentVersioning: true
@@ -83,7 +83,7 @@ See more about branch types in [working with branches](../how-to/working-with-br
 
 ::: details Example .gitversion.cjs
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   featureBumpBehavior: 'always'
@@ -110,7 +110,7 @@ See more about branch types in [working with branches](../how-to/working-with-br
 ::: details Example .gitversion.cjs
 
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   mainBranchPatterns: [
@@ -140,7 +140,7 @@ See more about branch types in [working with branches](../how-to/working-with-br
 ::: details Example .gitversion.cjs
 
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   releaseBranchPatterns: [
@@ -171,7 +171,7 @@ See more about branch types in [working with branches](../how-to/working-with-br
 ::: details Example .gitversion.cjs
 
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   featureBranchPatterns: [
@@ -198,7 +198,7 @@ This will be used by all permanent actions to only run the logic without actuall
 
 ::: details Example .gitversion.cjs
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   dryRun: true
@@ -219,7 +219,7 @@ Every tag in gitversion is prefixed. By default this is 'v' to get 'v1.0.0'. You
 
 ::: details Example .gitversion.cjs
 ```js
-const { defineConfig } = require("gitbump");
+const { defineConfig } = require("gitversion");
 
 module.exports = defineConfig({
   versionTagPrefix: 'version-'

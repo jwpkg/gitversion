@@ -1,9 +1,9 @@
 import { Application } from '../core/application';
 import { formatVersionBranch } from '../core/format-utils';
 
-import { GitBumpCommand } from './context';
+import { GitVersionCommand } from './context';
 
-export class CheckCommand extends GitBumpCommand {
+export class CheckCommand extends GitVersionCommand {
   static paths = [
     ['check'],
   ];

@@ -12,7 +12,7 @@
 #!.yarn/cache
 .pnp.*
 coverage
-gitbump.out
+gitversion.out
 lib
 tsconfig.tsbuildinfo
 

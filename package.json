@@ -4,7 +4,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jwpkg/gitbump",
+    "url": "https://github.com/jwpkg/gitversion",
     "directory": "."
   },
   "author": "Joost van der Waal <joost@jvdwaal.nl>",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@jwpkg/constraints-config": "^0.1.1",
     "@jwpkg/eslint-config": "^0.1.1",
-    "@jwpkg/gitbump-s3publish": "workspace:^",
+    "@jwpkg/gitversion-s3publish": "workspace:^",
     "@types/eslint": "^8.44.9",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.19",
@@ -65,8 +65,8 @@
     }
   },
   "dependencies": {
+    "@jwpkg/gitversion": "workspace:^",
     "asciinema-player": "^3.6.4",
-    "gitbump": "workspace:^",
     "vue": "^3.4.15",
     "vue3-asciinema-player": "^0.0.3"
   }

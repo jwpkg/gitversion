@@ -47,7 +47,7 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
   async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
     const yarnWorkspace = this.yarnProject.workspaces.find(w => w.relativeCwd === packedPackage.packageRelativeCwd);
     if (!yarnWorkspace) {
-      throw new Error('Mismatch between yarn workspace and gitbump workspace. Please file a bug with your package folder details at https://github.com/jwpkg/gitbump/issues');
+      throw new Error('Mismatch between yarn workspace and gitversion workspace. Please file a bug with your package folder details at https://github.com/jwpkg/gitversion/issues');
     } else {
       yarnWorkspace.manifest.version = packedPackage.version;
       if (dryRun) {

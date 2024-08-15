@@ -1,6 +1,6 @@
 export const sidebar = [
   {
-    text: 'Gitbump', items: [
+    text: 'Gitversion', items: [
       { text: 'Introduction', link: '/' },
       { text: 'Getting started', link: '/tutorials/getting-started' },
       { text: 'Configuration', link: '/reference/configuration' },

@@ -1,11 +1,11 @@
 {
-  "name": "@jwpkg/gitbump-s3publish",
+  "name": "@jwpkg/gitversion-s3publish",
   "packageManager": "yarn@4.0.2",
   "main": "src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jwpkg/gitbump",
-    "directory": "workspaces/packages/gitbump-plugin-s3publish"
+    "url": "https://github.com/jwpkg/gitversion",
+    "directory": "workspaces/packages/gitversion-plugin-s3publish"
   },
   "scripts": {
     "build": "rm -f tsconfig.tsbuildinfo && tsc --noEmit false",
@@ -20,8 +20,8 @@
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
+    "@jwpkg/gitversion": "workspace:^",
     "archiver": "^6.0.1",
-    "gitbump": "workspace:^",
     "glob": "^10.3.10",
     "semver": "^7.6.0"
   },
