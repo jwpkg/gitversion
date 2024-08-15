@@ -52,10 +52,9 @@ jobs:
       #     role-session-name: upload-docs
       #     aws-region: eu-west-1
 
-      # - name: Publish
-      #   run: yarn gitbump publish
-      #   env:
-      #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      #     YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Publish
+        run: yarn gitbump publish
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
 
