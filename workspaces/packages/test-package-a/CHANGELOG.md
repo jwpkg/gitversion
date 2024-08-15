@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.0](https://github.com/jwpkg/gitversion/compare/v0.0.50...v0.1.0) (Thu Aug 15 2024)
+
+### feat
+
+* Renamed gitversion to gitbump ([d1d28ac](https://github.com/jwpkg/gitversion/commit/d1d28accba13826a0f87e293f4153436628cea99))
+
+### chore
+
+* Refactoring ([c4700e2](https://github.com/jwpkg/gitversion/commit/c4700e26e76a662214ce235796015fd3343bb9a7))
+
+* Reverted back to gitversion ([8dfbe24](https://github.com/jwpkg/gitversion/commit/8dfbe24b42538f61e514727873c22423ed7b1818))
+
 ## [0.0.50](https://github.com/jwpkg/gitversion/compare/v0.0.49...v0.0.50) (Thu Jun 27 2024)
 
 
