@@ -20,14 +20,14 @@
     "validate:constraints": "yarn constraints",
     "validate:lint": "yarn eslint",
     "validate:tests": "yarn jest",
-    "eslint": "eslint **/*.ts",
+    "eslint": "eslint",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@jwpkg/constraints-config": "^0.0.1",
-    "@jwpkg/eslint-config": "^0.0.2",
+    "@jwpkg/constraints-config": "^0.1.1",
+    "@jwpkg/eslint-config": "portal:../common-tools/workspaces/packages/eslint-config",
     "@jwpkg/gitbump-s3publish": "workspace:^",
     "@types/eslint": "^8.44.9",
     "@types/jest": "^29.5.12",

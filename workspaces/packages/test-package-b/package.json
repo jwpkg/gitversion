@@ -1,5 +1,5 @@
 {
-  "name": "@yarnpkg/test-package-b",
+  "name": "@jwpkg/test-package-b",
   "packageManager": "yarn@4.0.2",
   "version": "0.0.0",
   "repository": {

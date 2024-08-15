@@ -12,9 +12,9 @@ import { formatFileSize, formatPackageName } from '../core/format-utils';
 import { PackArtifact } from '../core/pack-artifact';
 import { IWorkspace } from '../core/workspace-utils';
 
-import { GitVersionCommand } from './context';
+import { GitBumpCommand } from './context';
 
-export class PackCommand extends GitVersionCommand {
+export class PackCommand extends GitBumpCommand {
   static paths = [
     ['pack'],
   ];

@@ -2,9 +2,9 @@ import { Application } from '../core/application';
 import { DEFAULT_PACKAGE_VERSION } from '../core/constants';
 import { updateWorkspaceVersion } from '../core/workspace-utils';
 
-import { GitVersionCommand } from './context';
+import { GitBumpCommand } from './context';
 
-export class ResetCommand extends GitVersionCommand {
+export class ResetCommand extends GitBumpCommand {
   static paths = [
     ['reset'],
   ];

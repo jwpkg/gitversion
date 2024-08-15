@@ -1921,18 +1921,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jwpkg/constraints-config@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@jwpkg/constraints-config@npm:0.0.1"
+"@jwpkg/constraints-config@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@jwpkg/constraints-config@npm:0.1.1"
   dependencies:
     "@yarnpkg/types": "npm:^4.0.0"
-  checksum: 7d6e45876afd1a5cba75c367a6d6e8d3e12561b25ec3c31fa81c60774094f0d45134a0eb7c68518c6a4d252c5e8196bb893ef4f9962d3c84ae3baf34ea471950
+  checksum: 2018fd71ec7c90821a5d1a8e5047e4498bf6616992fb8e3d69b5998e47c813ebc41a9566020149a4ededf2919766b84e2b9cf693fe595e2cda49a312a75ee91b
   languageName: node
   linkType: hard
 
-"@jwpkg/eslint-config@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@jwpkg/eslint-config@npm:0.0.2"
+"@jwpkg/eslint-config@portal:../common-tools/workspaces/packages/eslint-config::locator=root%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg/eslint-config@portal:../common-tools/workspaces/packages/eslint-config::locator=root%40workspace%3A."
   dependencies:
     "@stylistic/eslint-plugin-ts": "npm:^2.6.2"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
@@ -1946,9 +1946,8 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 7ec7e229f4cfea46237f9d823c6e0c160de5892f22bbd974de7ed3d1a784dca6a4058a038194681549933d799098082017716369b15e0fd42cfbef38209858c9
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@jwpkg/gitbump-s3publish@workspace:^, @jwpkg/gitbump-s3publish@workspace:workspaces/packages/gitbump-plugin-s3publish":
   version: 0.0.0-use.local
@@ -1965,6 +1964,18 @@ __metadata:
     semver: "npm:^7.6.0"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
+  languageName: unknown
+  linkType: soft
+
+"@jwpkg/test-package-a@workspace:workspaces/packages/test-package-a":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg/test-package-a@workspace:workspaces/packages/test-package-a"
+  languageName: unknown
+  linkType: soft
+
+"@jwpkg/test-package-b@workspace:workspaces/packages/test-package-b":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg/test-package-b@workspace:workspaces/packages/test-package-b"
   languageName: unknown
   linkType: soft
 
@@ -4094,18 +4105,6 @@ __metadata:
 "@yarnpkg/test-package-a-private@workspace:workspaces/packages/test-package-a-private":
   version: 0.0.0-use.local
   resolution: "@yarnpkg/test-package-a-private@workspace:workspaces/packages/test-package-a-private"
-  languageName: unknown
-  linkType: soft
-
-"@yarnpkg/test-package-a@workspace:workspaces/packages/test-package-a":
-  version: 0.0.0-use.local
-  resolution: "@yarnpkg/test-package-a@workspace:workspaces/packages/test-package-a"
-  languageName: unknown
-  linkType: soft
-
-"@yarnpkg/test-package-b@workspace:workspaces/packages/test-package-b":
-  version: 0.0.0-use.local
-  resolution: "@yarnpkg/test-package-b@workspace:workspaces/packages/test-package-b"
   languageName: unknown
   linkType: soft
 
@@ -9232,8 +9231,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root@workspace:."
   dependencies:
-    "@jwpkg/constraints-config": "npm:^0.0.1"
-    "@jwpkg/eslint-config": "npm:^0.0.2"
+    "@jwpkg/constraints-config": "npm:^0.1.1"
+    "@jwpkg/eslint-config": "portal:../common-tools/workspaces/packages/eslint-config"
     "@jwpkg/gitbump-s3publish": "workspace:^"
     "@types/eslint": "npm:^8.44.9"
     "@types/jest": "npm:^29.5.12"

@@ -11,9 +11,9 @@ import { PackArtifact, PackedPackage } from '../core/pack-artifact';
 import { IProject } from '../core/workspace-utils';
 import { IPackManager } from '../plugins';
 
-import { GitVersionCommand } from './context';
+import { GitBumpCommand } from './context';
 
-export class PublishCommand extends GitVersionCommand {
+export class PublishCommand extends GitBumpCommand {
   static paths = [
     ['publish'],
   ];

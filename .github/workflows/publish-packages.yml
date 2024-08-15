@@ -1,6 +1,17 @@
 name: Generate packages and publish
 on:
-  workflow_dispatch:  
+  workflow_dispatch:
+    inputs:
+        bumpType:
+          description: 'Use a custom bump type'
+          type: choice
+          default: none
+          options:
+            - none
+            - graduate
+            - major
+            - minor
+            - patch
   push:
     branches:
       - main
@@ -9,6 +20,9 @@ on:
 permissions:
   contents: write
   id-token: write
+
+env:
+  BUMP_TYPE: ${{ inputs.bummpType != 'none' && format('--bump-type {0}', inputs.bummpType) || '' }}
 
 jobs:
   Build-packages:
@@ -26,17 +40,17 @@ jobs:
         run: yarn
 
       - name: Bump
-        run: yarn gitbump bump
+        run: yarn gitbump bump $BUMP_TYPE
 
       - name: Build 🔧
         run: yarn build:all
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::202821071962:role/www-cputils-com-website-gitversionpublishdocsA3C0C6-f9KlnEDH0OdS
-          role-session-name: upload-docs
-          aws-region: eu-west-1
+      # - name: configure aws credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::202821071962:role/www-cputils-com-website-gitversionpublishdocsA3C0C6-f9KlnEDH0OdS
+      #     role-session-name: upload-docs
+      #     aws-region: eu-west-1
 
       # - name: Publish
       #   run: yarn gitbump publish
