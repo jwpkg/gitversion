@@ -3,13 +3,13 @@ import { GithubPlugin } from './github';
 describe('Github platform', () => {
   test('Url parsing', () => {
     expect(GithubPlugin.parseUrl('https://github.com/jwpkg/gitbump.git')).toStrictEqual({
-      projectName: 'cp-utils',
-      repoName: 'gitversion',
+      projectName: 'jwpkg',
+      repoName: 'gitbump',
     });
 
-    expect(GithubPlugin.parseUrl('git@github.com:cp-utils/gitversion.git')).toStrictEqual({
-      projectName: 'cp-utils',
-      repoName: 'gitversion',
+    expect(GithubPlugin.parseUrl('git@github.com:jwpkg/gitbump.git')).toStrictEqual({
+      projectName: 'jwpkg',
+      repoName: 'gitbump',
     });
   });
 });
