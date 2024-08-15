@@ -22,7 +22,7 @@ permissions:
   id-token: write
 
 env:
-  BUMP_TYPE: ${{ inputs.bummpType != 'none' && format('--bump-type {0}', inputs.bummpType) || '' }}
+  BUMP_TYPE: ${{ inputs.bumpType != null && inputs.bumpType != 'none' && format('--bump-type {0}', inputs.bumpType) || '' }}
 
 jobs:
   Build-packages:
