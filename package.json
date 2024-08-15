@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@jwpkg/constraints-config": "^0.1.1",
-    "@jwpkg/eslint-config": "portal:../common-tools/workspaces/packages/eslint-config",
+    "@jwpkg/eslint-config": "^0.1.1",
     "@jwpkg/gitbump-s3publish": "workspace:^",
     "@types/eslint": "^8.44.9",
     "@types/jest": "^29.5.12",
