@@ -1,8 +1,8 @@
-# Contributing to gitversion
+# Contributing to gitbump
 
-Nice of you to join te gitversion repository. In order to get started I'd like to explain the basic setups of the repo
+Nice of you to join te gitbump repository. In order to get started I'd like to explain the basic setups of the repo
 
-You can read about the way gitversion works at [the documentation site](https://www.cp-utils.com/projects/gitversion/).
+You can read about the way gitbump works at [the documentation site](https://www.cp-utils.com/projects/gitversion/).
 
 ## Getting started
 
@@ -18,11 +18,11 @@ $ yarn
 Verify if everything works as expected:
 
 ``` sh
-$ yarn gitversion check
-$ yarn gitversion bump
-$ yarn gitversion pack 
-$ yarn gitversion publish --dry-run
-$ yarn gitversion reset
+$ yarn gitbump check
+$ yarn gitbump bump
+$ yarn gitbump pack 
+$ yarn gitbump publish --dry-run
+$ yarn gitbump reset
 ```
 
 ## Repo setup
@@ -31,7 +31,7 @@ The repository setup has the following key elements:
 
 - [yarn 4 (berry) package manager](#yarn)
 - [Typescript only](#typescript)
-- [Gitversion release](#gitversion)
+- [Gitbump release](#gitbump)
 - [Jest based unit testing](#jest)
 - [Eslint linter](#eslint)
 
@@ -46,7 +46,7 @@ We also use yarn [constraints](https://yarnpkg.com/features/constraints) for con
 
 All source code in the repo is [typescript](https://www.typescriptlang.org/). The only exception for this are (small) configuration files. 
 
-There should never be any need to have any javascript available during development time. The only time we have javascript is during the pack command of the actual production package. You can see this in action in [workspaces/packages/gitversion/package.json](workspaces/packages/gitversion/package.json) where we have basically this:
+There should never be any need to have any javascript available during development time. The only time we have javascript is during the pack command of the actual production package. You can see this in action in [workspaces/packages/gitbump/package.json](workspaces/packages/gitbump/package.json) where we have basically this:
 
 ```json 
 "scripts": {
@@ -54,7 +54,7 @@ There should never be any need to have any javascript available during developme
   "postpack": "rm -rf lib"         // Remove the generated files to cleanup the workspace
 }
 ```
-And we use this to be able to use gitversion itself in typescript mode:
+And we use this to be able to use gitbump itself in typescript mode:
 ```json
 "bin": "bin/index-typescript.js",
 "main": "src/index.ts",
@@ -66,9 +66,9 @@ And we use this to be able to use gitversion itself in typescript mode:
 },
 ```
 
-### Gitversion
+### Gitbump
 
-Of course we use gitversion itself in the repo. We use it in the default mode and execute it with the above helpers in combination with [ts-node](https://www.npmjs.com/package/ts-node)
+Of course we use gitbump itself in the repo. We use it in the default mode and execute it with the above helpers in combination with [ts-node](https://www.npmjs.com/package/ts-node)
 
 ### Jest
 

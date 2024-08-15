@@ -94,7 +94,7 @@ Bump will do the following steps:
 - Define a bump type based on the outcome
 - Update the workspaces with the new version
 - Udate the workspaces with the workspace specific changelogs
-- Create a bump manifest in the **gitversion.out** folder containing versions and changelogs
+- Create a bump manifest in the **gitbump.out** folder containing versions and changelogs
 
 ### Native workspace/monorepo support {#monorepo}
 

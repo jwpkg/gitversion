@@ -81,7 +81,7 @@ export class PackCommand extends GitVersionCommand {
     await packManifest.persist();
 
     if (!packManifest.validateGitStatusDuringPack()) {
-      logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitversion.out) are correctly ignored in .gitignore`, true);
+      logger.reportWarning(`Git status has changed during ${colorize.blue('gitversion pack')} you should make sure your build artifacts (including gitbump.out) are correctly ignored in .gitignore`, true);
     }
 
     logger.endSection(section);

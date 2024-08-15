@@ -26,7 +26,7 @@ jobs:
         run: yarn
 
       - name: Bump
-        run: yarn gitversion bump
+        run: yarn gitbump bump
 
       - name: Build 🔧
         run: yarn build:all
@@ -38,10 +38,10 @@ jobs:
           role-session-name: upload-docs
           aws-region: eu-west-1
 
-      - name: Publish
-        run: yarn gitversion publish
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      # - name: Publish
+      #   run: yarn gitbump publish
+      #   env:
+      #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      #     YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
 

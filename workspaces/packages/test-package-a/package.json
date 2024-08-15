@@ -1,10 +1,10 @@
 {
-  "name": "@cp-utils-test/test-package-a",
+  "name": "@yarnpkg/test-package-a",
   "packageManager": "yarn@4.0.2",
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cp-utils/gitversion",
+    "url": "https://github.com/jwpkg/gitbump",
     "directory": "workspaces/packages/test-package-a"
   },
   "files": [

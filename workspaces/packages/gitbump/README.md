@@ -1,8 +1,8 @@
-# Gitversion
+# Gitbump
 
-Gitversion is a complete customizable git-based release management system. Primarily focused on package releases.
+Gitbump is a complete customizable git-based release management system. Primarily focused on package releases.
 
-![NPM Version](https://img.shields.io/npm/v/%40cp-utils%2Fgitversion)
+![NPM Version](https://img.shields.io/npm/v/gitbump)
 
 ## Key concepts
 
@@ -17,9 +17,9 @@ Gitversion is a complete customizable git-based release management system. Prima
 
 ### Branch based release strategy
 
-The core concept of gitversion evolves around branch detection and branch types.
+The core concept of gitbump evolves around branch detection and branch types.
 
-Gitversion defines the following types:
+Gitbump defines the following types:
 - main/master branch (default branch name **'main'**)
 - release branches (default matches **'release/*'**)
 - feature branches (default matches **'feature/*'**)
@@ -38,48 +38,48 @@ Depending on the detected branch types the system will make different choices:
 
 ### Tag based versioning
 
-Like most release systems gitversion will add a tag for each release. This will follow the tag naming with a prefix (default 'v'). I.e.
+Like most release systems gitbump will add a tag for each release. This will follow the tag naming with a prefix (default 'v'). I.e.
 
 - v1.0.0
 - v1.2.3-next.0
 
-The difference of gitversion is that the tags are the only source of truth. It does not care about versions inside files and will keep them even on the default "0.0.0".
+The difference of gitbump is that the tags are the only source of truth. It does not care about versions inside files and will keep them even on the default "0.0.0".
 
 There are two main advantages of this strategy:
 
 - One source of truth. Easy to see in git history what the current state is
 - No more merge conflicts due to mismatches of versions. Otherwise this will happen constantly with feature/release strategies
 
-Gitversion has 2 commands to work with this git-only version strategy:
+Gitbump has 2 commands to work with this git-only version strategy:
 
 #### Restore 
 ```bash
-yarn gitversion restore
+yarn gitbump restore
 ```
 
 The output will be something like:
 
-![gitversion restore](./assets/restore.png)
+![gitbump restore](./assets/restore.png)
 
 As you see with this you wil get all versions back in package.json files.
 
 #### Reset 
 ```bash
-yarn gitversion reset
+yarn gitbump reset
 ```
 
 The output will be something like:
 
-![gitversion reset](./assets/reset.png)
+![gitbump reset](./assets/reset.png)
 
 As you see with this you wil reset all versions back to '0.0.0'.
 
 ### Conventional commit based bumps
 
-Gitversion works with the concept of a "bump". This is one of the key commands:
+Gitbump works with the concept of a "bump". This is one of the key commands:
 
 ```bash
-yarn gitversion bump
+yarn gitbump bump
 ```
 
 Bump will do the following steps:
@@ -89,11 +89,11 @@ Bump will do the following steps:
 - Define a bump type based on the outcome
 - Update the workspaces with the new version
 - Udate the workspaces with the workspace specific changelogs
-- Create a bump manifest in the **gitversion.out** folder containing versions and changelogs
+- Create a bump manifest in the **gitbump.out** folder containing versions and changelogs
 
 ### Native monorepo support
 
-Gitversion is build for monorepos with multiple workspaces. It will detect all (public) workspaces and use them during bump.
+Gitbump is build for monorepos with multiple workspaces. It will detect all (public) workspaces and use them during bump.
 
 There are 2 main operation modes:
 - [global versioning](#Global-versioning)
@@ -109,7 +109,7 @@ This will use unique versions per workspace in the mono repo. Based on the path 
 
 ### Split stage publish
 
-Gitversion is buld for usage within CI/CD pipelines. When building packages gitversion can be used in a pipeline like this:
+Gitbump is buld for usage within CI/CD pipelines. When building packages gitbump can be used in a pipeline like this:
 
 ![Pipeline](./assets/pipeline.png)
 

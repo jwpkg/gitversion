@@ -1,5 +1,5 @@
-const { defineConfig } = require("@cp-utils/gitversion");
-const { S3Publish } = require('@cp-utils/gitversion-s3publish');
+const { defineConfig } = require("gitbump");
+const { S3Publish } = require('gitbump-s3publish');
 
 module.exports = defineConfig({
   independentVersioning: false,
@@ -9,8 +9,8 @@ module.exports = defineConfig({
       bucketName: 'www-cputils-com-website-docspublishbucket31a61f6d-pixklxvi0wye',
       baseFolder: 'docs',
       fileNameTemplate: [
-        'gitversion/{version.major}.{version.minor}.x.zip',
-        'gitversion/{releaseChannel}.zip',
+        'gitbump/{version.major}.{version.minor}.x.zip',
+        'gitbump/{releaseChannel}.zip',
       ],
       exclude: [
         ".vitepress",

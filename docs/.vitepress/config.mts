@@ -4,11 +4,11 @@ const sidebar = await import('../sidebar.mjs');
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Testing gitversion docs",
+  title: "Testing gitbump docs",
   description: "A VitePress Site",
   themeConfig: {
     nav: [
-      { text: 'Gitversion', link: '/tutorials/getting-started' },
+      { text: 'Gitbump', link: '/tutorials/getting-started' },
     ],
 
     sidebar: sidebar.sidebar

@@ -79,7 +79,7 @@ const bumpMap: Record<string, BumpType> = {
   performance: BumpType.PATCH,
 };
 
-// eslint-disable-next-line consistent-return
+
 export function executeBump(version: string, branch: VersionBranch, bumpType: BumpType): string | null {
   if (bumpType === BumpType.NONE) {
     return null;

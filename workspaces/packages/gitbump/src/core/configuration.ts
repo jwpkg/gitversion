@@ -67,7 +67,7 @@ export class Configuration implements IConfiguration, IUpdateableConfiguration {
   options: RequiredConfigurationOption;
 
   get stagingFolder() {
-    return join(this.cwd, 'gitversion.out');
+    return join(this.cwd, 'gitbump.out');
   }
 
   get packFolder() {
@@ -87,12 +87,12 @@ export class Configuration implements IConfiguration, IUpdateableConfiguration {
   }
 
   static async loadCustomConfig(cwd: string, logger: LogReporter) {
-    if (existsSync(join(cwd, '.gitversion.cjs'))) {
-      const config = require(join(cwd, '.gitversion.cjs'));
+    if (existsSync(join(cwd, '.gitbump.cjs'))) {
+      const config = require(join(cwd, '.gitbump.cjs'));
       if (isBaseConfigurationOptions(config)) {
         return config;
       } else {
-        logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitversion.cjs'))}`, true);
+        logger.reportError(`Invalid configuration found in ${colorize.magentaBright(join(cwd, './.gitbump.cjs'))}`, true);
         return null;
       }
     }
