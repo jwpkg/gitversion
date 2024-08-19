@@ -29,7 +29,7 @@
     "@jwpkg/constraints-config": "^0.1.1",
     "@jwpkg/eslint-config": "^0.1.1",
     "@jwpkg/gitversion-s3publish": "workspace:^",
-    "@types/eslint": "^8.44.9",
+    "@types/eslint": "^9.6.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.19",
     "@yarnpkg/types": "^4.0.0",
