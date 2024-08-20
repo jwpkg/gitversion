@@ -1977,7 +1977,7 @@ __metadata:
     "@types/semver": "npm:^7.5.7"
     "@yarnpkg/cli": "npm:^4.1.0"
     "@yarnpkg/core": "npm:^4.0.3"
-    "@yarnpkg/fslib": "npm:^3.0.2"
+    "@yarnpkg/fslib": "npm:^3.1.0"
     "@yarnpkg/plugin-npm": "npm:^3.0.1"
     "@yarnpkg/plugin-pack": "npm:^4.0.0"
     axios: "npm:^1.7.4"
@@ -3686,6 +3686,15 @@ __metadata:
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 658a2d614eecd3bfe167fc93bcd9fe144e3e0b2bab8926395bcf5a7db71c88e04f636acf4f5c4eee5aecb2bf3f338f0ae1f5dad07323cea53cc0756d66ec4834
+  languageName: node
+  linkType: hard
+
+"@yarnpkg/fslib@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@yarnpkg/fslib@npm:3.1.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: e327aaf73fe2fff442a71f045fe006f13931a09021b5b868a993a644d4950cd3c5589f1d58ee9e38390bca83705a30b649db7ae462fe704fdb6cdeb12ed2232a
   languageName: node
   linkType: hard
 

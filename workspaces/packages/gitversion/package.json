@@ -61,7 +61,7 @@
   "dependencies": {
     "@yarnpkg/cli": "^4.1.0",
     "@yarnpkg/core": "^4.0.3",
-    "@yarnpkg/fslib": "^3.0.2",
+    "@yarnpkg/fslib": "^3.1.0",
     "@yarnpkg/plugin-npm": "^3.0.1",
     "@yarnpkg/plugin-pack": "^4.0.0",
     "axios": "^1.7.4",
