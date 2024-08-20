@@ -64,7 +64,7 @@
     "@yarnpkg/fslib": "^3.0.2",
     "@yarnpkg/plugin-npm": "^3.0.1",
     "@yarnpkg/plugin-pack": "^4.0.0",
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
     "colorize-node": "^0.5.0",
