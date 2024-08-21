@@ -2026,7 +2026,7 @@ __metadata:
     axios: "npm:^1.7.4"
     ci-info: "npm:^4.0.0"
     clipanion: "npm:^4.0.0-rc.2"
-    colorize-node: "npm:^0.5.0"
+    colorize-node: "npm:^1.0.0"
     cross-spawn: "npm:^7.0.3"
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
@@ -5294,10 +5294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorize-node@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "colorize-node@npm:0.5.0"
-  checksum: 7bc349169a64c587afab7872fb79677ef2b1b8b603e6dc7900aa15d5ed7697794642253ab1fc15b66ca464c0a503003b6b8fdb15a2d6e10c41c7ff90027285a7
+"colorize-node@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "colorize-node@npm:1.0.0"
+  checksum: 41a854f6243522289bf4d22fe47214404050bfe305eae30f3d348ae2ee229a3efcb16c3d4e64f1a2578e107ad91e6eef7e7073d7cc7e2d21954f74561464eb4c
   languageName: node
   linkType: hard
 
