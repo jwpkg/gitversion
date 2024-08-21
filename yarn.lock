@@ -2983,16 +2983,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:^8.44.9":
-  version: 8.56.2
-  resolution: "@types/eslint@npm:8.56.2"
-  dependencies:
-    "@types/estree": "npm:*"
-    "@types/json-schema": "npm:*"
-  checksum: e33ca87a30a9454ba9943e1270ac759996f5fe598a1c1afbaec1d1e7346a339e20bf2a9d81f177067116bbaa6cfa4f748993cb338f57978ae862ad38ffae56fe
-  languageName: node
-  linkType: hard
-
 "@types/eslint@npm:^9.6.0":
   version: 9.6.0
   resolution: "@types/eslint@npm:9.6.0"
@@ -9471,7 +9461,7 @@ __metadata:
     "@jwpkg/eslint-config": "npm:^0.1.1"
     "@jwpkg/gitversion": "workspace:^"
     "@jwpkg/gitversion-s3publish": "workspace:^"
-    "@types/eslint": "npm:^8.44.9"
+    "@types/eslint": "npm:^9.6.0"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
     "@yarnpkg/types": "npm:^4.0.0"
