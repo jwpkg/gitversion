@@ -2002,10 +2002,10 @@ __metadata:
     "@types/archiver": "npm:^6"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
-    "@types/semver": "npm:^7.5.7"
+    "@types/semver": "npm:^7.5.8"
     archiver: "npm:^6.0.1"
     glob: "npm:^10.3.10"
-    semver: "npm:^7.6.0"
+    semver: "npm:^7.6.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
   languageName: unknown
@@ -2017,7 +2017,7 @@ __metadata:
   dependencies:
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.11.19"
-    "@types/semver": "npm:^7.5.7"
+    "@types/semver": "npm:^7.5.8"
     "@yarnpkg/cli": "npm:^4.1.0"
     "@yarnpkg/core": "npm:^4.0.3"
     "@yarnpkg/fslib": "npm:^3.1.0"
@@ -2031,7 +2031,7 @@ __metadata:
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
     queue-promise: "npm:^2.2.1"
-    semver: "npm:^7.6.0"
+    semver: "npm:^7.6.3"
     ts-node: "npm:^10.9.2"
     typanion: "npm:^3.14.0"
     typescript: "npm:^5.3.3"
@@ -3161,10 +3161,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.5.7":
-  version: 7.5.7
-  resolution: "@types/semver@npm:7.5.7"
-  checksum: fb72d8b86a7779650f14ae89542f1da2ab624adb8188d98754b1d29a2fe3d41f0348bf9435b60ad145df1812fd2a09b3256779aa23b532c199f3dee59619a1eb
+"@types/semver@npm:^7.5.8":
+  version: 7.5.8
+  resolution: "@types/semver@npm:7.5.8"
+  checksum: 8663ff927234d1c5fcc04b33062cb2b9fcfbe0f5f351ed26c4d1e1581657deebd506b41ff7fdf89e787e3d33ce05854bc01686379b89e9c49b564c4cfa988efa
   languageName: node
   linkType: hard
 
@@ -9600,6 +9600,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 5160b06975a38b11c1ab55950cb5b8a23db78df88275d3d8a42ccf1f29e55112ac995b3a26a522c36e3b5f76b0445f1eef70d696b8c7862a2b4303d7b0e7609e
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.6.3":
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
   languageName: node
   linkType: hard
 
