@@ -1,5 +1,5 @@
 {
-  "name": "@cp-utils/gitversion",
+  "name": "@jwpkg/gitversion",
   "packageManager": "yarn@4.0.2",
   "bin": "bin/index-typescript.js",
   "type": "commonjs",
@@ -46,7 +46,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cp-utils/gitversion",
+    "url": "https://github.com/jwpkg/gitversion",
     "directory": "workspaces/packages/gitversion"
   },
   "engines": {
@@ -61,13 +61,13 @@
   "dependencies": {
     "@yarnpkg/cli": "^4.1.0",
     "@yarnpkg/core": "^4.0.3",
-    "@yarnpkg/fslib": "^3.0.2",
+    "@yarnpkg/fslib": "^3.1.0",
     "@yarnpkg/plugin-npm": "^3.0.1",
     "@yarnpkg/plugin-pack": "^4.0.0",
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "ci-info": "^4.0.0",
     "clipanion": "^4.0.0-rc.2",
-    "colorize-node": "^0.5.0",
+    "colorize-node": "^1.0.0",
     "cross-spawn": "^7.0.3",
     "cross-spawn-extra": "^2.1.0",
     "glob": "^10.3.10",

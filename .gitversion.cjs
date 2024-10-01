@@ -1,20 +1,19 @@
-const { defineConfig } = require("@cp-utils/gitversion");
-const { S3Publish } = require('@cp-utils/gitversion-s3publish');
+const { defineConfig } = require('@jwpkg/gitversion');
 
 module.exports = defineConfig({
   independentVersioning: false,
-  featureBumpBehavior: 'always',  
+  featureBumpBehavior: 'always',
   plugins: [
-    new S3Publish({
-      bucketName: 'www-cputils-com-website-docspublishbucket31a61f6d-pixklxvi0wye',
-      baseFolder: 'docs',
-      fileNameTemplate: [
-        'gitversion/{version.major}.{version.minor}.x.zip',
-        'gitversion/{releaseChannel}.zip',
-      ],
-      exclude: [
-        ".vitepress",
-      ],
-    })
-  ]
-})
+    // new S3Publish({
+    //   bucketName: 'www-cputils-com-website-docspublishbucket31a61f6d-pixklxvi0wye',
+    //   baseFolder: 'docs',
+    //   fileNameTemplate: [
+    //     'gitversion/{version.major}.{version.minor}.x.zip',
+    //     'gitversion/{releaseChannel}.zip',
+    //   ],
+    //   exclude: [
+    //     ".vitepress",
+    //   ],
+    // })
+  ],
+});

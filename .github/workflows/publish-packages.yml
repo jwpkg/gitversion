@@ -1,6 +1,17 @@
 name: Generate packages and publish
 on:
-  workflow_dispatch:  
+  workflow_dispatch:
+    inputs:
+        bumpType:
+          description: 'Use a custom bump type'
+          type: choice
+          default: none
+          options:
+            - none
+            - graduate
+            - major
+            - minor
+            - patch
   push:
     branches:
       - main
@@ -9,6 +20,9 @@ on:
 permissions:
   contents: write
   id-token: write
+
+env:
+  BUMP_TYPE: ${{ inputs.bumpType != null && inputs.bumpType != 'none' && format('--bump-type {0}', inputs.bumpType) || '' }}
 
 jobs:
   Build-packages:
@@ -26,22 +40,21 @@ jobs:
         run: yarn
 
       - name: Bump
-        run: yarn gitversion bump
+        run: yarn gitversion bump $BUMP_TYPE
 
       - name: Build 🔧
         run: yarn build:all
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::202821071962:role/www-cputils-com-website-gitversionpublishdocsA3C0C6-f9KlnEDH0OdS
-          role-session-name: upload-docs
-          aws-region: eu-west-1
+      # - name: configure aws credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::202821071962:role/www-cputils-com-website-gitversionpublishdocsA3C0C6-f9KlnEDH0OdS
+      #     role-session-name: upload-docs
+      #     aws-region: eu-west-1
 
       - name: Publish
         run: yarn gitversion publish
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
 

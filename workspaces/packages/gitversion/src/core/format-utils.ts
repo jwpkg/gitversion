@@ -33,7 +33,7 @@ export function formatVersion(version: SemVer | string) {
   return colorize.cyanBright(versionString);
 }
 
-// eslint-disable-next-line consistent-return
+
 export function formatBumpType(bumpType: BumpType) {
   switch (bumpType) {
     case BumpType.GRADUATE: return colorize.redBright('GRADUATE');

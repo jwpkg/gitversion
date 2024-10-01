@@ -1,10 +1,10 @@
 {
-  "name": "@cp-utils/gitversion-s3publish",
+  "name": "@jwpkg/gitversion-s3publish",
   "packageManager": "yarn@4.0.2",
   "main": "src/index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cp-utils/gitversion",
+    "url": "https://github.com/jwpkg/gitversion",
     "directory": "workspaces/packages/gitversion-plugin-s3publish"
   },
   "scripts": {
@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-s3": "^3.515.0",
-    "@cp-utils/gitversion": "workspace:^",
+    "@jwpkg/gitversion": "workspace:^",
     "archiver": "^6.0.1",
     "glob": "^10.3.10",
     "semver": "^7.6.0"

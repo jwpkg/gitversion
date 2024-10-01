@@ -23,15 +23,15 @@ Start by adding the the gitversion package to your root workspace:
 ::: code-group
 
 ```sh [yarn]
-$ yarn add -D @cp-utils/gitversion
+$ yarn add -D gitversion
 ```
 
 ```sh [npm]
-$ npm add -D @cp-utils/gitversion
+$ npm add -D gitversion
 ```
 
 ```sh [pnpm]
-$ pnpm add -D @cp-utils/gitversion
+$ pnpm add -D gitversion
 ```
 
 :::

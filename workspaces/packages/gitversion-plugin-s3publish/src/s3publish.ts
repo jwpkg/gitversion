@@ -1,8 +1,8 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { LogReporter } from '@cp-utils/gitversion/src/core/log-reporter';
-import { PackedPackage } from '@cp-utils/gitversion/src/core/pack-artifact';
-import { IWorkspace } from '@cp-utils/gitversion/src/core/workspace-utils';
-import { IPackManager, IPlugin, IPluginInitialize } from '@cp-utils/gitversion';
+import { LogReporter } from '@jwpkg/gitversion/src/core/log-reporter';
+import { PackedPackage } from '@jwpkg/gitversion/src/core/pack-artifact';
+import { IWorkspace } from '@jwpkg/gitversion/src/core/workspace-utils';
+import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
 import archiver from 'archiver';
 import { createReadStream, createWriteStream } from 'fs';
 import { join } from 'path';

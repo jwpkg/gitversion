@@ -52,7 +52,7 @@ export class NpmPlugin implements IPlugin, IPackManager {
         if (tmpDir) {
           await rm(tmpDir, { recursive: true });
         }
-      } catch (e) {
+      } catch (_e) {
       }
     }
   }

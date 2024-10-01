@@ -1,7 +1,7 @@
 /** @type {import('@yarnpkg/types')} */
 const { defineConfig } = require('@yarnpkg/types');
 
-const { enforceGenericRules, enforceFieldsOnAllWorkspaces } = require('@cp-utils/constraints-config');
+const { enforceGenericRules, enforceFieldsOnAllWorkspaces } = require('@jwpkg/constraints-config');
 
 module.exports = defineConfig({
 
