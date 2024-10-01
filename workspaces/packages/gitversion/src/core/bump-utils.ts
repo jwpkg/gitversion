@@ -77,6 +77,8 @@ const bumpMap: Record<string, BumpType> = {
   revert: BumpType.PATCH,
   perf: BumpType.PATCH,
   performance: BumpType.PATCH,
+  chore: BumpType.PATCH,
+  docs: BumpType.PATCH,
 };
 
 // eslint-disable-next-line consistent-return
