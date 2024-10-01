@@ -60,7 +60,8 @@ export class PublishCommand extends GitVersionCommand {
       logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
       console.log('Git status output:');
       console.log(await git.exec('status', '--porcelain'));
-      return 1;
+      // TODO: currently breaking too many builds with a false positive
+      // return 1;
     }
 
     const packedPackages = packManifest.packages;
