@@ -4,6 +4,10 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.2](https://github.com/jwpkg/gitversion/compare/v0.1.1...v0.1.2) (Tue Oct 08 2024)
+
+
+
 ## [0.1.0](https://github.com/jwpkg/gitversion/compare/v0.0.50...v0.1.0) (Thu Aug 15 2024)
 
 ### feat
