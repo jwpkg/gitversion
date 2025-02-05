@@ -7,7 +7,7 @@ import { PackedPackage } from '../../../core/pack-artifact';
 import { IWorkspace } from '../../../core/workspace-utils';
 import { IPackManager, IPlugin, IPluginInitialize } from '../..';
 
-import { NodeProject } from './node-project';
+import { NodeWorkspace } from './node-project';
 
 export class NpmPlugin implements IPlugin, IPackManager {
   name = 'NPM package manager plugin';
@@ -27,7 +27,7 @@ export class NpmPlugin implements IPlugin, IPackManager {
   }
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
-    if (!(workspace instanceof NodeProject)) {
+    if (!(workspace instanceof NodeWorkspace)) {
       return null;
     }
 
