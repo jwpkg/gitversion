@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.6](https://github.com/jwpkg/gitversion/compare/v0.1.5...v0.1.6) (Wed Feb 05 2025)
+
+### fix
+
+* Type match ([90aba74](https://github.com/jwpkg/gitversion/commit/90aba746641b82089126261e9217b37ae9da7e18))
+
 ## [0.1.5](https://github.com/cp-utils/gitversion/compare/v0.1.4...v0.1.5) (Wed Feb 05 2025)
 
 
