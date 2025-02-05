@@ -15,6 +15,7 @@ export interface Bump {
   tag: string;
   packageName: string;
   version: string;
+  previousVersion: string;
   changeLog: ChangelogEntry;
   private: boolean;
   commits: ConventionalCommit[];
@@ -71,9 +72,10 @@ export class BumpManifest {
     });
   }
 
-  add(workspace: IWorkspace, version: string, changeLog: ChangelogEntry, commits: ConventionalCommit[]) {
+  add(workspace: IWorkspace, version: string, previousVersion: string, changeLog: ChangelogEntry, commits: ConventionalCommit[]) {
     this.bumps.push({
       changeLog,
+      previousVersion,
       packageName: workspace.packageName,
       packageRelativeCwd: workspace.relativeCwd,
       version,

@@ -17,6 +17,7 @@ export interface PackedPackage {
   tag: string;
   packageName: string;
   version: string;
+  previousVersion: string;
   changeLog: ChangelogEntry;
   commits: ConventionalCommit[];
 }

@@ -10,6 +10,8 @@ import { PackedPackage } from '../../../core/pack-artifact';
 import { IWorkspace } from '../../../core/workspace-utils';
 import { IPackManager, IPlugin, IPluginInitialize } from '../..';
 
+import { NodeProject } from './node-project';
+
 export class YarnBerryPlugin implements IPlugin, IPackManager {
   name = 'Yarn berry package manager plugin';
   ident = 'yarn-berry';
@@ -31,6 +33,10 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
   }
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (!(workspace instanceof NodeProject)) {
+      return null;
+    }
+
     if (workspace.private) {
       return null;
     }

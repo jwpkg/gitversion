@@ -5,6 +5,8 @@ import { PackedPackage } from '../../../core/pack-artifact';
 import { IWorkspace } from '../../../core/workspace-utils';
 import { IPackManager, IPlugin, IPluginInitialize } from '../..';
 
+import { NodeProject } from './node-project';
+
 export class PNpmPlugin implements IPlugin, IPackManager {
   name = 'PNPM package manager plugin';
   ident = 'pnpm';
@@ -23,6 +25,10 @@ export class PNpmPlugin implements IPlugin, IPackManager {
   }
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+    if (!(workspace instanceof NodeProject)) {
+      return null;
+    }
+
     if (workspace.private) {
       return null;
     }

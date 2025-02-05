@@ -120,7 +120,7 @@ export class BumpCommand extends RestoreCommand {
 
     const changelogEntry = generateChangeLogEntry(commits, fromVersion, toVersion, application.pluginManager);
 
-    bumpManifest.add(workspace, toVersion.version, changelogEntry, commits);
+    bumpManifest.add(workspace, toVersion.version, fromVersion.version, changelogEntry, commits);
 
     await workspace.updateChangelog(changelogEntry);
   }
