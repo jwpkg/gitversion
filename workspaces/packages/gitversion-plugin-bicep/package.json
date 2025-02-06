@@ -33,7 +33,7 @@
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cp-utils/gitversion",
+    "url": "https://github.com/jwpkg/gitversion",
     "directory": "workspaces/packages/gitversion-plugin-bicep"
   }
 }
