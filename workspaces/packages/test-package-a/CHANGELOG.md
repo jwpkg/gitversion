@@ -4,6 +4,10 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.8](https://github.com/jwpkg/gitversion/compare/v0.1.7...v0.1.8) (Thu Feb 06 2025)
+
+
+
 ## [0.1.7](https://github.com/jwpkg/gitversion/compare/v0.1.6...v0.1.7) (Thu Feb 06 2025)
 
 ### fix
