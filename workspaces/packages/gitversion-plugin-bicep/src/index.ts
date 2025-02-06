@@ -1,1 +1,1 @@
-export * from './bicep-project'
+export * from './bicep-project';

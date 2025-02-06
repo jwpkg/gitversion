@@ -19,16 +19,21 @@
     "types": "./lib/index.d.ts"
   },
   "dependencies": {
-    "@jwpkg/gitversion": "^0.1.6",
-    "glob": "^11.0.1",
+    "@jwpkg/gitversion": "workspace:^",
+    "glob": "^10.3.10",
     "semver": "^7.7.1",
     "typanion": "^3.14.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",
-    "@types/semver": "^7",
+    "@types/semver": "^7.5.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cp-utils/gitversion",
+    "directory": "workspaces/packages/gitversion-plugin-bicep"
+  }
 }

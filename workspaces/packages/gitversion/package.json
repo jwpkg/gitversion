@@ -38,15 +38,15 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.19",
-    "@types/semver": "^7.5.7",
+    "@types/node": "^22.13.1",
+    "@types/semver": "^7.5.8",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.3"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jwpkg/gitversion",
+    "url": "https://github.com/cp-utils/gitversion",
     "directory": "workspaces/packages/gitversion"
   },
   "engines": {
@@ -72,7 +72,7 @@
     "cross-spawn-extra": "^2.1.0",
     "glob": "^10.3.10",
     "queue-promise": "^2.2.1",
-    "semver": "^7.6.0",
+    "semver": "^7.7.1",
     "typanion": "^3.14.0"
   },
   "version": "0.0.0"

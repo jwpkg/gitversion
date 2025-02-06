@@ -7,6 +7,7 @@ module.exports = [
       '**/*.ts',
     ],
     ignores: [
+      '**/docs/**',
       '**/lib/**',
       '*.json',
     ],
@@ -14,6 +15,7 @@ module.exports = [
   ...globalConfig,
   {
     ignores: [
+      '**/docs/**',
       '**/lib/**',
       '*.json',
     ],

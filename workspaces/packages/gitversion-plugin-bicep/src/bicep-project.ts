@@ -1,14 +1,13 @@
-import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
 import { addToChangelog, ChangelogEntry } from '@jwpkg/gitversion/lib/core/changelog';
+import { PackedPackage } from '@jwpkg/gitversion/lib/core/pack-artifact';
 import { IProject, IWorkspace } from '@jwpkg/gitversion/lib/core/workspace-utils';
+import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
+import { mkdir, readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { glob } from 'glob';
-
-import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
-import * as t from 'typanion';
-import { PackedPackage } from '@jwpkg/gitversion/lib/core/pack-artifact';
 import { parse, prerelease } from 'semver';
+import * as t from 'typanion';
 
 const DEFAULT_PACKAGE_VERSION = '0.0.0';
 
@@ -137,8 +136,6 @@ export class BicepWorkspace implements IWorkspace {
 
     await persistManifest(this.cwd, this.project.props.manifestName, this.manifestContent);
   }
-
-
 }
 export class BicepProject {
   readonly name = 'Bicep project initializer';
@@ -151,7 +148,7 @@ export class BicepProject {
     if (!manifestContent) {
       return null;
     }
-    const project = new BicepProjectImpl(initialize.cwd, manifestContent, initialize, this.props)
+    const project = new BicepProjectImpl(initialize.cwd, manifestContent, initialize, this.props);
     if (project.manifest.workspaces && Array.isArray(project.manifest.workspaces)) {
       const paths = await glob(project.manifest.workspaces, {
         cwd: initialize.cwd,
@@ -212,7 +209,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
     if (!(workspace instanceof BicepWorkspace)) {
-      return null
+      return null;
     }
 
     if (workspace.private) {
@@ -220,8 +217,8 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     }
 
     await mkdir(outputFolder, {
-      recursive: true
-    })
+      recursive: true,
+    });
 
     const normalizedOutputName = `${workspace.packageName.replace(/[ _/\\]/g, '-')}.json`;
 
@@ -231,7 +228,6 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
     return normalizedOutputName;
   }
-
 
 
   async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
@@ -246,22 +242,22 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     // prerelease
     //
     if (prerelease(packedPackage.version)) {
-      versions.push(releaseTag)
+      versions.push(releaseTag);
     } else {
-      versions.push('latest')
+      versions.push('latest');
       if (fromVersion?.major === toVersion?.major) {
-        versions.push(`${fromVersion?.major}.x`)
+        versions.push(`${fromVersion?.major}.x`);
 
         if (fromVersion?.minor === toVersion?.major) {
-          versions.push(`${fromVersion?.major}.${fromVersion?.minor}.x`)
+          versions.push(`${fromVersion?.major}.${fromVersion?.minor}.x`);
         }
       }
     }
-    versions.push(packedPackage.version)
+    versions.push(packedPackage.version);
 
     const resourceGroup = this.findResourceGroup(releaseTag);
 
-    const commands = versions.map(version => ['az', 'ts', 'create', '--name', packedPackage.packageName, '--version', version, '--resource-group', resourceGroup, '-f', fileName, '-y'])
+    const commands = versions.map(version => ['az', 'ts', 'create', '--name', packedPackage.packageName, '--version', version, '--resource-group', resourceGroup, '-f', fileName, '-y']);
     if (dryRun) {
       this.application.logger.reportDryrun(`Would be running:\n ${commands.join('\n')}`);
       return;
@@ -269,13 +265,13 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
       const promises = commands.map(command => this.application.executor.exec(command, {
         cwd: this.application.packFolder,
       }));
-      await Promise.all(promises)
+      await Promise.all(promises);
     }
   }
 
   findResourceGroup(releaseTag: string): string {
     if (releaseTag === 'latest') {
-      return this.props.defaultReleaseResourceGroup
+      return this.props.defaultReleaseResourceGroup;
     }
 
     for (const [key, value] of Object.entries(this.props.otherReleaseResourceGroups ?? {})) {
