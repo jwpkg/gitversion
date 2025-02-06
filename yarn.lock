@@ -1998,6 +1998,7 @@ __metadata:
   resolution: "@jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep"
   dependencies:
     "@jwpkg/gitversion": "workspace:^"
+    "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^22.13.1"
     "@types/semver": "npm:^7.5.8"
     glob: "npm:^10.3.10"

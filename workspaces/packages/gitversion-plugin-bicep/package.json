@@ -25,6 +25,7 @@
     "typanion": "^3.14.0"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/node": "^22.13.1",
     "@types/semver": "^7.5.8",
     "ts-node": "^10.9.2",
