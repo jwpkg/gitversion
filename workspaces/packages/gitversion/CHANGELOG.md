@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.7](https://github.com/jwpkg/gitversion/compare/v0.1.6...v0.1.7) (Thu Feb 06 2025)
+
+### fix
+
+* repo consistency ([603aafc](https://github.com/jwpkg/gitversion/commit/603aafc0baa722524b3e75329cd3bb89fc2f0f88))
+
 ## [0.1.6](https://github.com/jwpkg/gitversion/compare/v0.1.5...v0.1.6) (Wed Feb 05 2025)
 
 ### fix
