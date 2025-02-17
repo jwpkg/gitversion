@@ -13,6 +13,7 @@ import { IProject, IWorkspace } from './workspace-utils';
 
 export interface IGitPlatform {
   currentBranch(): Promise<string | null>;
+  currentRef(): Promise<string | null>;
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
 

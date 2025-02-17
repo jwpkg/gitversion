@@ -16,6 +16,10 @@ export class GitPlatformDefault implements IGitPlatform {
     return (await this.git.currentBranch()) ?? null;
   }
 
+  async currentRef(): Promise<string | null> {
+    return (await this.git.currentRef()) ?? null;
+  }
+
   stripMergeMessage(commit: GitCommit): GitCommit {
     return commit;
   }

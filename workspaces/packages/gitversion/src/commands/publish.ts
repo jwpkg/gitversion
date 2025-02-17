@@ -56,12 +56,9 @@ export class PublishCommand extends GitVersionCommand {
     }
 
     if (!(await packManifest.validateGitStatusForPublish())) {
-      // TODO: Reference to a correct help page to fix this
-      logger.reportError('Git status has changed since pack. Please make sure you have a valid flow', true);
+      logger.reportWarning('Git status has changed since pack. Please make sure you have a valid flow', true);
       console.log('Git status output:');
       console.log(await git.exec('status', '--porcelain'));
-      // TODO: currently breaking too many builds with a false positive
-      // return 1;
     }
 
     const packedPackages = packManifest.packages;

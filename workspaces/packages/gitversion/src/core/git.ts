@@ -22,6 +22,7 @@ export class Git {
   private commandCache: Map<string, string> = new Map();
   private extraArgs: string[] = [];
   private _overrideCurrentBranch?: string;
+  private _overrideCurrentRef?: string;
 
   addConfiguration(key: string, value: string) {
     this.extraArgs.push('-c', `${key}='${value}'`);
@@ -29,6 +30,10 @@ export class Git {
 
   set overrideCurrentBranch(branch: string) {
     this._overrideCurrentBranch = branch;
+  }
+
+  set overrideCurrentRef(ref: string) {
+    this._overrideCurrentRef = ref;
   }
 
   static async root(): Promise<string> {
@@ -161,7 +166,7 @@ export class Git {
       if (this.dryRun) {
         this.logger.reportDryrun(`Would be pushing git to remote: '${remoteName}'`);
       } else {
-        await this.exec('push', remoteName, '--follow-tags', `HEAD:${await this.currentBranch()}`);
+        await this.exec('push', remoteName, '--follow-tags', `HEAD:${await this.currentRef()}`);
       }
     } else {
       this.logger.reportWarning('No remote found, can\'t push changes');
@@ -173,6 +178,13 @@ export class Git {
       return this._overrideCurrentBranch;
     }
     return await this.execSilent('branch', '--show-current');
+  }
+
+  async currentRef() {
+    if (this._overrideCurrentRef) {
+      return this._overrideCurrentRef;
+    }
+    return await this.execSilent('symbolic-ref', 'HEAD');
   }
 
   async gitStatusHash() {

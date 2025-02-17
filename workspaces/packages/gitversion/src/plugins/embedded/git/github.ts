@@ -54,6 +54,14 @@ export class GithubPlugin implements IPlugin {
     return this.git.currentBranch();
   }
 
+  async currentRef(): Promise<string | null> {
+    if (process.env.GITHUB_REF) {
+      return process.env.GITHUB_REF;
+    }
+
+    return this.git.currentBranch();
+  }
+
   stripMergeMessage(commit: GitCommit): GitCommit {
     if (commit.message.startsWith('Merge pull request ')) {
       const lines = commit.message.split('\n');

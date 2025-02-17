@@ -22,6 +22,9 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
         if (process.env.BUILD_SOURCEBRANCHNAME) {
           initialize.git.overrideCurrentBranch = process.env.BUILD_SOURCEBRANCHNAME;
         }
+        if (process.env.BUILD_SOURCEBRANCH) {
+          initialize.git.overrideCurrentRef = process.env.BUILD_SOURCEBRANCH;
+        }
         return new AzureDevopsPlugin(initialize.git, result.organizationName, result.projectName, result.repoName);
       }
     }
@@ -70,6 +73,15 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
     return this.git.currentBranch();
   }
+
+  async currentRef(): Promise<string | null> {
+    if (process.env.BUILD_SOURCEBRANCH) {
+      return process.env.BUILD_SOURCEBRANCH;
+    }
+
+    return this.git.currentRef();
+  }
+
 
   stripMergeMessage(commit: GitCommit): GitCommit {
     if (commit.message.match(/^Merged PR \d+: /)) {
