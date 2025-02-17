@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.9](https://github.com/jwpkg/gitversion/compare/v0.1.8...v0.1.9) (Mon Feb 17 2025)
+
+### feat
+
+* Git push to ref ([9330ab3](https://github.com/jwpkg/gitversion/commit/9330ab300f0fce4b483fd7e8937254181b432d6b))
+
 ## [0.1.8](https://github.com/jwpkg/gitversion/compare/v0.1.7...v0.1.8) (Thu Feb 06 2025)
 
 ### fix
