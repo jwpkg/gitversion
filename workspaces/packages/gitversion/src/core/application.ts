@@ -144,6 +144,11 @@ export class Application {
       const section = logger.beginSection('Debug info');
       debugEnvironment(logger);
       await debugGitCommands(logger);
+      logger.reportInfo('Active plugins:');
+      for (const plugin of pluginManager.availablePlugins) {
+        logger.reportInfo(`- ${plugin.name}`);
+      }
+      logger.reportInfo(`Current branch reference: ${await pluginManager.gitPlatform.currentRef()}`);
 
       logger.endSection(section);
       throw new UnexpectedError('Can\'t determine current gitbranch. Breaking off');
