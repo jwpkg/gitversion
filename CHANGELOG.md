@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.14-debug.3](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.2...v0.1.14-debug.3) (Thu Apr 10 2025)
+
+### fix
+
+* Error debugging ([304a924](https://github.com/jwpkg/gitversion/commit/304a92450cf2b1455649fc7df9fa5dfe714ce851))
+
 ## [0.1.14-debug.2](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.1...v0.1.14-debug.2) (Thu Apr 10 2025)
 
 ### fix
