@@ -14,7 +14,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
   static async initialize(initialize: IPluginInitialize): Promise<AzureDevopsPlugin | null> {
     const gitUrl = await initialize.git.remoteUrl();
-
+    console.log('[!!!!DEBUGGING!!!!] gitUrl', gitUrl);
     if (gitUrl) {
       const result = this.parseUrl(gitUrl);
 
@@ -38,6 +38,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
     const httpsMatch = httpsRegex.exec(url);
     if (httpsMatch) {
+      console.log('[!!!!DEBUGGING!!!!] httpsMatch', httpsMatch);
       return {
         organizationName: httpsMatch[1],
         projectName: httpsMatch[2],
@@ -46,6 +47,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
     }
     const sshMatch = sshRegex.exec(url);
     if (sshMatch) {
+      console.log('[!!!!DEBUGGING!!!!] sshMatch', sshMatch);
       return {
         organizationName: sshMatch[1],
         projectName: sshMatch[2],
@@ -54,6 +56,7 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
     }
     return null;
   }
+
   async currentBranch(): Promise<string | null> {
     if (process.env.BUILD_SOURCEBRANCH && process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
       return process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
