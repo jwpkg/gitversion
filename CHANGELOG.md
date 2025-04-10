@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.11](https://github.com/jwpkg/gitversion/compare/v0.1.10...v0.1.11) (Thu Apr 10 2025)
+
+### fix
+
+* Removed references to branche name variable due to not a full name ([18e7898](https://github.com/jwpkg/gitversion/commit/18e7898718082ded12c99a28045ac1d881ed99af))
+
 ## [0.1.10](https://github.com/jwpkg/gitversion/compare/v0.1.9...v0.1.10) (Mon Feb 17 2025)
 
 ### fix
