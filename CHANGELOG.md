@@ -4,6 +4,14 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.14-debug.1](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.0...v0.1.14-debug.1) (Thu Apr 10 2025)
+
+### fix
+
+* Debugging ([3bc2ee0](https://github.com/jwpkg/gitversion/commit/3bc2ee04fc4c96ce5583c93ffde52b88e33581af))
+
+* Linting ([95c8e36](https://github.com/jwpkg/gitversion/commit/95c8e368e9a5285fe8b36c151b13f59b22fec767))
+
 ## [0.1.14-debug.0](https://github.com/jwpkg/gitversion/compare/v0.1.13...v0.1.14-debug.0) (Thu Apr 10 2025)
 
 ### feat
