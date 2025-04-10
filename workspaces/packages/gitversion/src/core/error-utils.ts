@@ -32,4 +32,5 @@ export async function debugGitCommands(logger: LogReporter) {
   await debugGitCommand(executor, logger, ['rev-parse', '--revs-only', 'HEAD']);
   await debugGitCommand(executor, logger, ['status', '--porcelain']);
   await debugGitCommand(executor, logger, ['remote']);
+  await debugGitCommand(executor, logger, ['config', '--get', 'remote.origin.url']);
 }
