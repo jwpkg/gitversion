@@ -25,6 +25,9 @@ export class Executor implements IExecutor {
       env: process.env,
     });
 
+    console.log('[!!!!DEBUGGING!!!!] exec request', commandAndArgs);
+    console.log('[!!!!DEBUGGING!!!!] exec result', result.exitCode, result.error, result.stdout.toString(), result.stderr.toString());
+
     if (result.error) {
       this.logError(`${result.error}`, options);
       throw error;
