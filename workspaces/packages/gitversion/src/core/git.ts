@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { createHash } from 'crypto';
 
 import { Executor } from './executor';
@@ -231,6 +232,7 @@ export class Git {
   async remoteUrl(): Promise<string | null> {
     const result = this.commandCache.get('remote_url');
     if (result) {
+      console.log('[!!!!DEBUGGING!!!!] remoteUrl cached', result);
       return result;
     }
 
@@ -240,10 +242,14 @@ export class Git {
 
       const result = await this.exec('config', '--get', `remote.${remoteName}.url`);
       if (result) {
+        console.log('[!!!!DEBUGGING!!!!] git result OK', result);
         this.commandCache.set('remote_url', result);
+      } else {
+        console.log('[!!!!DEBUGGING!!!!] git result FAIL', result);
       }
       return result;
-    } catch {
+    } catch (error) {
+      this.logger.reportError(`Error getting remote url: ${error}`);
       return null;
     }
   }
