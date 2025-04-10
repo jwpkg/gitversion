@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.13](https://github.com/jwpkg/gitversion/compare/v0.1.12...v0.1.13) (Thu Apr 10 2025)
+
+### fix
+
+* Extra git debugging ([3a2dd70](https://github.com/jwpkg/gitversion/commit/3a2dd70dd84f33ad9b03d82c16086a47ad387d22))
+
 ## [0.1.12](https://github.com/jwpkg/gitversion/compare/v0.1.11...v0.1.12) (Thu Apr 10 2025)
 
 ### fix
