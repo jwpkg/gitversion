@@ -19,11 +19,11 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
       const result = this.parseUrl(gitUrl);
 
       if (result) {
-        if (process.env.BUILD_SOURCEBRANCHNAME) {
-          initialize.git.overrideCurrentBranch = process.env.BUILD_SOURCEBRANCHNAME;
-        }
         if (process.env.BUILD_SOURCEBRANCH) {
           initialize.git.overrideCurrentRef = process.env.BUILD_SOURCEBRANCH;
+          if (process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
+            initialize.git.overrideCurrentBranch = process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
+          }
         }
         return new AzureDevopsPlugin(initialize.git, result.organizationName, result.projectName, result.repoName);
       }
@@ -55,20 +55,8 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
     return null;
   }
   async currentBranch(): Promise<string | null> {
-    if (process.env.BUILD_SOURCEBRANCH) {
-      if (process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
-        return process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
-      } else {
-        if (process.env.BUILD_SOURCEBRANCHNAME) {
-          return process.env.BUILD_SOURCEBRANCHNAME;
-        } else {
-          return null;
-        }
-      }
-    }
-
-    if (process.env.BUILD_SOURCEBRANCHNAME) {
-      return process.env.BUILD_SOURCEBRANCHNAME;
+    if (process.env.BUILD_SOURCEBRANCH && process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
+      return process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
     }
 
     return this.git.currentBranch();
