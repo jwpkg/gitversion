@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.14-debug.4](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.3...v0.1.14-debug.4) (Mon Apr 14 2025)
+
+### feat
+
+* Retry ([1f532a2](https://github.com/jwpkg/gitversion/commit/1f532a2c049e1a832fdab357c5d94de65bb2e2e0))
+
 ## [0.1.14-debug.3](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.2...v0.1.14-debug.3) (Thu Apr 10 2025)
 
 ### fix
