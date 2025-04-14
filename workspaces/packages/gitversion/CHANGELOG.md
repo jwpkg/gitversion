@@ -4,6 +4,30 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.14](https://github.com/jwpkg/gitversion/compare/v0.1.13...v0.1.14) (Mon Apr 14 2025)
+
+### feat
+
+* Debugging ([2d5b701](https://github.com/jwpkg/gitversion/commit/2d5b70146b06a56894c835ec263926299cbe38f5))
+
+* Retry ([1f532a2](https://github.com/jwpkg/gitversion/commit/1f532a2c049e1a832fdab357c5d94de65bb2e2e0))
+
+* Extra azure debug ([5e67fa9](https://github.com/jwpkg/gitversion/commit/5e67fa941b30f91a0e1182fc0622230e4de6d4cc))
+
+* Even more debug ([f2755d5](https://github.com/jwpkg/gitversion/commit/f2755d5c9bea5db94b583c4bbf1da0e1258a883f))
+
+* Removed Debug ([58dc7ec](https://github.com/jwpkg/gitversion/commit/58dc7ec777b3cc4b0b9fb40f56f767168a9373ce))
+
+### fix
+
+* Debugging ([3bc2ee0](https://github.com/jwpkg/gitversion/commit/3bc2ee04fc4c96ce5583c93ffde52b88e33581af))
+
+* Linting ([95c8e36](https://github.com/jwpkg/gitversion/commit/95c8e368e9a5285fe8b36c151b13f59b22fec767))
+
+* Extra debug ([b595f1c](https://github.com/jwpkg/gitversion/commit/b595f1c91390bc72a044a5faffa404ed1a6011d8))
+
+* Error debugging ([304a924](https://github.com/jwpkg/gitversion/commit/304a92450cf2b1455649fc7df9fa5dfe714ce851))
+
 ## [0.1.14-debug.6](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.5...v0.1.14-debug.6) (Mon Apr 14 2025)
 
 ### feat
