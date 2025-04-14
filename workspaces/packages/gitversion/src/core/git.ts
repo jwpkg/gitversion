@@ -235,7 +235,6 @@ export class Git {
 
     const result = this.commandCache.get('remote_url');
     if (result) {
-      console.log('[!!!!DEBUGGING!!!!] remoteUrl cached', result);
       return result;
     }
 

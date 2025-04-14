@@ -14,20 +14,15 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
   static async initialize(initialize: IPluginInitialize): Promise<AzureDevopsPlugin | null> {
     const gitUrl = await initialize.git.remoteUrl();
-    console.log('[!!!!DEBUGGING!!!!] gitUrl', gitUrl);
     if (gitUrl) {
       const result = this.parseUrl(gitUrl);
 
       if (result) {
         if (process.env.BUILD_SOURCEBRANCH) {
-          console.log('[!!!!DEBUGGING!!!!] BUILD_SOURCEBRANCH', process.env.BUILD_SOURCEBRANCH);
-
           initialize.git.overrideCurrentRef = process.env.BUILD_SOURCEBRANCH;
           if (process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
             initialize.git.overrideCurrentBranch = process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
           }
-        } else {
-          console.log('[!!!!DEBUGGING!!!!] FAIL BUILD_SOURCEBRANCH env:', process.env);
         }
         return new AzureDevopsPlugin(initialize.git, result.organizationName, result.projectName, result.repoName);
       }
@@ -42,7 +37,6 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
 
     const httpsMatch = httpsRegex.exec(url);
     if (httpsMatch) {
-      console.log('[!!!!DEBUGGING!!!!] httpsMatch', httpsMatch);
       return {
         organizationName: httpsMatch[1],
         projectName: httpsMatch[2],
@@ -51,7 +45,6 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
     }
     const sshMatch = sshRegex.exec(url);
     if (sshMatch) {
-      console.log('[!!!!DEBUGGING!!!!] sshMatch', sshMatch);
       return {
         organizationName: sshMatch[1],
         projectName: sshMatch[2],
@@ -62,12 +55,10 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   }
 
   async currentBranch(): Promise<string | null> {
-    console.log('[!!!!DEBUGGING!!!!] azure currentBranch', process.env.BUILD_SOURCEBRANCH);
     if (process.env.BUILD_SOURCEBRANCH && process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
       return process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
     }
 
-    console.log('[!!!!DEBUGGING!!!!] fallback git currentBranch', this.git.currentBranch);
     return this.git.currentBranch();
   }
 
