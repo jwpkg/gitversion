@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.14-debug.5](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.4...v0.1.14-debug.5) (Mon Apr 14 2025)
+
+### feat
+
+* Extra azure debug ([5e67fa9](https://github.com/jwpkg/gitversion/commit/5e67fa941b30f91a0e1182fc0622230e4de6d4cc))
+
 ## [0.1.14-debug.4](https://github.com/jwpkg/gitversion/compare/v0.1.14-debug.3...v0.1.14-debug.4) (Mon Apr 14 2025)
 
 ### feat
