@@ -62,10 +62,12 @@ export class AzureDevopsPlugin implements IPlugin, IGitPlatform {
   }
 
   async currentBranch(): Promise<string | null> {
+    console.log('[!!!!DEBUGGING!!!!] azure currentBranch', process.env.BUILD_SOURCEBRANCH);
     if (process.env.BUILD_SOURCEBRANCH && process.env.BUILD_SOURCEBRANCH.startsWith('refs/heads/')) {
       return process.env.BUILD_SOURCEBRANCH.replace('refs/heads/', '');
     }
 
+    console.log('[!!!!DEBUGGING!!!!] fallback git currentBranch', this.git.currentBranch);
     return this.git.currentBranch();
   }
 

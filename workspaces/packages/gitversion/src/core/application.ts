@@ -156,7 +156,7 @@ export class Application {
 
     const branch = this.detectVersionBranch(options, branchName);
 
-
+    console.log('[!!!!DEBUGGING!!!!] App init branch', branchName, branch.name, branch.type, configuration.options.mainBranchPatterns, configuration.options.featureBranchPatterns, configuration.options.releaseBranchPatterns);
     return {
       cwd,
       configuration,
