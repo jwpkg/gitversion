@@ -228,7 +228,11 @@ export class Git {
     throw new Error('Invalid git, currently can\'t work with multiple remotes');
   }
 
-  async remoteUrl(): Promise<string | null> {
+  async remoteUrl(maxTries = 5): Promise<string | null> {
+    if (maxTries <= 0) {
+      return null;
+    }
+
     const result = this.commandCache.get('remote_url');
     if (result) {
       console.log('[!!!!DEBUGGING!!!!] remoteUrl cached', result);
@@ -241,10 +245,10 @@ export class Git {
 
       const result = await this.exec('config', '--get', `remote.${remoteName}.url`);
       if (result) {
-        console.log('[!!!!DEBUGGING!!!!] git result OK', result);
         this.commandCache.set('remote_url', result);
       } else {
-        console.log('[!!!!DEBUGGING!!!!] git result FAIL', result);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return this.remoteUrl(maxTries - 1);
       }
       return result;
     } catch (error) {
