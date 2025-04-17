@@ -18,7 +18,8 @@ export class PublishCommand extends GitVersionCommand {
     ['publish'],
   ];
 
-  push = Option.Boolean('--push', true);
+  push = Option.Boolean('--push', true, { description: 'Push the changes to the remote repository' });
+  tag = Option.Boolean('--tag', true, { description: 'Tag the commit with the version' });
   dryRun = Option.Boolean('--dry-run', false);
 
   async execute(): Promise<number> {
@@ -64,7 +65,11 @@ export class PublishCommand extends GitVersionCommand {
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packManagers, packedPackages, configuration, branch, logger);
-      await this.addTags(packedPackages, git, logger);
+      if (this.tag) {
+        await this.addTags(packedPackages, git, logger);
+      } else {
+        logger.reportInfo('Skipping tagging step');
+      }
 
       if (this.push) {
         await git.push();
