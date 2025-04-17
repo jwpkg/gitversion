@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.16](https://github.com/jwpkg/gitversion/compare/v0.1.15...v0.1.16) (Thu Apr 17 2025)
+
+### feat
+
+* Added option to skip tagging during publish ([8bb6fc3](https://github.com/jwpkg/gitversion/commit/8bb6fc3876efcc92b14d636de3a75614872b4e2e))
+
 ## [0.1.15](https://github.com/jwpkg/gitversion/compare/v0.1.14...v0.1.15) (Mon Apr 14 2025)
 
 
