@@ -112,7 +112,19 @@ export class PublishCommand extends GitVersionCommand {
       const publishCommands = packManagers.map(async packManager => {
         if (packedPackage.packFiles?.[packManager.ident]) {
           try {
-            await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, packedPackage.packFiles[packManager.ident]), releaseTag, this.dryRun);
+            const packFiles = packedPackage.packFiles[packManager.ident];
+            if (Array.isArray(packFiles)) {
+              for (const file of packFiles) {
+                await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, file), releaseTag, this.dryRun);
+              }
+            } else if (typeof packFiles === 'string') {
+              await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, ), releaseTag, this.dryRun);
+            } else if (typeof packFiles === 'object' && packFiles !== null) {
+              // If packFiles is an object, we assume it's a record of files
+              for (const [key, file] of Object.entries(packFiles)) {
+                await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, file), releaseTag, this.dryRun, key);
+              }
+            }
           } catch (error) {
             logger.reportError(`Error publishing ${formatPackageName(packedPackage.packageName)}@${formatVersion(packedPackage.version)} with plugin ${colorize.yellowBright('name' in packManager && typeof packManager.name === 'string' ? packManager.name : packManager.ident)}`, true);
             throw error;

@@ -10,7 +10,8 @@
   "author": "Joost van der Waal <joost@jvdwaal.nl>",
   "license": "Apache-2.0",
   "workspaces": [
-    "workspaces/packages/*"
+    "workspaces/packages/*",
+    "workspaces/e2e/*"
   ],
   "scripts": {
     "aws:login": "aws sso login --profile cp-utils-prod",

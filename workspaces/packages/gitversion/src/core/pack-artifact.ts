@@ -12,7 +12,7 @@ const MANIFEST_NAME = 'pack-manifest.json';
 const PACK_FOLDER = 'pack';
 
 export interface PackedPackage {
-  packFiles?: Record<string, string>;
+  packFiles?: Record<string, string | string[] | Record<string, string>>;
   packageRelativeCwd: string;
   tag: string;
   packageName: string;

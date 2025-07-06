@@ -1993,7 +1993,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep":
+"@jwpkg/gitversion-folderworkspace@workspace:workspaces/packages/gitversion-plugin-folderworkspace":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg/gitversion-folderworkspace@workspace:workspaces/packages/gitversion-plugin-folderworkspace"
+  dependencies:
+    "@jwpkg/gitversion": "workspace:^"
+    "@types/jest": "npm:^29.5.12"
+    "@types/node": "npm:^20.11.19"
+    "@types/semver": "npm:^7.5.7"
+    glob: "npm:^10.3.10"
+    semver: "npm:^7.6.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.3.3"
+  languageName: unknown
+  linkType: soft
+
+"@jwpkg/gitversion-plugin-bicep@workspace:^, @jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep":
   version: 0.0.0-use.local
   resolution: "@jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep"
   dependencies:
@@ -3143,6 +3158,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.11.19":
+  version: 20.19.4
+  resolution: "@types/node@npm:20.19.4"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/53f40c963d1804d2e87ad942636fee4be0e1ca88f2173b2a52b198797747bfb55d9ba6613cd918a0c5083a03b87d58688497c7ea58a8f3108fc86a5d627528e1
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^22.13.1":
   version: 22.13.1
   resolution: "@types/node@npm:22.13.1"
@@ -3174,6 +3198,13 @@ __metadata:
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 10c0/196dc32db5f68cbcde2e6a42bb4aa5cbb100fa2b7bd9c8c82faaaf3e03fbe063e205dbb4f03c7cdf53da2edb70a0d34c9f2e601b54281b377eb8dc1743226acd
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.5.7":
+  version: 7.7.0
+  resolution: "@types/semver@npm:7.7.0"
+  checksum: 10c0/6b5f65f647474338abbd6ee91a6bbab434662ddb8fe39464edcbcfc96484d388baad9eb506dff217b6fc1727a88894930eb1f308617161ac0f376fe06be4e1ee
   languageName: node
   linkType: hard
 
@@ -4881,6 +4912,17 @@ __metadata:
   checksum: 10c0/f23823513b63173a001030fae4f2dabe283b99a9d324ade3ad3d148e218134676f1ee8568c877cd79ec1c53158dcf2d2ba527a97c606618928ba99dd930102bf
   languageName: node
   linkType: hard
+
+"bicep@workspace:workspaces/e2e/bicep":
+  version: 0.0.0-use.local
+  resolution: "bicep@workspace:workspaces/e2e/bicep"
+  dependencies:
+    "@jwpkg/gitversion": "workspace:^"
+    "@jwpkg/gitversion-plugin-bicep": "workspace:^"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
 
 "birpc@npm:^0.2.17":
   version: 0.2.17
@@ -8660,6 +8702,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"npm@workspace:workspaces/e2e/npm":
+  version: 0.0.0-use.local
+  resolution: "npm@workspace:workspaces/e2e/npm"
+  languageName: unknown
+  linkType: soft
+
 "object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -10525,6 +10573,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.3.3, typescript@npm:^5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/5f8bb01196e542e64d44db3d16ee0e4063ce4f3e3966df6005f2588e86d91c03e1fb131c2581baf0fb65ee79669eea6e161cd448178986587e9f6844446dbb48
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^5.7.3":
   version: 5.7.3
   resolution: "typescript@npm:5.7.3"
@@ -10532,6 +10590,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/b7580d716cf1824736cc6e628ab4cd8b51877408ba2be0869d2866da35ef8366dd6ae9eb9d0851470a39be17cbd61df1126f9e211d8799d764ea7431d5435afa
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/39117e346ff8ebd87ae1510b3a77d5d92dae5a89bde588c747d25da5c146603a99c8ee588c7ef80faaf123d89ed46f6dbd918d534d641083177d5fac38b8a1cb
   languageName: node
   linkType: hard
 
@@ -10568,6 +10636,13 @@ __metadata:
   version: 6.20.0
   resolution: "undici-types@npm:6.20.0"
   checksum: 10c0/68e659a98898d6a836a9a59e6adf14a5d799707f5ea629433e025ac90d239f75e408e2e5ff086afc3cace26f8b26ee52155293564593fbb4a2f666af57fc59bf
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 

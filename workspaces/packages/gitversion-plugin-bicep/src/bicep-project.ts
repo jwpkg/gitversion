@@ -1,6 +1,6 @@
-import { addToChangelog, ChangelogEntry } from '@jwpkg/gitversion/lib/core/changelog';
-import { PackedPackage } from '@jwpkg/gitversion/lib/core/pack-artifact';
-import { IProject, IWorkspace } from '@jwpkg/gitversion/lib/core/workspace-utils';
+import { addToChangelog, ChangelogEntry } from '@jwpkg/gitversion';
+import { PackedPackage } from '@jwpkg/gitversion';
+import { IProject, IWorkspace } from '@jwpkg/gitversion';
 import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
@@ -25,11 +25,12 @@ export interface BicepProjectProps {
   fallbackReleaseResourceGroup?: string;
 }
 
-export const isBicepManifest = t.isPartial({
+export const isBicepManifest = t.isObject({
   version: t.isOptional(t.isString()),
   name: t.isString(),
   private: t.isOptional(t.isBoolean()),
   workspaces: t.isOptional(t.isArray(t.isString())),
+  modules: t.isOptional(t.isRecord(t.isString()))
 });
 
 export type BicepManifest = t.InferType<typeof isBicepManifest>;
@@ -207,7 +208,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     this._cwd = cwd;
   }
 
-  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | null> {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string,string> | null> {
     if (!(workspace instanceof BicepWorkspace)) {
       return null;
     }
@@ -220,9 +221,40 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
       recursive: true,
     });
 
-    const normalizedOutputName = `${workspace.packageName.replace(/[ _/\\]/g, '-')}.json`;
 
-    await this.application.executor.exec(['az', 'bicep', 'build', '--file', 'main.bicep', '--outfile', join(outputFolder, normalizedOutputName)], {
+    if (workspace.manifest.modules) {
+      const builds: Promise<void>[] = [];
+      const results: Record<string, string> = {};
+
+      for (const [moduleName, moduleFile] of Object.entries(workspace.manifest.modules)) {
+        const moduleFilePath = join(workspace.cwd, moduleFile);
+        if (!existsSync(moduleFilePath)) {
+          throw new Error(`Module file '${moduleFile}' for module '${moduleName}' does not exist in workspace '${workspace.relativeCwd}'`);
+        }
+        const normalizedOutputName = `${moduleName}.json`;
+        builds.push(new Promise(async (resolve, reject) => {
+          try {
+            const result = await this.bicepPack(workspace, outputFolder, normalizedOutputName, moduleFilePath);
+            results[moduleName] = result;
+            resolve();
+          } catch (error) {
+            reject(new Error(`Error packing module '${moduleName}' in workspace '${workspace.relativeCwd}': ${error}`));
+          }
+        }));        
+      }
+      await Promise.all(builds);
+
+      return results;
+    } else {
+      const normalizedOutputName = `${workspace.packageName.replace(/[ _/\\]/g, '-')}.json`;
+      return this.bicepPack(workspace, outputFolder, normalizedOutputName, join(workspace.cwd, 'main.bicep'));
+    }
+
+  }
+
+  async bicepPack(workspace: BicepWorkspace, outputFolder: string, normalizedOutputName: string, fileName: string): Promise<string> {
+
+    await this.application.executor.exec(['az', 'bicep', 'build', '--file', fileName, '--outfile', join(outputFolder, normalizedOutputName)], {
       cwd: workspace.cwd,
     });
 
@@ -230,7 +262,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
   }
 
 
-  async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean): Promise<void> {
+  async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean, module?: string): Promise<void> {
     const fromVersion = parse(packedPackage.previousVersion);
     const toVersion = parse(packedPackage.version);
 
@@ -257,7 +289,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
     const resourceGroup = this.findResourceGroup(releaseTag);
 
-    const commands = versions.map(version => ['az', 'ts', 'create', '--name', packedPackage.packageName, '--version', version, '--resource-group', resourceGroup, '-f', fileName, '-y']);
+    const commands = versions.map(version => ['az', 'ts', 'create', '--name', module ?? packedPackage.packageName, '--version', version, '--resource-group', resourceGroup, '-f', fileName, '-y']);
     if (dryRun) {
       this.application.logger.reportDryrun(`Would be running:\n ${commands.join('\n')}`);
       return;

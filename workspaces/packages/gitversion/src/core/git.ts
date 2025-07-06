@@ -91,7 +91,10 @@ export class Git {
       args.push('--', relativeCwd);
     }
 
-    const output = await this.exec(...args);
+    const output = await this.execSilent(...args);
+    if (!output) {
+      return [];
+    }
 
     return output
       .replace(endRegex, '')
@@ -123,7 +126,10 @@ export class Git {
       prefixFilter,
     ];
 
-    const output = await this.exec(...args);
+    const output = await this.execSilent(...args);
+    if (!output) {
+      return [];
+    }
 
     const tags = output
       .replace(endRegex, '')
@@ -202,7 +208,7 @@ export class Git {
   }
 
   async currentCommit() {
-    return await this.exec('rev-parse', '--verify', 'HEAD');
+    return await this.execSilent('rev-parse', '--verify', 'HEAD') ?? '';
   }
 
   async cleanChangeLogs() {

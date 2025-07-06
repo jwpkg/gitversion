@@ -1,2 +1,2 @@
-export * from './core/configuration';
 export * from './plugins';
+export * from './core';

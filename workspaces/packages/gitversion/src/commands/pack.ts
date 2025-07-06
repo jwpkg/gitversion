@@ -99,18 +99,43 @@ export class PackCommand extends GitVersionCommand {
           });
           const packFile = await packManager.pack(workspace, folder);
           if (packFile) {
-            const fullName = join(folder, packFile);
-            const stats = await stat(fullName);
-            logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
-            return {
-              [packManager.ident]: packFile,
-            };
+            if (Array.isArray(packFile)) {
+              for (const file of packFile) {
+                const fullName = join(folder, file);
+                const stats = await stat(fullName);
+                logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+              }
+              return {
+                [packManager.ident]: packFile,
+              };
+            } if (typeof packFile === 'string') {
+              const fullName = join(folder, packFile);
+              const stats = await stat(fullName);
+              logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+              return {
+                [packManager.ident]: packFile,
+              };
+            } else if (typeof packFile === 'object' && packFile !== null) {
+              // If packFile is an object, we assume it's a record of files
+              const files: Record<string, string> = {};
+              for (const [key, value] of Object.entries(packFile)) {
+                const fullName = join(folder, value);
+                const stats = await stat(fullName);
+                logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+                files[key] = value;
+              }
+              return {
+                [packManager.ident]: files,
+              };
+            } else {
+              return {}
+            }
           } else {
             return {};
           }
         });
 
-        const files = (await Promise.all(packCommands)).reduce((p, c) => {
+        const files = (await Promise.all(packCommands)).reduce((p: Record<string, string | string[] | Record<string, string>>, c) => {
           return {
             ...p,
             ...c,
