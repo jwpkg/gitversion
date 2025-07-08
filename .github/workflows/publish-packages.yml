@@ -37,7 +37,11 @@ jobs:
           node-version: 20.x
 
       - name: Install
-        run: yarn
+        run: |
+          echo "Node version: $(node -v)"
+          echo "Yarn version: $(yarn --version)"
+          git status
+          yarn install --check-cache --verbose
 
       - name: Bump
         run: yarn gitversion bump $BUMP_TYPE
