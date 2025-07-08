@@ -15,7 +15,7 @@ const RAW_RUNTIME_STATE =
       "reference": "workspace:."\
     },\
     {\
-      "name": "bicep",\
+      "name": "@jwpkg-e2e/bicep",\
       "reference": "workspace:workspaces/e2e/bicep"\
     },\
     {\
@@ -55,6 +55,7 @@ const RAW_RUNTIME_STATE =
   "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
   "pnpZipBackend": "libzip",\
   "fallbackExclusionList": [\
+    ["@jwpkg-e2e/bicep", ["workspace:workspaces/e2e/bicep"]],\
     ["@jwpkg/gitversion", ["workspace:workspaces/packages/gitversion"]],\
     ["@jwpkg/gitversion-folderworkspace", ["workspace:workspaces/packages/gitversion-plugin-folderworkspace"]],\
     ["@jwpkg/gitversion-plugin-bicep", ["workspace:workspaces/packages/gitversion-plugin-bicep"]],\
@@ -62,7 +63,6 @@ const RAW_RUNTIME_STATE =
     ["@jwpkg/test-package-a", ["workspace:workspaces/packages/test-package-a"]],\
     ["@jwpkg/test-package-b", ["workspace:workspaces/packages/test-package-b"]],\
     ["@yarnpkg/test-package-a-private", ["workspace:workspaces/packages/test-package-a-private"]],\
-    ["bicep", ["workspace:workspaces/e2e/bicep"]],\
     ["npm", ["workspace:workspaces/e2e/npm"]],\
     ["root", ["workspace:."]]\
   ],\
@@ -2885,6 +2885,20 @@ const RAW_RUNTIME_STATE =
           ["@jridgewell/trace-mapping", "npm:0.3.9"]\
         ],\
         "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@jwpkg-e2e/bicep", [\
+      ["workspace:workspaces/e2e/bicep", {\
+        "packageLocation": "./workspaces/e2e/bicep/",\
+        "packageDependencies": [\
+          ["@jwpkg-e2e/bicep", "workspace:workspaces/e2e/bicep"],\
+          ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
+          ["@jwpkg/gitversion-plugin-bicep", "workspace:workspaces/packages/gitversion-plugin-bicep"],\
+          ["@types/node", "npm:24.0.11"],\
+          ["ts-node", "virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2"],\
+          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
+        ],\
+        "linkType": "SOFT"\
       }]\
     ]],\
     ["@jwpkg/constraints-config", [\
@@ -6816,20 +6830,6 @@ const RAW_RUNTIME_STATE =
           ["base64-js", "npm:1.5.1"]\
         ],\
         "linkType": "HARD"\
-      }]\
-    ]],\
-    ["bicep", [\
-      ["workspace:workspaces/e2e/bicep", {\
-        "packageLocation": "./workspaces/e2e/bicep/",\
-        "packageDependencies": [\
-          ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
-          ["@jwpkg/gitversion-plugin-bicep", "workspace:workspaces/packages/gitversion-plugin-bicep"],\
-          ["@types/node", "npm:24.0.11"],\
-          ["bicep", "workspace:workspaces/e2e/bicep"],\
-          ["ts-node", "virtual:b6650269fde8da01d9199be6380511ab0176fd8e5c3fecd3e13bb1e39b6d56bdcbe454bf0c2c4c76a03275ef173e1af9b29d26aad985e95a1236bf77acf8025f#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
-        ],\
-        "linkType": "SOFT"\
       }]\
     ]],\
     ["birpc", [\
@@ -13078,6 +13078,42 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "HARD"\
       }],\
+      ["virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2", {\
+        "packageLocation": "./.yarn/__virtual__/ts-node-virtual-a04420a5d1/3/.yarn/berry/cache/ts-node-npm-10.9.2-3f3890b9ac-10c0.zip/node_modules/ts-node/",\
+        "packageDependencies": [\
+          ["@cspotcode/source-map-support", "npm:0.8.1"],\
+          ["@swc/core", null],\
+          ["@swc/wasm", null],\
+          ["@tsconfig/node10", "npm:1.0.11"],\
+          ["@tsconfig/node12", "npm:1.0.11"],\
+          ["@tsconfig/node14", "npm:1.0.3"],\
+          ["@tsconfig/node16", "npm:1.0.4"],\
+          ["@types/node", "npm:24.0.11"],\
+          ["@types/swc__core", null],\
+          ["@types/swc__wasm", null],\
+          ["@types/typescript", null],\
+          ["acorn", "npm:8.15.0"],\
+          ["acorn-walk", "npm:8.3.4"],\
+          ["arg", "npm:4.1.3"],\
+          ["create-require", "npm:1.1.1"],\
+          ["diff", "npm:4.0.2"],\
+          ["make-error", "npm:1.3.6"],\
+          ["ts-node", "virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2"],\
+          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
+          ["v8-compile-cache-lib", "npm:3.0.1"],\
+          ["yn", "npm:3.1.1"]\
+        ],\
+        "packagePeers": [\
+          "@swc/core",\
+          "@swc/wasm",\
+          "@types/node",\
+          "@types/swc__core",\
+          "@types/swc__wasm",\
+          "@types/typescript",\
+          "typescript"\
+        ],\
+        "linkType": "HARD"\
+      }],\
       ["virtual:a4b0264d77135a05c9637f463bd6a50a5ef147bfc3e19750a3f3a2f2b7476fe79c4bf95b5152eae25c75b4c39dd5a4ed0f82fc34d25a1ae5fcb17b8113f132af#npm:10.9.2", {\
         "packageLocation": "./.yarn/__virtual__/ts-node-virtual-6c68d14d49/3/.yarn/berry/cache/ts-node-npm-10.9.2-3f3890b9ac-10c0.zip/node_modules/ts-node/",\
         "packageDependencies": [\
@@ -13099,42 +13135,6 @@ const RAW_RUNTIME_STATE =
           ["diff", "npm:4.0.2"],\
           ["make-error", "npm:1.3.6"],\
           ["ts-node", "virtual:a4b0264d77135a05c9637f463bd6a50a5ef147bfc3e19750a3f3a2f2b7476fe79c4bf95b5152eae25c75b4c39dd5a4ed0f82fc34d25a1ae5fcb17b8113f132af#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
-          ["v8-compile-cache-lib", "npm:3.0.1"],\
-          ["yn", "npm:3.1.1"]\
-        ],\
-        "packagePeers": [\
-          "@swc/core",\
-          "@swc/wasm",\
-          "@types/node",\
-          "@types/swc__core",\
-          "@types/swc__wasm",\
-          "@types/typescript",\
-          "typescript"\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["virtual:b6650269fde8da01d9199be6380511ab0176fd8e5c3fecd3e13bb1e39b6d56bdcbe454bf0c2c4c76a03275ef173e1af9b29d26aad985e95a1236bf77acf8025f#npm:10.9.2", {\
-        "packageLocation": "./.yarn/__virtual__/ts-node-virtual-b8f74980d8/3/.yarn/berry/cache/ts-node-npm-10.9.2-3f3890b9ac-10c0.zip/node_modules/ts-node/",\
-        "packageDependencies": [\
-          ["@cspotcode/source-map-support", "npm:0.8.1"],\
-          ["@swc/core", null],\
-          ["@swc/wasm", null],\
-          ["@tsconfig/node10", "npm:1.0.11"],\
-          ["@tsconfig/node12", "npm:1.0.11"],\
-          ["@tsconfig/node14", "npm:1.0.3"],\
-          ["@tsconfig/node16", "npm:1.0.4"],\
-          ["@types/node", "npm:24.0.11"],\
-          ["@types/swc__core", null],\
-          ["@types/swc__wasm", null],\
-          ["@types/typescript", null],\
-          ["acorn", "npm:8.15.0"],\
-          ["acorn-walk", "npm:8.3.4"],\
-          ["arg", "npm:4.1.3"],\
-          ["create-require", "npm:1.1.1"],\
-          ["diff", "npm:4.0.2"],\
-          ["make-error", "npm:1.3.6"],\
-          ["ts-node", "virtual:b6650269fde8da01d9199be6380511ab0176fd8e5c3fecd3e13bb1e39b6d56bdcbe454bf0c2c4c76a03275ef173e1af9b29d26aad985e95a1236bf77acf8025f#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
           ["v8-compile-cache-lib", "npm:3.0.1"],\
           ["yn", "npm:3.1.1"]\

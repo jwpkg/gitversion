@@ -2066,6 +2066,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jwpkg-e2e/bicep@workspace:workspaces/e2e/bicep":
+  version: 0.0.0-use.local
+  resolution: "@jwpkg-e2e/bicep@workspace:workspaces/e2e/bicep"
+  dependencies:
+    "@jwpkg/gitversion": "workspace:^"
+    "@jwpkg/gitversion-plugin-bicep": "workspace:^"
+    "@types/node": "npm:^24.0.11"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
 "@jwpkg/constraints-config@npm:^0.1.1":
   version: 0.1.1
   resolution: "@jwpkg/constraints-config@npm:0.1.1"
@@ -4978,18 +4990,6 @@ __metadata:
   checksum: 10c0/f23823513b63173a001030fae4f2dabe283b99a9d324ade3ad3d148e218134676f1ee8568c877cd79ec1c53158dcf2d2ba527a97c606618928ba99dd930102bf
   languageName: node
   linkType: hard
-
-"bicep@workspace:workspaces/e2e/bicep":
-  version: 0.0.0-use.local
-  resolution: "bicep@workspace:workspaces/e2e/bicep"
-  dependencies:
-    "@jwpkg/gitversion": "workspace:^"
-    "@jwpkg/gitversion-plugin-bicep": "workspace:^"
-    "@types/node": "npm:^24.0.11"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.8.3"
-  languageName: unknown
-  linkType: soft
 
 "birpc@npm:^2.3.0":
   version: 2.4.0
