@@ -27,10 +27,6 @@ const RAW_RUNTIME_STATE =
       "reference": "workspace:workspaces/packages/gitversion-plugin-bicep"\
     },\
     {\
-      "name": "@jwpkg/gitversion-folderworkspace",\
-      "reference": "workspace:workspaces/packages/gitversion-plugin-folderworkspace"\
-    },\
-    {\
       "name": "@jwpkg/gitversion-s3publish",\
       "reference": "workspace:workspaces/packages/gitversion-plugin-s3publish"\
     },\
@@ -53,7 +49,6 @@ const RAW_RUNTIME_STATE =
   "fallbackExclusionList": [\
     ["@jwpkg-e2e/bicep", ["workspace:workspaces/e2e/bicep"]],\
     ["@jwpkg/gitversion", ["workspace:workspaces/packages/gitversion"]],\
-    ["@jwpkg/gitversion-folderworkspace", ["workspace:workspaces/packages/gitversion-plugin-folderworkspace"]],\
     ["@jwpkg/gitversion-plugin-bicep", ["workspace:workspaces/packages/gitversion-plugin-bicep"]],\
     ["@jwpkg/gitversion-s3publish", ["workspace:workspaces/packages/gitversion-plugin-s3publish"]],\
     ["@jwpkg/test-package-a", ["workspace:workspaces/packages/test-package-a"]],\
@@ -2995,23 +2990,6 @@ const RAW_RUNTIME_STATE =
           ["semver", "npm:7.7.2"],\
           ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
           ["typanion", "npm:3.14.0"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
-        ],\
-        "linkType": "SOFT"\
-      }]\
-    ]],\
-    ["@jwpkg/gitversion-folderworkspace", [\
-      ["workspace:workspaces/packages/gitversion-plugin-folderworkspace", {\
-        "packageLocation": "./workspaces/packages/gitversion-plugin-folderworkspace/",\
-        "packageDependencies": [\
-          ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
-          ["@jwpkg/gitversion-folderworkspace", "workspace:workspaces/packages/gitversion-plugin-folderworkspace"],\
-          ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:24.0.11"],\
-          ["@types/semver", "npm:7.7.0"],\
-          ["glob", "npm:10.4.5"],\
-          ["semver", "npm:7.7.2"],\
-          ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
         ],\
         "linkType": "SOFT"\

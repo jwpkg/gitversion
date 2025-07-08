@@ -2141,21 +2141,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jwpkg/gitversion-folderworkspace@workspace:workspaces/packages/gitversion-plugin-folderworkspace":
-  version: 0.0.0-use.local
-  resolution: "@jwpkg/gitversion-folderworkspace@workspace:workspaces/packages/gitversion-plugin-folderworkspace"
-  dependencies:
-    "@jwpkg/gitversion": "workspace:^"
-    "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^24.0.11"
-    "@types/semver": "npm:^7.7.0"
-    glob: "npm:^10.3.10"
-    semver: "npm:^7.7.2"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.8.3"
-  languageName: unknown
-  linkType: soft
-
 "@jwpkg/gitversion-plugin-bicep@workspace:^, @jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep":
   version: 0.0.0-use.local
   resolution: "@jwpkg/gitversion-plugin-bicep@workspace:workspaces/packages/gitversion-plugin-bicep"
