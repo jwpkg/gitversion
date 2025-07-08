@@ -4761,6 +4761,7 @@ const RAW_RUNTIME_STATE =
           ["@types/eslint", "npm:9.6.1"],\
           ["@types/typescript", null],\
           ["@typescript-eslint/type-utils", "virtual:3c833c50da9636e0d821a27c4828c97facb07f77bb6eaa313f04b95cb0f5f635cbbd442875ec304a1f328461007b3a8f4cfa54c5d2a125f7b5b23f9390da9fca#npm:8.36.0"],\
+          ["@typescript-eslint/types", "npm:8.36.0"],\
           ["@typescript-eslint/typescript-estree", "virtual:2801f92e12b98dbdff3d35178aae8709976e448cb4006211ca432900a2e4bd05af03aeb27e93b56e60ea21ab110b453324e493dee40ebb6ef70c367009077edb#npm:8.36.0"],\
           ["@typescript-eslint/utils", "virtual:3c833c50da9636e0d821a27c4828c97facb07f77bb6eaa313f04b95cb0f5f635cbbd442875ec304a1f328461007b3a8f4cfa54c5d2a125f7b5b23f9390da9fca#npm:8.36.0"],\
           ["debug", "virtual:643ed7cc338bcf145a82d8b05b3bef6bcf150ca545df386225596f10ce53cc90b88b3ca83e348ade1ccea5f3f8e76c92d2f0e2ba544da60d40aff9921c56872d#npm:4.4.1"],\

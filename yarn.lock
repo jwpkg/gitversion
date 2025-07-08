@@ -3640,7 +3640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.36.0, @typescript-eslint/types@npm:^8.36.0":
+"@typescript-eslint/types@npm:*, @typescript-eslint/types@npm:8.36.0, @typescript-eslint/types@npm:^8.36.0":
   version: 8.36.0
   resolution: "@typescript-eslint/types@npm:8.36.0"
   checksum: 10c0/cacb941a0caad6ab556c416051b97ec33b364b7c8e0703e2729ae43f12daf02b42eef12011705329107752e3f1685ca82cfffe181d637f85907293cb634bee31
@@ -6167,7 +6167,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.9.0":
+"eslint@npm:^9.30.1":
   version: 9.30.1
   resolution: "eslint@npm:9.30.1"
   dependencies:
@@ -9597,7 +9597,7 @@ __metadata:
     "@types/node": "npm:^24.0.11"
     "@yarnpkg/types": "npm:^4.0.0"
     asciinema-player: "npm:^3.6.4"
-    eslint: "npm:^9.9.0"
+    eslint: "npm:^9.30.1"
     jest: "npm:^29.7.0"
     ts-jest: "npm:^29.1.2"
     typescript: "npm:^5.8.3"

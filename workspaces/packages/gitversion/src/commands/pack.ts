@@ -128,7 +128,7 @@ export class PackCommand extends GitVersionCommand {
                 [packManager.ident]: files,
               };
             } else {
-              return {}
+              return {};
             }
           } else {
             return {};

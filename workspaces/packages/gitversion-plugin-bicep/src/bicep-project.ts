@@ -30,7 +30,7 @@ export const isBicepManifest = t.isObject({
   name: t.isString(),
   private: t.isOptional(t.isBoolean()),
   workspaces: t.isOptional(t.isArray(t.isString())),
-  modules: t.isOptional(t.isRecord(t.isString()))
+  modules: t.isOptional(t.isRecord(t.isString())),
 });
 
 export type BicepManifest = t.InferType<typeof isBicepManifest>;
@@ -208,7 +208,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     this._cwd = cwd;
   }
 
-  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string,string> | null> {
+  async pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string, string> | null> {
     if (!(workspace instanceof BicepWorkspace)) {
       return null;
     }
@@ -232,15 +232,16 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
           throw new Error(`Module file '${moduleFile}' for module '${moduleName}' does not exist in workspace '${workspace.relativeCwd}'`);
         }
         const normalizedOutputName = `${moduleName}.json`;
-        builds.push(new Promise(async (resolve, reject) => {
-          try {
-            const result = await this.bicepPack(workspace, outputFolder, normalizedOutputName, moduleFilePath);
-            results[moduleName] = result;
-            resolve();
-          } catch (error) {
-            reject(new Error(`Error packing module '${moduleName}' in workspace '${workspace.relativeCwd}': ${error}`));
-          }
-        }));        
+        builds.push(new Promise((resolve, reject) => {
+          this.bicepPack(workspace, outputFolder, normalizedOutputName, moduleFilePath)
+            .then(result => {
+              results[moduleName] = result;
+              resolve();
+            })
+            .catch(error => {
+              reject(new Error(`Error packing module '${moduleName}' in workspace '${workspace.relativeCwd}': ${error}`));
+            });
+        }));
       }
       await Promise.all(builds);
 
@@ -249,11 +250,9 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
       const normalizedOutputName = `${workspace.packageName.replace(/[ _/\\]/g, '-')}.json`;
       return this.bicepPack(workspace, outputFolder, normalizedOutputName, join(workspace.cwd, 'main.bicep'));
     }
-
   }
 
   async bicepPack(workspace: BicepWorkspace, outputFolder: string, normalizedOutputName: string, fileName: string): Promise<string> {
-
     await this.application.executor.exec(['az', 'bicep', 'build', '--file', fileName, '--outfile', join(outputFolder, normalizedOutputName)], {
       cwd: workspace.cwd,
     });

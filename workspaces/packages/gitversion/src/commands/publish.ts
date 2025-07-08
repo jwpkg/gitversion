@@ -118,7 +118,7 @@ export class PublishCommand extends GitVersionCommand {
                 await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, file), releaseTag, this.dryRun);
               }
             } else if (typeof packFiles === 'string') {
-              await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident, ), releaseTag, this.dryRun);
+              await packManager.publish(packedPackage, join(configuration.packFolder, packManager.ident), releaseTag, this.dryRun);
             } else if (typeof packFiles === 'object' && packFiles !== null) {
               // If packFiles is an object, we assume it's a record of files
               for (const [key, file] of Object.entries(packFiles)) {
