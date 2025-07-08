@@ -41,7 +41,7 @@ jobs:
           echo "Node version: $(node -v)"
           echo "Yarn version: $(yarn --version)"
           git status
-          yarn install --check-cache --verbose
+          yarn install --check-cache
 
       - name: Bump
         run: yarn gitversion bump $BUMP_TYPE
