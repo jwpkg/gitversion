@@ -19,10 +19,6 @@ const RAW_RUNTIME_STATE =
       "reference": "workspace:workspaces/e2e/bicep"\
     },\
     {\
-      "name": "npm",\
-      "reference": "workspace:workspaces/e2e/npm"\
-    },\
-    {\
       "name": "@jwpkg/gitversion",\
       "reference": "workspace:workspaces/packages/gitversion"\
     },\
@@ -63,7 +59,6 @@ const RAW_RUNTIME_STATE =
     ["@jwpkg/test-package-a", ["workspace:workspaces/packages/test-package-a"]],\
     ["@jwpkg/test-package-b", ["workspace:workspaces/packages/test-package-b"]],\
     ["@yarnpkg/test-package-a-private", ["workspace:workspaces/packages/test-package-a-private"]],\
-    ["npm", ["workspace:workspaces/e2e/npm"]],\
     ["root", ["workspace:."]]\
   ],\
   "fallbackPool": [\
@@ -79,7 +74,7 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion-s3publish", "workspace:workspaces/packages/gitversion-plugin-s3publish"],\
           ["@types/eslint", "npm:9.6.1"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:22.16.1"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@yarnpkg/types", "npm:4.0.1"],\
           ["asciinema-player", "npm:3.10.0"],\
           ["eslint", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:9.30.1"],\
@@ -2894,7 +2889,7 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
           ["@jwpkg/gitversion-plugin-bicep", "workspace:workspaces/packages/gitversion-plugin-bicep"],\
           ["@types/node", "npm:24.0.11"],\
-          ["ts-node", "virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2"],\
+          ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
         ],\
         "linkType": "SOFT"\
@@ -2948,7 +2943,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:22.16.1"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@types/semver", "npm:7.7.0"],\
           ["@yarnpkg/cli", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:4.9.2"],\
           ["@yarnpkg/core", "npm:4.4.2"],\
@@ -2978,11 +2973,11 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
           ["@jwpkg/gitversion-folderworkspace", "workspace:workspaces/packages/gitversion-plugin-folderworkspace"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:20.19.5"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@types/semver", "npm:7.7.0"],\
           ["glob", "npm:10.4.5"],\
           ["semver", "npm:7.7.2"],\
-          ["ts-node", "virtual:a4b0264d77135a05c9637f463bd6a50a5ef147bfc3e19750a3f3a2f2b7476fe79c4bf95b5152eae25c75b4c39dd5a4ed0f82fc34d25a1ae5fcb17b8113f132af#npm:10.9.2"],\
+          ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
         ],\
         "linkType": "SOFT"\
@@ -2995,7 +2990,7 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion", "workspace:workspaces/packages/gitversion"],\
           ["@jwpkg/gitversion-plugin-bicep", "workspace:workspaces/packages/gitversion-plugin-bicep"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:22.16.1"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@types/semver", "npm:7.7.0"],\
           ["glob", "npm:10.4.5"],\
           ["semver", "npm:7.7.2"],\
@@ -3015,7 +3010,7 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion-s3publish", "workspace:workspaces/packages/gitversion-plugin-s3publish"],\
           ["@types/archiver", "npm:6.0.3"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:22.16.1"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@types/semver", "npm:7.7.0"],\
           ["archiver", "npm:6.0.2"],\
           ["glob", "npm:10.4.5"],\
@@ -4474,22 +4469,6 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/node", "npm:18.19.116"],\
           ["undici-types", "npm:5.26.5"]\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["npm:20.19.5", {\
-        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-20.19.5-07c862cdcf-10c0.zip/node_modules/@types/node/",\
-        "packageDependencies": [\
-          ["@types/node", "npm:20.19.5"],\
-          ["undici-types", "npm:6.21.0"]\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["npm:22.16.1", {\
-        "packageLocation": "../../.yarn/berry/cache/@types-node-npm-22.16.1-492fa14101-10c0.zip/node_modules/@types/node/",\
-        "packageDependencies": [\
-          ["@types/node", "npm:22.16.1"],\
-          ["undici-types", "npm:6.21.0"]\
         ],\
         "linkType": "HARD"\
       }],\
@@ -11118,15 +11097,6 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["npm", [\
-      ["workspace:workspaces/e2e/npm", {\
-        "packageLocation": "./workspaces/e2e/npm/",\
-        "packageDependencies": [\
-          ["npm", "workspace:workspaces/e2e/npm"]\
-        ],\
-        "linkType": "SOFT"\
-      }]\
-    ]],\
     ["npm-run-path", [\
       ["npm:4.0.1", {\
         "packageLocation": "../../.yarn/berry/cache/npm-run-path-npm-4.0.1-7aebd8bab3-10c0.zip/node_modules/npm-run-path/",\
@@ -12047,7 +12017,7 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/gitversion-s3publish", "workspace:workspaces/packages/gitversion-plugin-s3publish"],\
           ["@types/eslint", "npm:9.6.1"],\
           ["@types/jest", "npm:29.5.14"],\
-          ["@types/node", "npm:22.16.1"],\
+          ["@types/node", "npm:24.0.11"],\
           ["@yarnpkg/types", "npm:4.0.1"],\
           ["asciinema-player", "npm:3.10.0"],\
           ["eslint", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:9.30.1"],\
@@ -13041,42 +13011,6 @@ const RAW_RUNTIME_STATE =
           ["@tsconfig/node12", "npm:1.0.11"],\
           ["@tsconfig/node14", "npm:1.0.3"],\
           ["@tsconfig/node16", "npm:1.0.4"],\
-          ["@types/node", "npm:22.16.1"],\
-          ["@types/swc__core", null],\
-          ["@types/swc__wasm", null],\
-          ["@types/typescript", null],\
-          ["acorn", "npm:8.15.0"],\
-          ["acorn-walk", "npm:8.3.4"],\
-          ["arg", "npm:4.1.3"],\
-          ["create-require", "npm:1.1.1"],\
-          ["diff", "npm:4.0.2"],\
-          ["make-error", "npm:1.3.6"],\
-          ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
-          ["v8-compile-cache-lib", "npm:3.0.1"],\
-          ["yn", "npm:3.1.1"]\
-        ],\
-        "packagePeers": [\
-          "@swc/core",\
-          "@swc/wasm",\
-          "@types/node",\
-          "@types/swc__core",\
-          "@types/swc__wasm",\
-          "@types/typescript",\
-          "typescript"\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2", {\
-        "packageLocation": "./.yarn/__virtual__/ts-node-virtual-a04420a5d1/3/.yarn/berry/cache/ts-node-npm-10.9.2-3f3890b9ac-10c0.zip/node_modules/ts-node/",\
-        "packageDependencies": [\
-          ["@cspotcode/source-map-support", "npm:0.8.1"],\
-          ["@swc/core", null],\
-          ["@swc/wasm", null],\
-          ["@tsconfig/node10", "npm:1.0.11"],\
-          ["@tsconfig/node12", "npm:1.0.11"],\
-          ["@tsconfig/node14", "npm:1.0.3"],\
-          ["@tsconfig/node16", "npm:1.0.4"],\
           ["@types/node", "npm:24.0.11"],\
           ["@types/swc__core", null],\
           ["@types/swc__wasm", null],\
@@ -13087,43 +13021,7 @@ const RAW_RUNTIME_STATE =
           ["create-require", "npm:1.1.1"],\
           ["diff", "npm:4.0.2"],\
           ["make-error", "npm:1.3.6"],\
-          ["ts-node", "virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
-          ["v8-compile-cache-lib", "npm:3.0.1"],\
-          ["yn", "npm:3.1.1"]\
-        ],\
-        "packagePeers": [\
-          "@swc/core",\
-          "@swc/wasm",\
-          "@types/node",\
-          "@types/swc__core",\
-          "@types/swc__wasm",\
-          "@types/typescript",\
-          "typescript"\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["virtual:a4b0264d77135a05c9637f463bd6a50a5ef147bfc3e19750a3f3a2f2b7476fe79c4bf95b5152eae25c75b4c39dd5a4ed0f82fc34d25a1ae5fcb17b8113f132af#npm:10.9.2", {\
-        "packageLocation": "./.yarn/__virtual__/ts-node-virtual-6c68d14d49/3/.yarn/berry/cache/ts-node-npm-10.9.2-3f3890b9ac-10c0.zip/node_modules/ts-node/",\
-        "packageDependencies": [\
-          ["@cspotcode/source-map-support", "npm:0.8.1"],\
-          ["@swc/core", null],\
-          ["@swc/wasm", null],\
-          ["@tsconfig/node10", "npm:1.0.11"],\
-          ["@tsconfig/node12", "npm:1.0.11"],\
-          ["@tsconfig/node14", "npm:1.0.3"],\
-          ["@tsconfig/node16", "npm:1.0.4"],\
-          ["@types/node", "npm:20.19.5"],\
-          ["@types/swc__core", null],\
-          ["@types/swc__wasm", null],\
-          ["@types/typescript", null],\
-          ["acorn", "npm:8.15.0"],\
-          ["acorn-walk", "npm:8.3.4"],\
-          ["arg", "npm:4.1.3"],\
-          ["create-require", "npm:1.1.1"],\
-          ["diff", "npm:4.0.2"],\
-          ["make-error", "npm:1.3.6"],\
-          ["ts-node", "virtual:a4b0264d77135a05c9637f463bd6a50a5ef147bfc3e19750a3f3a2f2b7476fe79c4bf95b5152eae25c75b4c39dd5a4ed0f82fc34d25a1ae5fcb17b8113f132af#npm:10.9.2"],\
+          ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
           ["v8-compile-cache-lib", "npm:3.0.1"],\
           ["yn", "npm:3.1.1"]\
@@ -13303,13 +13201,6 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/undici-types-npm-5.26.5-de4f7c7bb9-10c0.zip/node_modules/undici-types/",\
         "packageDependencies": [\
           ["undici-types", "npm:5.26.5"]\
-        ],\
-        "linkType": "HARD"\
-      }],\
-      ["npm:6.21.0", {\
-        "packageLocation": "../../.yarn/berry/cache/undici-types-npm-6.21.0-eb2b0ed56a-10c0.zip/node_modules/undici-types/",\
-        "packageDependencies": [\
-          ["undici-types", "npm:6.21.0"]\
         ],\
         "linkType": "HARD"\
       }],\

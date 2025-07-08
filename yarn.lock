@@ -2113,12 +2113,12 @@ __metadata:
   dependencies:
     "@jwpkg/gitversion": "workspace:^"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.11.19"
-    "@types/semver": "npm:^7.5.7"
+    "@types/node": "npm:^24.0.11"
+    "@types/semver": "npm:^7.7.0"
     glob: "npm:^10.3.10"
-    semver: "npm:^7.6.0"
+    semver: "npm:^7.7.2"
     ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -2128,13 +2128,13 @@ __metadata:
   dependencies:
     "@jwpkg/gitversion": "workspace:^"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^22.13.1"
-    "@types/semver": "npm:^7.5.8"
+    "@types/node": "npm:^24.0.11"
+    "@types/semver": "npm:^7.7.0"
     glob: "npm:^10.3.10"
-    semver: "npm:^7.7.1"
+    semver: "npm:^7.7.2"
     ts-node: "npm:^10.9.2"
     typanion: "npm:^3.14.0"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -2146,13 +2146,13 @@ __metadata:
     "@jwpkg/gitversion": "workspace:^"
     "@types/archiver": "npm:^6"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^22.13.1"
-    "@types/semver": "npm:^7.5.8"
+    "@types/node": "npm:^24.0.11"
+    "@types/semver": "npm:^7.7.0"
     archiver: "npm:^6.0.1"
     glob: "npm:^10.3.10"
-    semver: "npm:^7.7.1"
+    semver: "npm:^7.7.2"
     ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -2161,8 +2161,8 @@ __metadata:
   resolution: "@jwpkg/gitversion@workspace:workspaces/packages/gitversion"
   dependencies:
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^22.13.1"
-    "@types/semver": "npm:^7.5.8"
+    "@types/node": "npm:^24.0.11"
+    "@types/semver": "npm:^7.7.0"
     "@yarnpkg/cli": "npm:^4.1.0"
     "@yarnpkg/core": "npm:^4.0.3"
     "@yarnpkg/fslib": "npm:^3.1.0"
@@ -2176,10 +2176,10 @@ __metadata:
     cross-spawn-extra: "npm:^2.1.0"
     glob: "npm:^10.3.10"
     queue-promise: "npm:^2.2.1"
-    semver: "npm:^7.7.1"
+    semver: "npm:^7.7.2"
     ts-node: "npm:^10.9.2"
     typanion: "npm:^3.14.0"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5.8.3"
   bin:
     gitversion: bin/index-typescript.js
   languageName: unknown
@@ -3466,24 +3466,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.19":
-  version: 20.19.5
-  resolution: "@types/node@npm:20.19.5"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/89e2942ac3dcd5cf0c4f9342ad98bff4925ec1c8c6b0a8509d081397e5a6d45ccbb9b7a987f520b0cac720faec2830419517faf3fba32ccf6e924f10557a6d77
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.13.1":
-  version: 22.16.1
-  resolution: "@types/node@npm:22.16.1"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/fdeee761de7f2f92a29328555af11a7aea7f0ee0d937b321e188e49babd067618acb7a395a7ca49b15ac2a74847fff9b1f2dd76e09f8d514c07c7aa9206493c2
-  languageName: node
-  linkType: hard
-
 "@types/readdir-glob@npm:*":
   version: 1.1.5
   resolution: "@types/readdir-glob@npm:1.1.5"
@@ -3502,7 +3484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.1.0, @types/semver@npm:^7.5.7, @types/semver@npm:^7.5.8":
+"@types/semver@npm:^7.1.0, @types/semver@npm:^7.7.0":
   version: 7.7.0
   resolution: "@types/semver@npm:7.7.0"
   checksum: 10c0/6b5f65f647474338abbd6ee91a6bbab434662ddb8fe39464edcbcfc96484d388baad9eb506dff217b6fc1727a88894930eb1f308617161ac0f376fe06be4e1ee
@@ -8749,12 +8731,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm@workspace:workspaces/e2e/npm":
-  version: 0.0.0-use.local
-  resolution: "npm@workspace:workspaces/e2e/npm"
-  languageName: unknown
-  linkType: soft
-
 "object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -9618,13 +9594,13 @@ __metadata:
     "@jwpkg/gitversion-s3publish": "workspace:^"
     "@types/eslint": "npm:^9.6.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^22.13.1"
+    "@types/node": "npm:^24.0.11"
     "@yarnpkg/types": "npm:^4.0.0"
     asciinema-player: "npm:^3.6.4"
     eslint: "npm:^9.9.0"
     jest: "npm:^29.7.0"
     ts-jest: "npm:^29.1.2"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5.8.3"
     vitepress: "npm:^1.3.3"
     vue: "npm:^3.4.15"
     vue3-asciinema-player: "npm:^0.0.3"
@@ -9714,7 +9690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.1.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.2":
+"semver@npm:^7.1.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.2":
   version: 7.7.2
   resolution: "semver@npm:7.7.2"
   bin:
@@ -10613,7 +10589,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.3.3, typescript@npm:^5.7.3, typescript@npm:^5.8.3":
+"typescript@npm:^5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -10623,7 +10599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
@@ -10649,13 +10625,6 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 

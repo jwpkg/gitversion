@@ -1,6 +1,7 @@
 {
   "name": "@jwpkg-e2e/bicep",
   "packageManager": "yarn@4.9.2",
+  "private": true,
   "scripts": {
     "git:prepare": "git init",
     "git:clean": "rm -rf .git",
@@ -13,5 +14,13 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jwpkg/gitversion",
+    "directory": "workspaces/e2e/bicep"
+  },
+  "engines": {
+    "node": ">=18.12.0"
+  }
 }
