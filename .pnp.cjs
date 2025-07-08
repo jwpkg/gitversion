@@ -83,7 +83,6 @@ const RAW_RUNTIME_STATE =
           ["@yarnpkg/types", "npm:4.0.1"],\
           ["asciinema-player", "npm:3.10.0"],\
           ["eslint", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:9.30.1"],\
-          ["husky", "npm:8.0.3"],\
           ["jest", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:29.7.0"],\
           ["root", "workspace:."],\
           ["ts-jest", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:29.4.0"],\
@@ -9121,15 +9120,6 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["husky", [\
-      ["npm:8.0.3", {\
-        "packageLocation": "../../.yarn/berry/cache/husky-npm-8.0.3-b0b59c5127-10c0.zip/node_modules/husky/",\
-        "packageDependencies": [\
-          ["husky", "npm:8.0.3"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
     ["iconv-lite", [\
       ["npm:0.6.3", {\
         "packageLocation": "../../.yarn/berry/cache/iconv-lite-npm-0.6.3-24b8aae27e-10c0.zip/node_modules/iconv-lite/",\
@@ -12061,7 +12051,6 @@ const RAW_RUNTIME_STATE =
           ["@yarnpkg/types", "npm:4.0.1"],\
           ["asciinema-player", "npm:3.10.0"],\
           ["eslint", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:9.30.1"],\
-          ["husky", "npm:8.0.3"],\
           ["jest", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:29.7.0"],\
           ["root", "workspace:."],\
           ["ts-jest", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:29.4.0"],\

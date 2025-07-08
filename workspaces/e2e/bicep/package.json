@@ -1,0 +1,17 @@
+{
+  "name": "@jwpkg-e2e/bicep",
+  "packageManager": "yarn@4.9.2",
+  "scripts": {
+    "git:prepare": "git init",
+    "git:clean": "rm -rf .git",
+    "gitversion": "yarn git:prepare && yarn gitversion && yarn git:clean"
+  },
+  "devDependencies": {
+    "@jwpkg/gitversion": "workspace:^",
+    "@jwpkg/gitversion-plugin-bicep": "workspace:^",
+    "@types/node": "^24.0.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "version": "0.0.0"
+}

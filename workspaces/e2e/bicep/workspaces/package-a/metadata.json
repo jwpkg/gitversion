@@ -1,0 +1,11 @@
+{
+  "version": "0.0.0",
+  "name": "package-a",
+  "private": false,
+  "workspaces": [],
+  "modules": {
+    "module-1": "main.bicep",
+    "module-2": "main-2.bicep",
+    "module-3": "main-3.bicep"
+  }
+}

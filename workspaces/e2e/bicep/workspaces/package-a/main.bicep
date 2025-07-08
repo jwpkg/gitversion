@@ -1,0 +1,2 @@
+@export()
+var test = 'test'
