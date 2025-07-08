@@ -3176,6 +3176,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^24.0.11":
+  version: 24.0.11
+  resolution: "@types/node@npm:24.0.11"
+  dependencies:
+    undici-types: "npm:~7.8.0"
+  checksum: 10c0/909b8d669a293f8dd9916c4b5dbed41db6ab434f3188d816d79de9443fd2296456b7d659eea670d62ae2a9cd4de693dace2d53a6470f9b575abf6c27d383d0be
+  languageName: node
+  linkType: hard
+
 "@types/readdir-glob@npm:*":
   version: 1.1.5
   resolution: "@types/readdir-glob@npm:1.1.5"
@@ -4919,6 +4928,7 @@ __metadata:
   dependencies:
     "@jwpkg/gitversion": "workspace:^"
     "@jwpkg/gitversion-plugin-bicep": "workspace:^"
+    "@types/node": "npm:^24.0.11"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -10643,6 +10653,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.8.0":
+  version: 7.8.0
+  resolution: "undici-types@npm:7.8.0"
+  checksum: 10c0/9d9d246d1dc32f318d46116efe3cfca5a72d4f16828febc1918d94e58f6ffcf39c158aa28bf5b4fc52f410446bc7858f35151367bd7a49f21746cab6497b709b
   languageName: node
   linkType: hard
 
