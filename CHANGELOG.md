@@ -4,6 +4,22 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.17](https://github.com/jwpkg/gitversion/compare/v0.1.16...v0.1.17) (Wed Jul 09 2025)
+
+### feat
+
+* Multi module packages ([3f19c6f](https://github.com/jwpkg/gitversion/commit/3f19c6f3b08d872d94ef68e50788cc86c3af95af))
+
+### fix
+
+* reverted version bump ([d1c7d97](https://github.com/jwpkg/gitversion/commit/d1c7d979e50bc5ce6ac5fb5c40edd6624ce32e5e))
+
+* lockfile ([631dd47](https://github.com/jwpkg/gitversion/commit/631dd47f0e5123be9793995dd2582867474651a5))
+
+* E2e test correctly ([fff6383](https://github.com/jwpkg/gitversion/commit/fff63833f323768729f6db722eb009945c7ea344))
+
+* Single file publish ([fb4b502](https://github.com/jwpkg/gitversion/commit/fb4b50248985725e132945dc54d41651906281bc))
+
 ## [0.1.16](https://github.com/jwpkg/gitversion/compare/v0.1.15...v0.1.16) (Thu Apr 17 2025)
 
 ### feat

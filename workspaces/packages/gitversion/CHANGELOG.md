@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [0.1.17](https://github.com/jwpkg/gitversion/compare/v0.1.16...v0.1.17) (Wed Jul 09 2025)
+
+### feat
+
+* Multi module packages ([3f19c6f](https://github.com/jwpkg/gitversion/commit/3f19c6f3b08d872d94ef68e50788cc86c3af95af))
+
+### fix
+
+* Single file publish ([fb4b502](https://github.com/jwpkg/gitversion/commit/fb4b50248985725e132945dc54d41651906281bc))
+
 ## [0.1.16](https://github.com/jwpkg/gitversion/compare/v0.1.15...v0.1.16) (Thu Apr 17 2025)
 
 ### feat
