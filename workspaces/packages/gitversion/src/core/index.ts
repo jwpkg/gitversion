@@ -2,3 +2,8 @@ export * from './configuration';
 export * from './changelog';
 export * from './pack-artifact';
 export * from './workspace-utils';
+export * from './log-reporter';
+export * from './bump-utils';
+export * from './version-utils';
+export * from './conventional-commmit-utils';
+export * from './git';

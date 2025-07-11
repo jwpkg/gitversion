@@ -91,12 +91,14 @@ export class BumpCommand extends RestoreCommand {
     const currentVersion = await this.currentVersionFromGit(workspaceForVersion, application.git, application.branch);
 
     if (!explicitVersion) {
-      const logs = await application.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
-      const commits = parseConventionalCommits(logs, application.pluginManager.gitPlatform);
+      const bumpType = explicitBumpType ?? await workspaceForVersion.detectBumpType(application.configuration, application.branch, application.gitPlatform, logger);
 
-      logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+      // const logs = await application.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
+      // const commits = parseConventionalCommits(logs, application.pluginManager.gitPlatform);
 
-      const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, application.logger);
+      // logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+
+      // const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, application.logger);
 
       logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
       newVersion = executeBump(currentVersion.version, application.branch, bumpType) ?? undefined;

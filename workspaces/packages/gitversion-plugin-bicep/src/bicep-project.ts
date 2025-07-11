@@ -1,4 +1,4 @@
-import { addToChangelog, ChangelogEntry } from '@jwpkg/gitversion';
+import { addToChangelog, BumpType, ChangelogEntry, detectBumpType, determineCurrentVersion, Git, IConfiguration, IGitPlatform, LogReporter, parseConventionalCommits, validateBumpType, VersionBranch } from '@jwpkg/gitversion';
 import { PackedPackage } from '@jwpkg/gitversion';
 import { IProject, IWorkspace } from '@jwpkg/gitversion';
 import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
@@ -8,6 +8,7 @@ import { glob } from 'glob';
 import { join } from 'path';
 import { parse, prerelease } from 'semver';
 import * as t from 'typanion';
+import { colorize } from 'colorize-node';
 
 const DEFAULT_PACKAGE_VERSION = '0.0.0';
 
@@ -137,11 +138,25 @@ export class BicepWorkspace implements IWorkspace {
 
     await persistManifest(this.cwd, this.project.props.manifestName, this.manifestContent);
   }
+
+  async detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger: LogReporter): Promise<BumpType> {
+    const tags = await this.project.git.versionTags(this.tagPrefix);
+    const currentVersion = determineCurrentVersion(tags, versionBranch, this.tagPrefix);
+
+    const logs = await this.project.git.logs(currentVersion.hash, this.relativeCwd);
+    const commits = parseConventionalCommits(logs, gitPlatform);
+
+    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+    
+    const bumpType = validateBumpType(detectBumpType(commits), logs, configuration, versionBranch, logger);
+
+    return bumpType;
+  }
 }
+
 export class BicepProject {
   readonly name = 'Bicep project initializer';
   ident = 'bicep';
-
   constructor(private props: BicepProjectProps) { }
 
   async initialize(initialize: IPluginInitialize): Promise<BicepProjectImpl | null> {
@@ -177,6 +192,12 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
   private _cwd: string;
 
+  private _git: Git;
+
+  get git(): Git {
+    return this._git;
+  }
+
   get cwd(): any {
     return this._cwd;
   }
@@ -206,6 +227,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     super((undefined as any as BicepProjectImpl), '.', manifestContent);
     this._project = this;
     this._cwd = cwd;
+    this._git = this.application.git;
   }
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string, string> | null> {
