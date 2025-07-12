@@ -1,20 +1,20 @@
+import { colorize } from 'colorize-node';
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 import * as t from 'typanion';
 
+import { BumpType, detectBumpType, validateBumpType } from '../../../core/bump-utils';
 import { ChangelogEntry, addToChangelog } from '../../../core/changelog';
 import { IConfiguration, VersionBranch } from '../../../core/configuration';
 import { DEFAULT_PACKAGE_VERSION } from '../../../core/constants';
+import { parseConventionalCommits } from '../../../core/conventional-commmit-utils';
+import { Git } from '../../../core/git';
+import { LogReporter } from '../../../core/log-reporter';
+import { determineCurrentVersion } from '../../../core/version-utils';
 import { IProject, IWorkspace } from '../../../core/workspace-utils';
 import { IGitPlatform, IPlugin, IPluginInitialize } from '../..';
-import { BumpType, detectBumpType, validateBumpType } from '../../../core/bump-utils';
-import { Git } from '../../../core/git';
-import { determineCurrentVersion } from '../../../core/version-utils';
-import { parseConventionalCommits } from '../../../core/conventional-commmit-utils';
-import { LogReporter } from '../../../core/log-reporter';
-import { colorize } from 'colorize-node';
 
 export const isNodeManifest = t.isPartial({
   version: t.isOptional(t.isString()),
@@ -131,15 +131,15 @@ export class NodeWorkspace implements IWorkspace {
     await persistManifest(this.cwd, this.manifestContent);
   }
 
-  async detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger: LogReporter): Promise<BumpType> {
+  async detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger?: LogReporter): Promise<BumpType> {
     const tags = await this.project.git.versionTags(this.tagPrefix);
     const currentVersion = determineCurrentVersion(tags, versionBranch, this.tagPrefix);
 
     const logs = await this.project.git.logs(currentVersion.hash, this.relativeCwd);
     const commits = parseConventionalCommits(logs, gitPlatform);
 
-    logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
-    
+    logger?.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+
     const bumpType = validateBumpType(detectBumpType(commits), logs, configuration, versionBranch, logger);
 
     return bumpType;

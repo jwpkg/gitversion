@@ -2961,9 +2961,11 @@ const RAW_RUNTIME_STATE =
           ["@types/jest", "npm:30.0.0"],\
           ["@types/node", "npm:24.0.13"],\
           ["jest", "virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:30.0.4"],\
+          ["simple-git", "npm:3.28.0"],\
           ["ts-jest", "virtual:3f3bcc234a38676b7d8a7f2a3b1bf44979610502bf40ac45d243ab23de6ad01bf161c7d4416c0cf8e1a8a190df35e336d64f4b3012e85ceb3ca13f5ca65192ec#npm:29.4.0"],\
           ["ts-node", "virtual:32999d12e1b662b8c26cf3e3857fb63612edc64f9e19bdecfd0400d3f340dfe64d1e2b2dd9c0407ed7e837ec6fa9ec5153001b54fa844db180dab188d1543b75#npm:10.9.2"],\
-          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"]\
+          ["typescript", "patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"],\
+          ["zx", "npm:8.6.2"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -3094,6 +3096,25 @@ const RAW_RUNTIME_STATE =
           ["@jwpkg/test-package-b", "workspace:workspaces/packages/test-package-b"]\
         ],\
         "linkType": "SOFT"\
+      }]\
+    ]],\
+    ["@kwsites/file-exists", [\
+      ["npm:1.1.1", {\
+        "packageLocation": "../../.yarn/berry/cache/@kwsites-file-exists-npm-1.1.1-8dde907e27-10c0.zip/node_modules/@kwsites/file-exists/",\
+        "packageDependencies": [\
+          ["@kwsites/file-exists", "npm:1.1.1"],\
+          ["debug", "virtual:643ed7cc338bcf145a82d8b05b3bef6bcf150ca545df386225596f10ce53cc90b88b3ca83e348ade1ccea5f3f8e76c92d2f0e2ba544da60d40aff9921c56872d#npm:4.4.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@kwsites/promise-deferred", [\
+      ["npm:1.1.1", {\
+        "packageLocation": "../../.yarn/berry/cache/@kwsites-promise-deferred-npm-1.1.1-82db04bcea-10c0.zip/node_modules/@kwsites/promise-deferred/",\
+        "packageDependencies": [\
+          ["@kwsites/promise-deferred", "npm:1.1.1"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@napi-rs/wasm-runtime", [\
@@ -8292,14 +8313,14 @@ const RAW_RUNTIME_STATE =
     ]],\
     ["eslint", [\
       ["npm:9.30.1", {\
-        "packageLocation": "../../.yarn/berry/cache/eslint-npm-9.30.1-0ae114d99c-10c0.zip/node_modules/eslint/",\
+        "packageLocation": "./.yarn/unplugged/eslint-virtual-42d7b3ef97/node_modules/eslint/",\
         "packageDependencies": [\
           ["eslint", "npm:9.30.1"]\
         ],\
         "linkType": "SOFT"\
       }],\
       ["virtual:36a01d8083315b8a6e8362097258ea8bc0f9dfb672cb210742e054760850c673a1038f542a6b7156397b5275ace8ee0482231cac5e8898044fa1a1c29f78ee5b#npm:9.30.1", {\
-        "packageLocation": "./.yarn/__virtual__/eslint-virtual-42d7b3ef97/3/.yarn/berry/cache/eslint-npm-9.30.1-0ae114d99c-10c0.zip/node_modules/eslint/",\
+        "packageLocation": "./.yarn/unplugged/eslint-virtual-42d7b3ef97/node_modules/eslint/",\
         "packageDependencies": [\
           ["@eslint-community/eslint-utils", "virtual:42d7b3ef97abab90667f5faac2b75d94c40c790a5aa943772ce17f56bde648cf8f441964e8152a35e6b6dd75479364024982c801a2db397098e3594bfe3c41d6#npm:4.7.0"],\
           ["@eslint-community/regexpp", "npm:4.12.1"],\
@@ -12530,6 +12551,18 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["simple-git", [\
+      ["npm:3.28.0", {\
+        "packageLocation": "../../.yarn/berry/cache/simple-git-npm-3.28.0-590362f761-10c0.zip/node_modules/simple-git/",\
+        "packageDependencies": [\
+          ["@kwsites/file-exists", "npm:1.1.1"],\
+          ["@kwsites/promise-deferred", "npm:1.1.1"],\
+          ["debug", "virtual:643ed7cc338bcf145a82d8b05b3bef6bcf150ca545df386225596f10ce53cc90b88b3ca83e348ade1ccea5f3f8e76c92d2f0e2ba544da60d40aff9921c56872d#npm:4.4.1"],\
+          ["simple-git", "npm:3.28.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["slash", [\
       ["npm:3.0.0", {\
         "packageLocation": "../../.yarn/berry/cache/slash-npm-3.0.0-b87de2279a-10c0.zip/node_modules/slash/",\
@@ -14112,6 +14145,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/zwitch-npm-2.0.4-13220031e2-10c0.zip/node_modules/zwitch/",\
         "packageDependencies": [\
           ["zwitch", "npm:2.0.4"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["zx", [\
+      ["npm:8.6.2", {\
+        "packageLocation": "../../.yarn/berry/cache/zx-npm-8.6.2-77cad990da-10c0.zip/node_modules/zx/",\
+        "packageDependencies": [\
+          ["zx", "npm:8.6.2"]\
         ],\
         "linkType": "HARD"\
       }]\

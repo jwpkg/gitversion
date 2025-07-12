@@ -3,7 +3,8 @@
   "packageManager": "yarn@4.9.2",
   "private": true,
   "scripts": {
-    "git:prepare": "git init"
+    "git:prepare": "git init",
+    "gitversion": "yarn ts-node ../../packages/gitversion/src/bin.ts"
   },
   "devDependencies": {
     "@jwpkg/gitversion": "workspace:^",
@@ -11,9 +12,11 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.13",
     "jest": "^30.0.4",
+    "simple-git": "^3.28.0",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zx": "^8.6.2"
   },
   "version": "0.0.0",
   "repository": {

@@ -4,7 +4,7 @@ import * as t from 'typanion';
 
 import { Application, IApplication } from '../core/application';
 import { BumpManifest } from '../core/bump-manifest';
-import { BumpType, detectBumpType, executeBump, validateBumpType } from '../core/bump-utils';
+import { BumpType, executeBump } from '../core/bump-utils';
 import { generateChangeLogEntry } from '../core/changelog';
 import { parseConventionalCommits } from '../core/conventional-commmit-utils';
 import { formatBumpType, formatPackageName } from '../core/format-utils';
@@ -88,17 +88,10 @@ export class BumpCommand extends RestoreCommand {
     let newVersion: string | undefined;
 
     const workspaceForVersion = application.configuration.options.independentVersioning ? workspace : workspace.project;
-    const currentVersion = await this.currentVersionFromGit(workspaceForVersion, application.git, application.branch);
+    const currentVersion = await this.currentVersionFromGit(workspaceForVersion, application.git, application.branch, application.configuration.options.versionTagPrefix);
 
     if (!explicitVersion) {
       const bumpType = explicitBumpType ?? await workspaceForVersion.detectBumpType(application.configuration, application.branch, application.gitPlatform, logger);
-
-      // const logs = await application.git.logs(currentVersion.hash, workspaceForVersion.relativeCwd);
-      // const commits = parseConventionalCommits(logs, application.pluginManager.gitPlatform);
-
-      // logger.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
-
-      // const bumpType = explicitBumpType ?? validateBumpType(detectBumpType(commits), logs, application.configuration, application.branch, application.logger);
 
       logger.reportInfo(`Bump type: ${formatBumpType(bumpType)}`);
       newVersion = executeBump(currentVersion.version, application.branch, bumpType) ?? undefined;

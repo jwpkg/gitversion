@@ -2,7 +2,7 @@ const { defineConfig } = require('@jwpkg/gitversion');
 const { BicepProject } = require('@jwpkg/gitversion-plugin-bicep');
 
 module.exports = defineConfig({
-  independentVersioning: false,
+  independentVersioning: true,
   plugins: [
     new BicepProject({
       manifestName: 'metadata.json',

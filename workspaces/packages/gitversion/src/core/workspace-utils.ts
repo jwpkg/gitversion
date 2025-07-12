@@ -31,7 +31,7 @@ export interface IWorkspace {
   updateChangelog(entry: ChangelogEntry): Promise<string>;
   updateVersion(version: string): Promise<void>;
 
-  detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger: LogReporter): Promise<BumpType>;
+  detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger?: LogReporter): Promise<BumpType>;
 }
 
 export interface IProject extends IWorkspace {

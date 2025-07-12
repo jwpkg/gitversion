@@ -7,6 +7,7 @@ import { PackCommand } from './commands/pack';
 import { PublishCommand } from './commands/publish';
 import { ResetCommand } from './commands/reset';
 import { RestoreCommand } from './commands/restore';
+import { TagCommand } from './commands/tag';
 
 
 runExit<GitVersionContext>([
@@ -16,4 +17,5 @@ runExit<GitVersionContext>([
   PackCommand,
   PublishCommand,
   CheckCommand,
+  TagCommand,
 ], {});

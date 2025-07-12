@@ -72,5 +72,10 @@
     "asciinema-player": "^3.6.4",
     "vue": "^3.4.15",
     "vue3-asciinema-player": "^0.0.3"
+  },
+  "dependenciesMeta": {
+    "eslint@9.30.1": {
+      "unplugged": true
+    }
   }
 }
