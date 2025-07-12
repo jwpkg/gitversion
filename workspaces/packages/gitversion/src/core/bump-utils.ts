@@ -133,17 +133,17 @@ export function detectBumpType(commits: ConventionalCommit[]) {
   return current;
 }
 
-export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], configuration: IConfiguration, branch: VersionBranch, logger: LogReporter) {
+export function validateBumpType(bumpType: BumpType, rawCommits: GitCommit[], configuration: IConfiguration, branch: VersionBranch, logger?: LogReporter) {
   if (branch.type === BranchType.FEATURE) {
     switch (configuration.options.featureBumpBehavior) {
       case 'never':
-        logger.reportInfo(`On feature branch with featureBumpBehavior: Never. Forcing bumptype to ${colorize.greenBright('NONE')} `);
+        logger?.reportInfo(`On feature branch with featureBumpBehavior: Never. Forcing bumptype to ${colorize.greenBright('NONE')} `);
         return BumpType.NONE;
       case 'normal': return bumpType;
     }
     // all commits
     if (bumpType === BumpType.NONE && rawCommits.length > 0) {
-      logger.reportInfo(`Found ${colorize.cyan(rawCommits.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
+      logger?.reportInfo(`Found ${colorize.cyan(rawCommits.length)} normal commits and will bump feature branch with ${colorize.greenBright('PATCH')}`);
       return BumpType.PATCH;
     }
   }

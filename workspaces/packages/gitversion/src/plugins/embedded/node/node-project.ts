@@ -1,14 +1,20 @@
+import { colorize } from 'colorize-node';
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { glob } from 'glob';
 import { join } from 'path';
 import * as t from 'typanion';
 
+import { BumpType, detectBumpType, validateBumpType } from '../../../core/bump-utils';
 import { ChangelogEntry, addToChangelog } from '../../../core/changelog';
-import { IConfiguration } from '../../../core/configuration';
+import { IConfiguration, VersionBranch } from '../../../core/configuration';
 import { DEFAULT_PACKAGE_VERSION } from '../../../core/constants';
+import { parseConventionalCommits } from '../../../core/conventional-commmit-utils';
+import { Git } from '../../../core/git';
+import { LogReporter } from '../../../core/log-reporter';
+import { determineCurrentVersion } from '../../../core/version-utils';
 import { IProject, IWorkspace } from '../../../core/workspace-utils';
-import { IPlugin, IPluginInitialize } from '../..';
+import { IGitPlatform, IPlugin, IPluginInitialize } from '../..';
 
 export const isNodeManifest = t.isPartial({
   version: t.isOptional(t.isString()),
@@ -124,6 +130,20 @@ export class NodeWorkspace implements IWorkspace {
 
     await persistManifest(this.cwd, this.manifestContent);
   }
+
+  async detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger?: LogReporter): Promise<BumpType> {
+    const tags = await this.project.git.versionTags(this.tagPrefix);
+    const currentVersion = determineCurrentVersion(tags, versionBranch, this.tagPrefix);
+
+    const logs = await this.project.git.logs(currentVersion.hash, this.relativeCwd);
+    const commits = parseConventionalCommits(logs, gitPlatform);
+
+    logger?.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+
+    const bumpType = validateBumpType(detectBumpType(commits), logs, configuration, versionBranch, logger);
+
+    return bumpType;
+  }
 }
 
 export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
@@ -131,6 +151,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
 
   private _cwd: string;
   private _config: IConfiguration;
+  private _git: Git;
 
   get cwd(): any {
     return this._cwd;
@@ -138,6 +159,10 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
 
   get config(): any {
     return this._config;
+  }
+
+  get git(): Git {
+    return this._git;
   }
 
   childWorkspaces: NodeWorkspace[] = [];
@@ -159,7 +184,7 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
       return null;
     }
 
-    const project = new NodeProject(initialize.cwd, manifestContent, initialize);
+    const project = new NodeProject(initialize.cwd, manifestContent, initialize, initialize.git);
 
     if (project.manifest.workspaces && Array.isArray(project.manifest.workspaces)) {
       const paths = await glob(project.manifest.workspaces, {
@@ -181,10 +206,11 @@ export class NodeProject extends NodeWorkspace implements IProject, IPlugin {
     return project;
   }
 
-  private constructor(cwd: string, manifestContent: NodeManifestContent, config: IConfiguration) {
+  private constructor(cwd: string, manifestContent: NodeManifestContent, config: IConfiguration, git: Git) {
     super((undefined as any as NodeProject), '.', manifestContent);
     this._project = this;
     this._cwd = cwd;
     this._config = config;
+    this._git = git;
   }
 }

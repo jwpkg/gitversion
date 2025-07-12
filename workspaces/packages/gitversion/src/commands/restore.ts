@@ -34,12 +34,12 @@ export class RestoreCommand extends GitVersionCommand {
 
     if (configuration.options.independentVersioning) {
       const promises = project.workspaces.map(async workspace => {
-        const version = await this.currentVersionFromGit(workspace, git, branch);
+        const version = await this.currentVersionFromGit(workspace, git, branch, configuration.options.versionTagPrefix);
         await updateWorkspaceVersion(workspace, logger, version.version);
       });
       await Promise.all(promises);
     } else {
-      const version = await this.currentVersionFromGit(project, git, branch);
+      const version = await this.currentVersionFromGit(project, git, branch, configuration.options.versionTagPrefix);
 
       logger.reportInfo(`Latest version in git tags: ${formatVersion(version.version)}`);
 
@@ -50,8 +50,17 @@ export class RestoreCommand extends GitVersionCommand {
     return 0;
   }
 
-  async currentVersionFromGit(workspace: IWorkspace, git: Git, branch: VersionBranch) {
+  async currentVersionFromGit(workspace: IWorkspace, git: Git, branch: VersionBranch, standardPrefix: string) {
     const tags = await git.versionTags(workspace.tagPrefix);
+    if (tags.length === 0) {
+      const projectTags = await git.versionTags(workspace.project.tagPrefix);
+
+      if (projectTags.length === 0) {
+        const officialGenericTags = await git.versionTags(standardPrefix);
+        return determineCurrentVersion(officialGenericTags, branch, standardPrefix);
+      }
+      return determineCurrentVersion(projectTags, branch, workspace.project.tagPrefix);
+    }
     return determineCurrentVersion(tags, branch, workspace.tagPrefix);
   }
 }

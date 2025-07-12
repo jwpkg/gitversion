@@ -1,6 +1,9 @@
+import { BumpType } from './bump-utils';
 import { ChangelogEntry } from './changelog';
+import { IConfiguration, VersionBranch } from './configuration';
 import { formatPackageName, formatVersion } from './format-utils';
 import { LogReporter } from './log-reporter';
+import { IGitPlatform } from './plugin-manager';
 
 export interface IManifest {
   name: string;
@@ -27,6 +30,8 @@ export interface IWorkspace {
 
   updateChangelog(entry: ChangelogEntry): Promise<string>;
   updateVersion(version: string): Promise<void>;
+
+  detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger?: LogReporter): Promise<BumpType>;
 }
 
 export interface IProject extends IWorkspace {

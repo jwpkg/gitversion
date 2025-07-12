@@ -1,0 +1,1 @@
+rm -rf workspaces/e2e/bicep/.git

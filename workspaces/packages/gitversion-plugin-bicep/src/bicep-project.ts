@@ -1,7 +1,9 @@
-import { addToChangelog, ChangelogEntry } from '@jwpkg/gitversion';
+import { formatBumpType } from '@jwpkg/gitversion/src/core/format-utils';
+import { addToChangelog, BumpType, ChangelogEntry, detectBumpType, determineCurrentVersion, Git, IConfiguration, IGitPlatform, LogReporter, parseConventionalCommits, validateBumpType, VersionBranch } from '@jwpkg/gitversion';
 import { PackedPackage } from '@jwpkg/gitversion';
 import { IProject, IWorkspace } from '@jwpkg/gitversion';
 import { IPackManager, IPlugin, IPluginInitialize } from '@jwpkg/gitversion';
+import { colorize } from 'colorize-node';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { glob } from 'glob';
@@ -31,6 +33,7 @@ export const isBicepManifest = t.isObject({
   private: t.isOptional(t.isBoolean()),
   workspaces: t.isOptional(t.isArray(t.isString())),
   modules: t.isOptional(t.isRecord(t.isString())),
+  dependencies: t.isOptional(t.isArray(t.isString())),
 });
 
 export type BicepManifest = t.InferType<typeof isBicepManifest>;
@@ -137,11 +140,39 @@ export class BicepWorkspace implements IWorkspace {
 
     await persistManifest(this.cwd, this.project.props.manifestName, this.manifestContent);
   }
+
+  async detectBumpType(configuration: IConfiguration, versionBranch: VersionBranch, gitPlatform: IGitPlatform, logger?: LogReporter): Promise<BumpType> {
+    const tags = await this.project.git.versionTags(this.tagPrefix);
+    const currentVersion = determineCurrentVersion(tags, versionBranch, this.tagPrefix);
+
+    const logs = await this.project.git.logs(currentVersion.hash, this.relativeCwd);
+    const commits = parseConventionalCommits(logs, gitPlatform);
+
+    logger?.reportInfo(`Found ${colorize.cyan(commits.length)} commits following conventional commit standard for version`);
+
+    const bumpType = validateBumpType(detectBumpType(commits), logs, configuration, versionBranch, logger);
+
+    if (bumpType === BumpType.NONE) {
+      for (const dep of this.manifest.dependencies ?? []) {
+        for (const workspace of this.project.workspaces) {
+          if (workspace.packageName === dep && dep !== this.packageName) {
+            const dependencyBumpType = await workspace.detectBumpType(configuration, versionBranch, gitPlatform);
+            if (dependencyBumpType !== BumpType.NONE) {
+              logger?.reportInfo(`Dependency ${colorize.cyan(dep)} has bump type ${formatBumpType(dependencyBumpType)}. Creating a patch release for ${this.packageName}`);
+              return BumpType.PATCH;
+            }
+          }
+        }
+      }
+    }
+
+    return bumpType;
+  }
 }
+
 export class BicepProject {
   readonly name = 'Bicep project initializer';
   ident = 'bicep';
-
   constructor(private props: BicepProjectProps) { }
 
   async initialize(initialize: IPluginInitialize): Promise<BicepProjectImpl | null> {
@@ -177,6 +208,12 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
   private _cwd: string;
 
+  private _git: Git;
+
+  get git(): Git {
+    return this._git;
+  }
+
   get cwd(): any {
     return this._cwd;
   }
@@ -206,6 +243,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     super((undefined as any as BicepProjectImpl), '.', manifestContent);
     this._project = this;
     this._cwd = cwd;
+    this._git = this.application.git;
   }
 
   async pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string, string> | null> {
