@@ -4,6 +4,10 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.0.0](https://github.com/jwpkg/gitversion/compare/v0.1.17...v1.0.0) (Sat Jul 12 2025)
+
+
+
 ## [0.1.17](https://github.com/jwpkg/gitversion/compare/v0.1.16...v0.1.17) (Wed Jul 09 2025)
 
 
@@ -181,7 +185,3 @@ All notable changes to this project will be documented in this file
 ### feat
 
 * Added S3 publish plugin ([5c28685](https://github.com/jwpkg/gitversion/commit/5c28685fd28d0709bc4dcc93b81adac0233b3a14))
-
-## [1.0.0](https://github.com/jwpkg/gitversion/compare/v0.0.35...v1.0.0) (Wed Feb 14 2024)
-
-
