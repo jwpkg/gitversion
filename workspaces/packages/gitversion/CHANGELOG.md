@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.0.1](https://github.com/jwpkg/gitversion/compare/v1.0.0...v1.0.1) (Mon Aug 04 2025)
+
+### fix
+
+* Export of format utils ([d88eaad](https://github.com/jwpkg/gitversion/commit/d88eaad993bb1b3c61252f941baae1c76aff1cd8))
+
 ## [1.0.0](https://github.com/jwpkg/gitversion/compare/v0.1.17...v1.0.0) (Sat Jul 12 2025)
 
 
