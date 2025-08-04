@@ -1,4 +1,4 @@
-import { formatBumpType } from '@jwpkg/gitversion/src/core/format-utils';
+import { formatBumpType } from '@jwpkg/gitversion';
 import { addToChangelog, BumpType, ChangelogEntry, detectBumpType, determineCurrentVersion, Git, IConfiguration, IGitPlatform, LogReporter, parseConventionalCommits, validateBumpType, VersionBranch } from '@jwpkg/gitversion';
 import { PackedPackage } from '@jwpkg/gitversion';
 import { IProject, IWorkspace } from '@jwpkg/gitversion';
