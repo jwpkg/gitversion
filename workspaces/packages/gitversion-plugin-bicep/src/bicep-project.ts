@@ -27,7 +27,7 @@ export interface BicepProjectProps {
   fallbackReleaseResourceGroup?: string;
 }
 
-export const isBicepManifest = t.isObject({
+export const isBicepManifest = t.isPartial({
   version: t.isOptional(t.isString()),
   name: t.isString(),
   private: t.isOptional(t.isBoolean()),
