@@ -148,6 +148,7 @@ export class PackCommand extends GitVersionCommand {
         });
       } catch (error) {
         logger.reportError(`Error during pack: ${colorize.redBright(`${error}`)}`);
+        throw error;
       }
     });
   }
