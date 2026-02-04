@@ -70,8 +70,8 @@ export class NpmPlugin implements IPlugin, IPackManager {
     }
 
     // Check if running in CI environment
-    const isCI = process.env.CI === 'true' || 
-                 process.env.GITHUB_ACTIONS === 'true' || 
+    const isCI = process.env.CI === 'true' ||
+                 process.env.GITHUB_ACTIONS === 'true' ||
                  process.env.GITLAB_CI === 'true' ||
                  process.env.CIRCLECI === 'true' ||
                  process.env.TRAVIS === 'true' ||
@@ -82,7 +82,7 @@ export class NpmPlugin implements IPlugin, IPackManager {
       // In CI without TTY, we need to ensure npm doesn't prompt for OTP
       // Check if we have an automation token by verifying the token type
       this.application.logger.reportInfo('Running in CI environment - ensuring non-interactive mode');
-      
+
       try {
         await this.application.executor.exec(['npm', 'publish', fileName, '--tag', releaseTag, '--access', 'public', '--verbose'], {
           cwd: this.application.packFolder,
@@ -92,18 +92,18 @@ export class NpmPlugin implements IPlugin, IPackManager {
         const errorMessage = error instanceof Error ? error.message : String(error);
         if (errorMessage.includes('one-time password') || errorMessage.includes('OTP')) {
           throw new Error(
-            `Publishing failed: npm is requesting a one-time password (OTP) in CI environment.\n` +
-            `This typically happens when:\n` +
-            `  1. Your npm account has 2FA enabled (good!)\n` +
-            `  2. The NPM_AUTH_TOKEN is a "Classic" token that requires OTP\n` +
-            `\n` +
-            `To fix this:\n` +
-            `  1. Log in to npmjs.com\n` +
-            `  2. Go to Access Tokens → Generate New Token\n` +
-            `  3. Select "Automation" token type (bypasses OTP for CI/CD)\n` +
-            `  4. Update your NPM_AUTH_TOKEN secret with this new token\n` +
-            `\n` +
-            `Original error: ${errorMessage}`
+            'Publishing failed: npm is requesting a one-time password (OTP) in CI environment.\n' +
+            'This typically happens when:\n' +
+            '  1. Your npm account has 2FA enabled (good!)\n' +
+            '  2. The NPM_AUTH_TOKEN is a "Classic" token that requires OTP\n' +
+            '\n' +
+            'To fix this:\n' +
+            '  1. Log in to npmjs.com\n' +
+            '  2. Go to Access Tokens → Generate New Token\n' +
+            '  3. Select "Automation" token type (bypasses OTP for CI/CD)\n' +
+            '  4. Update your NPM_AUTH_TOKEN secret with this new token\n' +
+            '\n' +
+            `Original error: ${errorMessage}`,
           );
         }
         throw error;
