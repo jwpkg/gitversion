@@ -60,6 +60,19 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
         this.application.logger.reportDryrun(`Would be publishing ${packedPackage.packageName} using release tag ${releaseTag}`);
         return;
       } else {
+        // Check if running in CI environment
+        const isCI = process.env.CI === 'true' ||
+                     process.env.GITHUB_ACTIONS === 'true' ||
+                     process.env.GITLAB_CI === 'true' ||
+                     process.env.CIRCLECI === 'true' ||
+                     process.env.TRAVIS === 'true' ||
+                     process.env.JENKINS_URL !== undefined ||
+                     process.env.BUILDKITE === 'true';
+
+        if (isCI && !process.stdin.isTTY) {
+          this.application.logger.reportInfo('Running in CI environment - ensuring non-interactive mode');
+        }
+
         const registry = npmConfigUtils.getPublishRegistry(yarnWorkspace.manifest, { configuration: this.yarnConfiguration });
         const gitHead = await npmPublishUtils.getGitHead(yarnWorkspace.cwd);
 
@@ -74,13 +87,42 @@ export class YarnBerryPlugin implements IPlugin, IPackManager {
 
         if (yarnWorkspace.manifest.name) {
           const url = npmHttpUtils.getIdentUrl(yarnWorkspace.manifest.name);
-          await npmHttpUtils.put(url, body, {
-            configuration: this.yarnConfiguration,
-            registry,
-            ident: yarnWorkspace.manifest.name,
-            // otp: this.otp,
-            jsonResponse: true,
-          });
+
+          try {
+            await npmHttpUtils.put(url, body, {
+              configuration: this.yarnConfiguration,
+              registry,
+              ident: yarnWorkspace.manifest.name,
+              // otp: this.otp,
+              jsonResponse: true,
+            });
+          } catch (error) {
+            // Check if error is related to OTP/2FA
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorString = JSON.stringify(error);
+
+            if (isCI && !process.stdin.isTTY &&
+                (errorMessage.includes('one-time password') ||
+                 errorMessage.includes('OTP') ||
+                 errorMessage.includes('otpRequired') ||
+                 errorString.includes('EOTP'))) {
+              throw new Error(
+                'Publishing failed: npm registry is requesting a one-time password (OTP) in CI environment.\n' +
+                'This typically happens when:\n' +
+                '  1. Your npm account has 2FA enabled (good!)\n' +
+                '  2. The NPM_AUTH_TOKEN is a "Classic" or "Publish" token that requires OTP\n' +
+                '\n' +
+                'To fix this:\n' +
+                '  1. Log in to npmjs.com\n' +
+                '  2. Go to Access Tokens → Generate New Token\n' +
+                '  3. Select "Automation" token type (bypasses OTP for CI/CD)\n' +
+                '  4. Update your NPM_AUTH_TOKEN secret with this new automation token\n' +
+                '\n' +
+                `Original error: ${errorMessage}`,
+              );
+            }
+            throw error;
+          }
         }
       }
     }
