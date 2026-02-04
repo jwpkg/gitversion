@@ -44,6 +44,8 @@ export class PackCommand extends GitVersionCommand {
       logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
     }
 
+    let hasErrors = false;
+
     if (bumpManifest.bumps.length > 0) {
       const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
       if (projectBump) {
@@ -62,11 +64,16 @@ export class PackCommand extends GitVersionCommand {
 
       bumpManifest.bumps.forEach(bump => {
         queue.enqueue(async () => {
-          const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
-          if (workspace) {
-            await workspace.updateVersion(bump.version);
-            await workspace.updateChangelog(bump.changeLog);
-            await this.execPackCommand(application, workspace, bump, packManifest);
+          try {
+            const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
+            if (workspace) {
+              await workspace.updateVersion(bump.version);
+              await workspace.updateChangelog(bump.changeLog);
+              await this.execPackCommand(application, workspace, bump, packManifest);
+            }
+          } catch (error) {
+            hasErrors = true;
+            throw error;
           }
         });
       });
@@ -76,6 +83,11 @@ export class PackCommand extends GitVersionCommand {
       }
     } else {
       logger.reportWarning('Nothing to pack');
+    }
+    
+    if (hasErrors) {
+      logger.reportError('Errors occurred during packing process', true);
+      return 1;
     }
 
     await packManifest.persist();
