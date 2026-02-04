@@ -84,7 +84,7 @@ export class PackCommand extends GitVersionCommand {
     } else {
       logger.reportWarning('Nothing to pack');
     }
-    
+
     if (hasErrors) {
       logger.reportError('Errors occurred during packing process', true);
       return 1;
