@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.0.4](https://github.com/jwpkg/gitversion/compare/v1.0.3...v1.0.4) (Wed Feb 25 2026)
+
+### fix
+
+* Bicep versioning ([0fdd3a4](https://github.com/jwpkg/gitversion/commit/0fdd3a4f86a9dbd95c21f5e67d10b9f8ad3f5859))
+
 ## [1.0.3](https://github.com/jwpkg/gitversion/compare/v1.0.2...v1.0.3) (Wed Feb 04 2026)
 
 
