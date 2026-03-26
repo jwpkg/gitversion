@@ -300,7 +300,6 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
 
 
   async publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean, module?: string): Promise<void> {
-    const fromVersion = parse(packedPackage.previousVersion);
     const toVersion = parse(packedPackage.version);
 
     const versions: string[] = [];
@@ -314,13 +313,8 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
       versions.push(releaseTag);
     } else {
       versions.push('latest');
-      if (fromVersion?.major === toVersion?.major) {
-        versions.push(`${fromVersion?.major}.x`);
-
-        if (fromVersion?.minor === toVersion?.minor) {
-          versions.push(`${fromVersion?.major}.${fromVersion?.minor}.x`);
-        }
-      }
+      versions.push(`${toVersion?.major}.x`);
+      versions.push(`${toVersion?.major}.${toVersion?.minor}.x`);      
     }
     versions.push(packedPackage.version);
 
