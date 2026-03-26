@@ -314,7 +314,7 @@ class BicepProjectImpl extends BicepWorkspace implements IProject, IPlugin, IPac
     } else {
       versions.push('latest');
       versions.push(`${toVersion?.major}.x`);
-      versions.push(`${toVersion?.major}.${toVersion?.minor}.x`);      
+      versions.push(`${toVersion?.major}.${toVersion?.minor}.x`);
     }
     versions.push(packedPackage.version);
 
