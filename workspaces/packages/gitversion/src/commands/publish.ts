@@ -65,11 +65,12 @@ export class PublishCommand extends GitVersionCommand {
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packManagers, packedPackages, configuration, branch, logger);
-      if (packManifest.republish) {
-        logger.reportInfo('Republish mode: skipping tagging, changelog update, and push steps');
-      } else {
+
+      const bumpedPackages = packedPackages.filter(p => !p.republish);
+
+      if (bumpedPackages.length > 0) {
         if (this.tag) {
-          await this.addTags(packedPackages, git, logger);
+          await this.addTags(bumpedPackages, git, logger);
         } else {
           logger.reportInfo('Skipping tagging step');
         }
@@ -80,7 +81,7 @@ export class PublishCommand extends GitVersionCommand {
           logger.reportInfo('Skipping push step');
         }
 
-        await this.updateChangelogs(packedPackages, project, git, logger);
+        await this.updateChangelogs(bumpedPackages, project, git, logger);
         const isDefaultChangelogBranch = application.branch.type !== BranchType.FEATURE;
         const shouldPushChangelogs = this.push && (isDefaultChangelogBranch || configuration.options.featurePushChangelogs);
         if (shouldPushChangelogs) {
@@ -88,6 +89,8 @@ export class PublishCommand extends GitVersionCommand {
         } else {
           logger.reportInfo('Skipping push step');
         }
+      } else {
+        logger.reportInfo('Republish mode: skipping tagging, changelog update, and push steps');
       }
 
       await hooks.dispatchOnPublish(application, packedPackages);

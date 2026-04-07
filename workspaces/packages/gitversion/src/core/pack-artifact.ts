@@ -20,6 +20,7 @@ export interface PackedPackage {
   previousVersion: string;
   changeLog: ChangelogEntry;
   commits: ConventionalCommit[];
+  republish?: boolean;
 }
 
 export interface PackManifestGitStatus extends BumpManifestGitStatus {
