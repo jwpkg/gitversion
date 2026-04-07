@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.2.0](https://github.com/jwpkg/gitversion/compare/v1.1.0...v1.2.0) (Tue Apr 07 2026)
+
+### feat
+
+* Added republish ([4ec49a6](https://github.com/jwpkg/gitversion/commit/4ec49a69b527f6b63510336dfcefa2fc8c02b5e3))
+
 ## [1.1.0](https://github.com/jwpkg/gitversion/compare/v1.0.4...v1.1.0) (Thu Mar 26 2026)
 
 
