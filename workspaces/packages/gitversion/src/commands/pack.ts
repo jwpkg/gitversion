@@ -23,6 +23,8 @@ export class PackCommand extends GitVersionCommand {
     validator: cascade(isNumber(), isAtLeast(1)),
   });
 
+  republish = Option.Boolean('--republish', false, { description: 'Republish all workspaces at their current version without requiring a bump manifest' });
+
   async execute(): Promise<number> {
     const application = await Application.init(this.context.application);
 
@@ -33,56 +35,101 @@ export class PackCommand extends GitVersionCommand {
 
     const section = logger.beginSection('Pack step');
 
-    const bumpManifest = await BumpManifest.load(application);
-    if (!bumpManifest) {
-      logger.reportError('No valid bump file found. Please run bump first');
-      return 1;
-    }
-    const packManifest = await PackArtifact.new(configuration, git, bumpManifest.gitStatus);
-
-    if (!packManifest.validateGitStatusWithBump()) {
-      logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
-    }
-
     let hasErrors = false;
+    let packManifest: PackArtifact;
 
-    if (bumpManifest.bumps.length > 0) {
-      const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
-      if (projectBump) {
-        packManifest.add(projectBump);
-      }
+    if (this.republish) {
+      const currentHash = await git.gitStatusHash();
+      const syntheticGitStatus = { preBump: currentHash, postBump: currentHash };
+      packManifest = await PackArtifact.new(configuration, git, syntheticGitStatus, true);
 
-      const packFolder = join(configuration.stagingFolder, 'pack');
-      await mkdir(packFolder, {
-        recursive: true,
-      });
+      const workspaces = project.workspaces.filter(w => !w.private);
+      if (workspaces.length > 0) {
+        const packFolder = join(configuration.stagingFolder, 'pack');
+        await mkdir(packFolder, { recursive: true });
 
-      const queue = new Queue({
-        concurrent: this.maxConcurrency ?? cpus().length,
-        start: false,
-      });
-
-      bumpManifest.bumps.forEach(bump => {
-        queue.enqueue(async () => {
-          try {
-            const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
-            if (workspace) {
-              await workspace.updateVersion(bump.version);
-              await workspace.updateChangelog(bump.changeLog);
-              await this.execPackCommand(application, workspace, bump, packManifest);
-            }
-          } catch (error) {
-            hasErrors = true;
-            throw error;
-          }
+        const queue = new Queue({
+          concurrent: this.maxConcurrency ?? cpus().length,
+          start: false,
         });
-      });
 
-      while (queue.shouldRun) {
-        await queue.dequeue();
+        workspaces.forEach(workspace => {
+          queue.enqueue(async () => {
+            try {
+              const syntheticBump: Bump = {
+                packageRelativeCwd: workspace.relativeCwd,
+                packageName: workspace.packageName,
+                version: workspace.version,
+                previousVersion: workspace.version,
+                tag: workspace.tagPrefix + workspace.version,
+                private: false,
+                commits: [],
+                changeLog: { version: workspace.version, headerLine: '', body: '' },
+              };
+              await this.execPackCommand(application, workspace, syntheticBump, packManifest);
+            } catch (error) {
+              hasErrors = true;
+              throw error;
+            }
+          });
+        });
+
+        while (queue.shouldRun) {
+          await queue.dequeue();
+        }
+      } else {
+        logger.reportWarning('Nothing to pack');
       }
     } else {
-      logger.reportWarning('Nothing to pack');
+      const bumpManifest = await BumpManifest.load(application);
+      if (!bumpManifest) {
+        logger.reportError('No valid bump file found. Please run bump first');
+        return 1;
+      }
+      packManifest = await PackArtifact.new(configuration, git, bumpManifest.gitStatus);
+
+      if (!packManifest.validateGitStatusWithBump()) {
+        logger.reportWarning(`Git status has changed between ${colorize.blue('gitversion bump')} and ${colorize.blue('gitversion pack')}. This could be an error`, true);
+      }
+
+      if (bumpManifest.bumps.length > 0) {
+        const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
+        if (projectBump) {
+          packManifest.add(projectBump);
+        }
+
+        const packFolder = join(configuration.stagingFolder, 'pack');
+        await mkdir(packFolder, {
+          recursive: true,
+        });
+
+        const queue = new Queue({
+          concurrent: this.maxConcurrency ?? cpus().length,
+          start: false,
+        });
+
+        bumpManifest.bumps.forEach(bump => {
+          queue.enqueue(async () => {
+            try {
+              const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
+              if (workspace) {
+                await workspace.updateVersion(bump.version);
+                await workspace.updateChangelog(bump.changeLog);
+                await this.execPackCommand(application, workspace, bump, packManifest);
+              }
+            } catch (error) {
+              hasErrors = true;
+              throw error;
+            }
+          });
+        });
+
+        while (queue.shouldRun) {
+          await queue.dequeue();
+        }
+      } else {
+        logger.reportWarning('Nothing to pack');
+      }
     }
 
     if (hasErrors) {

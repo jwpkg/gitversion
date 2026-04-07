@@ -30,11 +30,13 @@ export interface PackManifestGitStatus extends BumpManifestGitStatus {
 export interface PackManifestContent {
   gitStatus: PackManifestGitStatus;
   packages: PackedPackage[];
+  republish?: boolean;
 }
 
 export class PackArtifact {
   gitStatus: PackManifestGitStatus;
   packages: PackedPackage[];
+  republish: boolean;
 
   get packFolder() {
     return join(this.configuration.stagingFolder, PACK_FOLDER);
@@ -44,9 +46,10 @@ export class PackArtifact {
     return join(this.packFolder, MANIFEST_NAME);
   }
 
-  private constructor(private configuration: IConfiguration, private git: Git, gitStatus: PackManifestGitStatus, packages?: PackedPackage[]) {
+  private constructor(private configuration: IConfiguration, private git: Git, gitStatus: PackManifestGitStatus, packages?: PackedPackage[], republish = false) {
     this.gitStatus = gitStatus;
     this.packages = packages ?? [];
+    this.republish = republish;
   }
 
   validateGitStatusWithBump() {
@@ -73,12 +76,12 @@ export class PackArtifact {
     if (existsSync(manifestFile)) {
       const content = await readFile(manifestFile, 'utf-8');
       const manifest = JSON.parse(content) as PackManifestContent;
-      return new PackArtifact(configuration, git, manifest.gitStatus, manifest.packages);
+      return new PackArtifact(configuration, git, manifest.gitStatus, manifest.packages, manifest.republish ?? false);
     }
     return null;
   }
 
-  static async new(configuration: IConfiguration, git: Git, bumpGitStatus: BumpManifestGitStatus) {
+  static async new(configuration: IConfiguration, git: Git, bumpGitStatus: BumpManifestGitStatus, republish = false) {
     const statusHash = await git.gitStatusHash();
     const gitStatus: PackManifestGitStatus = {
       ...bumpGitStatus,
@@ -87,7 +90,7 @@ export class PackArtifact {
     };
 
     await this.clear(configuration);
-    return new PackArtifact(configuration, git, gitStatus);
+    return new PackArtifact(configuration, git, gitStatus, undefined, republish);
   }
 
   static async clear(configuration: IConfiguration) {
@@ -106,6 +109,7 @@ export class PackArtifact {
     const content: PackManifestContent = {
       gitStatus: this.gitStatus,
       packages: this.packages,
+      republish: this.republish || undefined,
     };
     const contentData = JSON.stringify(content, null, 2);
     await mkdir(dirname(this.packManifestFile), {

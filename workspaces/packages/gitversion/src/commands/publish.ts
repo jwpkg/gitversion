@@ -65,25 +65,29 @@ export class PublishCommand extends GitVersionCommand {
     const packedPackages = packManifest.packages;
     if (packedPackages.length > 0) {
       await this.publishPackages(packManagers, packedPackages, configuration, branch, logger);
-      if (this.tag) {
-        await this.addTags(packedPackages, git, logger);
+      if (packManifest.republish) {
+        logger.reportInfo('Republish mode: skipping tagging, changelog update, and push steps');
       } else {
-        logger.reportInfo('Skipping tagging step');
-      }
+        if (this.tag) {
+          await this.addTags(packedPackages, git, logger);
+        } else {
+          logger.reportInfo('Skipping tagging step');
+        }
 
-      if (this.push) {
-        await git.push();
-      } else {
-        logger.reportInfo('Skipping push step');
-      }
+        if (this.push) {
+          await git.push();
+        } else {
+          logger.reportInfo('Skipping push step');
+        }
 
-      await this.updateChangelogs(packedPackages, project, git, logger);
-      const isDefaultChangelogBranch = application.branch.type !== BranchType.FEATURE;
-      const shouldPushChangelogs = this.push && (isDefaultChangelogBranch || configuration.options.featurePushChangelogs);
-      if (shouldPushChangelogs) {
-        await git.push();
-      } else {
-        logger.reportInfo('Skipping push step');
+        await this.updateChangelogs(packedPackages, project, git, logger);
+        const isDefaultChangelogBranch = application.branch.type !== BranchType.FEATURE;
+        const shouldPushChangelogs = this.push && (isDefaultChangelogBranch || configuration.options.featurePushChangelogs);
+        if (shouldPushChangelogs) {
+          await git.push();
+        } else {
+          logger.reportInfo('Skipping push step');
+        }
       }
 
       await hooks.dispatchOnPublish(application, packedPackages);
