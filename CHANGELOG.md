@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.1.0](https://github.com/jwpkg/gitversion/compare/v1.0.4...v1.1.0) (Thu Mar 26 2026)
+
+### feat
+
+* Fixed wildcard releases ([3bcbe60](https://github.com/jwpkg/gitversion/commit/3bcbe60cadd000362a6716b0eda83120eff8ad8b))
+
+### fix
+
+* linting ([4e4a626](https://github.com/jwpkg/gitversion/commit/4e4a626f38c4f81384c66dc5fe16bd3acfcaed8c))
+
 ## [1.0.4](https://github.com/jwpkg/gitversion/compare/v1.0.3...v1.0.4) (Wed Feb 25 2026)
 
 ### fix
