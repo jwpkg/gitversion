@@ -48,7 +48,7 @@ export class PackCommand extends GitVersionCommand {
       return null;
     })();
 
-    let resolvedGitStatus: { preBump: string; postBump: string };
+    let resolvedGitStatus: { preBump: string, postBump: string };
     if (gitStatus) {
       resolvedGitStatus = gitStatus;
     } else {
