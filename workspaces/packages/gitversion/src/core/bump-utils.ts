@@ -97,7 +97,7 @@ export function executeBump(version: string, branch: VersionBranch, bumpType: Bu
     return inc(version, 'prerelease');
   }
 
-  const preReleaseName = branch.type === BranchType.MAIN ? undefined : branch.name;
+  const preReleaseName = branch.type === BranchType.MAIN ? undefined : branch.name.replace(/[^0-9A-Za-z-]/g, '-');
   const preReleasePrefix = branch.type === BranchType.MAIN ? '' : 'pre';
 
   if (semver.major === 0) {
