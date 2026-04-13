@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.3.2](https://github.com/jwpkg/gitversion/compare/v1.3.1...v1.3.2) (Mon Apr 13 2026)
+
+### fix
+
+* Sanitize prerelease name for semantic version tags ([c64e6f4](https://github.com/jwpkg/gitversion/commit/c64e6f49018c0efb4ced14c57c3ed04158fbc2d4))
+
 ## [1.3.1](https://github.com/jwpkg/gitversion/compare/v1.3.0...v1.3.1) (Wed Apr 08 2026)
 
 ### fix
