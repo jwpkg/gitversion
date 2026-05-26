@@ -52,8 +52,7 @@ jobs:
 
       - name: Publish
         run: yarn gitversion publish
-        # Disabled due to npm trusted packages
-        # env:
-        #   YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
 
