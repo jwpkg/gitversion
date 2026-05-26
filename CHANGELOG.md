@@ -4,6 +4,18 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.3.3](https://github.com/jwpkg/gitversion/compare/v1.3.2...v1.3.3) (Tue May 26 2026)
+
+### fix
+
+* Single package repo packs the root project now ([2088d13](https://github.com/jwpkg/gitversion/commit/2088d137bf3ff4f3d462c1019a74c096e3432870))
+
+### chore
+
+* NPM trusted authors ([3082f51](https://github.com/jwpkg/gitversion/commit/3082f512f878afa6eba371ff14755c195c2ce517))
+
+* reverted auth config ([c9598ac](https://github.com/jwpkg/gitversion/commit/c9598acd1fe56e1c617bc1efa8b347ab877dab35))
+
 ## [1.3.2](https://github.com/jwpkg/gitversion/compare/v1.3.1...v1.3.2) (Mon Apr 13 2026)
 
 ### fix
