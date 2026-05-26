@@ -70,7 +70,7 @@ export class PackCommand extends GitVersionCommand {
       hasSomethingToPack = true;
 
       const projectBump = bumpManifest.bumps.find(b => b.packageRelativeCwd === '.');
-      if (projectBump) {
+      if (projectBump && project.childWorkspaces.length > 0) {
         packManifest.add(projectBump);
       }
 
@@ -83,7 +83,7 @@ export class PackCommand extends GitVersionCommand {
       });
 
       bumpManifest.bumps.forEach(bump => {
-        if (bump.packageRelativeCwd === '.') {
+        if (bump.packageRelativeCwd === '.' && project.childWorkspaces.length > 0) {
           // Root project workspace is already added directly via packManifest.add(projectBump) above.
           // Only update its version/changelog on disk; do not pack it again.
           const rootWorkspace = project.workspaces.find(w => w.relativeCwd === '.');
