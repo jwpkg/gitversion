@@ -12,5 +12,6 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "files.insertFinalNewline": true,
   "testing.openTesting": "neverOpen",
-  "testing.automaticallyOpenTestResults": "neverOpen"
+  "testing.automaticallyOpenTestResults": "neverOpen",
+  "js/ts.tsdk.path": ".yarn/sdks/typescript/lib"
 }
