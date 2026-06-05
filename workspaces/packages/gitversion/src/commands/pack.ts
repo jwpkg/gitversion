@@ -10,6 +10,7 @@ import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
 import { PackArtifact } from '../core/pack-artifact';
+import { topoSort } from '../core/topo-sort';
 import { IWorkspace } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
@@ -77,47 +78,47 @@ export class PackCommand extends GitVersionCommand {
       const packFolder = join(configuration.stagingFolder, 'pack');
       await mkdir(packFolder, { recursive: true });
 
-      const queue = new Queue({
-        concurrent: this.maxConcurrency ?? cpus().length,
-        start: false,
-      });
-
-      bumpManifest.bumps.forEach(bump => {
-        if (bump.packageRelativeCwd === '.' && project.childWorkspaces.length > 0) {
-          // Root project workspace is already added directly via packManifest.add(projectBump) above.
-          // Only update its version/changelog on disk; do not pack it again.
-          const rootWorkspace = project.workspaces.find(w => w.relativeCwd === '.');
-          if (rootWorkspace) {
-            queue.enqueue(async () => {
-              try {
-                await rootWorkspace.updateVersion(bump.version);
-                await rootWorkspace.updateChangelog(bump.changeLog);
-              } catch (error) {
-                hasErrors = true;
-                throw error;
-              }
-            });
-          }
-          return;
-        }
-
-        queue.enqueue(async () => {
+      // Phase 1: write all versions to disk in parallel so every package.json is
+      // up-to-date before any pack subprocess reads them.
+      await Promise.all(bumpManifest.bumps.map(async bump => {
+        const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
+        if (workspace) {
           try {
-            const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
-            if (workspace) {
-              await workspace.updateVersion(bump.version);
-              await workspace.updateChangelog(bump.changeLog);
-              await this.execPackCommand(application, workspace, bump, packManifest, false);
-            }
+            await workspace.updateVersion(bump.version);
+            await workspace.updateChangelog(bump.changeLog);
           } catch (error) {
             hasErrors = true;
             throw error;
           }
-        });
-      });
+        }
+      }));
 
-      while (queue.shouldRun) {
-        await queue.dequeue();
+      // Phase 2: pack in topological dependency order, parallel within each level.
+      // The root workspace (when it has children) is registered in packManifest above but not packed.
+      const workspacesToPack = bumpManifest.bumps
+        .filter(b => !(b.packageRelativeCwd === '.' && project.childWorkspaces.length > 0))
+        .map(b => project.workspaces.find(w => w.relativeCwd === b.packageRelativeCwd))
+        .filter((w): w is IWorkspace => !!w);
+
+      for (const level of topoSort(workspacesToPack)) {
+        const queue = new Queue({
+          concurrent: this.maxConcurrency ?? cpus().length,
+          start: false,
+        });
+        level.forEach(workspace => {
+          const bump = bumpManifest.bumps.find(b => b.packageRelativeCwd === workspace.relativeCwd)!;
+          queue.enqueue(async () => {
+            try {
+              await this.execPackCommand(application, workspace, bump, packManifest, false);
+            } catch (error) {
+              hasErrors = true;
+              throw error;
+            }
+          });
+        });
+        while (queue.shouldRun) {
+          await queue.dequeue();
+        }
       }
     }
 
@@ -132,34 +133,34 @@ export class PackCommand extends GitVersionCommand {
         const packFolder = join(configuration.stagingFolder, 'pack');
         await mkdir(packFolder, { recursive: true });
 
-        const queue = new Queue({
-          concurrent: this.maxConcurrency ?? cpus().length,
-          start: false,
-        });
-
-        republishWorkspaces.forEach(workspace => {
-          queue.enqueue(async () => {
-            try {
-              const syntheticBump: Bump = {
-                packageRelativeCwd: workspace.relativeCwd,
-                packageName: workspace.packageName,
-                version: workspace.version,
-                previousVersion: workspace.version,
-                tag: workspace.tagPrefix + workspace.version,
-                private: false,
-                commits: [],
-                changeLog: { version: workspace.version, headerLine: '', body: '' },
-              };
-              await this.execPackCommand(application, workspace, syntheticBump, packManifest, true);
-            } catch (error) {
-              hasErrors = true;
-              throw error;
-            }
+        for (const level of topoSort(republishWorkspaces)) {
+          const queue = new Queue({
+            concurrent: this.maxConcurrency ?? cpus().length,
+            start: false,
           });
-        });
-
-        while (queue.shouldRun) {
-          await queue.dequeue();
+          level.forEach(workspace => {
+            queue.enqueue(async () => {
+              try {
+                const syntheticBump: Bump = {
+                  packageRelativeCwd: workspace.relativeCwd,
+                  packageName: workspace.packageName,
+                  version: workspace.version,
+                  previousVersion: workspace.version,
+                  tag: workspace.tagPrefix + workspace.version,
+                  private: false,
+                  commits: [],
+                  changeLog: { version: workspace.version, headerLine: '', body: '' },
+                };
+                await this.execPackCommand(application, workspace, syntheticBump, packManifest, true);
+              } catch (error) {
+                hasErrors = true;
+                throw error;
+              }
+            });
+          });
+          while (queue.shouldRun) {
+            await queue.dequeue();
+          }
         }
       }
     }

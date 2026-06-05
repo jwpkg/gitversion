@@ -28,6 +28,8 @@ export interface IWorkspace {
 
   readonly tagPrefix: string;
 
+  readonly workspaceDependencies: string[];
+
   updateChangelog(entry: ChangelogEntry): Promise<string>;
   updateVersion(version: string): Promise<void>;
 
