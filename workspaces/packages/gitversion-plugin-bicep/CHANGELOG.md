@@ -4,6 +4,10 @@
 All notable changes to this project will be documented in this file
 
 
+## [1.3.4](https://github.com/jwpkg/gitversion/compare/v1.3.3...v1.3.4) (Fri Jun 05 2026)
+
+
+
 ## [1.3.3](https://github.com/jwpkg/gitversion/compare/v1.3.2...v1.3.3) (Tue May 26 2026)
 
 
