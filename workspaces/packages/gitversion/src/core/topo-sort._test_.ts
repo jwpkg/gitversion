@@ -1,5 +1,5 @@
-import { IWorkspace } from './workspace-utils';
 import { topoSort } from './topo-sort';
+import { IWorkspace } from './workspace-utils';
 
 function makeWorkspace(packageName: string, deps: string[] = []): IWorkspace {
   return {
