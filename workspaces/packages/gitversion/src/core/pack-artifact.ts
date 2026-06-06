@@ -21,6 +21,7 @@ export interface PackedPackage {
   changeLog: ChangelogEntry;
   commits: ConventionalCommit[];
   republish?: boolean;
+  pluginData?: Record<string, unknown>;
 }
 
 export interface PackManifestGitStatus extends BumpManifestGitStatus {

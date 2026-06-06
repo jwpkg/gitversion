@@ -17,9 +17,18 @@ export interface IGitPlatform {
   stripMergeMessage(commit: GitCommit): GitCommit;
 }
 
+export interface PackFileResult {
+  name: string;
+  metadata?: unknown;
+}
+
+export interface PackResult {
+  files: PackFileResult[];
+}
+
 export interface IPackManager {
   ident: string;
-  pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string, string> | null>;
+  pack(workspace: IWorkspace, outputFolder: string): Promise<string | string[] | Record<string, string> | PackResult | null>;
   publish(packedPackage: PackedPackage, fileName: string, releaseTag: string, dryRun: boolean, module?: string): Promise<void>;
 }
 

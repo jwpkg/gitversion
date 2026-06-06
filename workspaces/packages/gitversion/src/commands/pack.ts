@@ -9,7 +9,8 @@ import { cascade, isAtLeast, isNumber } from 'typanion';
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
-import { PackArtifact } from '../core/pack-artifact';
+import { PackArtifact, PackedPackage } from '../core/pack-artifact';
+import { PackFileResult, PackResult } from '../core/plugin-manager';
 import { topoSort } from '../core/topo-sort';
 import { IWorkspace } from '../core/workspace-utils';
 
@@ -194,21 +195,46 @@ export class PackCommand extends GitVersionCommand {
             recursive: true,
           });
           const packFile = await packManager.pack(workspace, folder);
-          if (packFile) {
+          let fileEntry: Record<string, string | string[] | Record<string, string>> = {};
+          let metadataEntry: { ident: string, data: unknown } | null = null;
+          if (packFile !== null && typeof packFile === 'object' && 'files' in packFile && Array.isArray((packFile as PackResult).files)) {
+            // PackResult branch
+            const packResult = packFile as PackResult;
+            const fileNames: string[] = [];
+            const perFileMetadata: Record<string, unknown> = {};
+            for (const f of packResult.files as PackFileResult[]) {
+              fileNames.push(f.name);
+              if (f.metadata !== undefined) {
+                perFileMetadata[f.name] = f.metadata;
+              }
+              const fullName = join(folder, f.name);
+              const stats = await stat(fullName);
+              logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+            }
+            fileEntry = {
+              [packManager.ident]: fileNames,
+            };
+            if (Object.keys(perFileMetadata).length > 0) {
+              metadataEntry = {
+                ident: packManager.ident,
+                data: perFileMetadata,
+              };
+            }
+          } else if (packFile) {
             if (Array.isArray(packFile)) {
               for (const file of packFile) {
                 const fullName = join(folder, file);
                 const stats = await stat(fullName);
                 logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
               }
-              return {
+              fileEntry = {
                 [packManager.ident]: packFile,
               };
-            } if (typeof packFile === 'string') {
+            } else if (typeof packFile === 'string') {
               const fullName = join(folder, packFile);
               const stats = await stat(fullName);
               logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
-              return {
+              fileEntry = {
                 [packManager.ident]: packFile,
               };
             } else if (typeof packFile === 'object' && packFile !== null) {
@@ -220,29 +246,38 @@ export class PackCommand extends GitVersionCommand {
                 logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
                 files[key] = value;
               }
-              return {
+              fileEntry = {
                 [packManager.ident]: files,
               };
-            } else {
-              return {};
             }
-          } else {
-            return {};
           }
+
+          return { fileEntry, metadataEntry };
         });
 
-        const files = (await Promise.all(packCommands)).reduce((p: Record<string, string | string[] | Record<string, string>>, c) => {
+        const results = await Promise.all(packCommands);
+
+        const files = results.reduce((p: Record<string, string | string[] | Record<string, string>>, { fileEntry }) => {
           return {
             ...p,
-            ...c,
+            ...fileEntry,
           };
         }, {});
 
-        packManifest.add({
+        const packedPackage: PackedPackage = {
           packFiles: files,
           ...bump,
           republish: republish || undefined,
-        });
+        };
+
+        for (const { metadataEntry } of results) {
+          if (metadataEntry) {
+            packedPackage.pluginData ??= {};
+            packedPackage.pluginData[metadataEntry.ident] = metadataEntry.data;
+          }
+        }
+
+        packManifest.add(packedPackage);
       } catch (error) {
         logger.reportError(`Error during pack: ${colorize.redBright(`${error}`)}`);
         throw error;
