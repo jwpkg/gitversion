@@ -3,7 +3,6 @@ import { colorize } from 'colorize-node';
 import { mkdir, stat } from 'fs/promises';
 import { cpus } from 'os';
 import { join, relative } from 'path';
-import Queue from 'queue-promise';
 import { cascade, isAtLeast, isNumber } from 'typanion';
 
 import { Application, IApplication } from '../core/application';
@@ -101,24 +100,22 @@ export class PackCommand extends GitVersionCommand {
         .map(b => project.workspaces.find(w => w.relativeCwd === b.packageRelativeCwd))
         .filter((w): w is IWorkspace => !!w);
 
+      const concurrency = this.maxConcurrency ?? cpus().length;
       for (const level of topoSort(workspacesToPack)) {
-        const queue = new Queue({
-          concurrent: this.maxConcurrency ?? cpus().length,
-          start: false,
-        });
-        level.forEach(workspace => {
-          const bump = bumpManifest.bumps.find(b => b.packageRelativeCwd === workspace.relativeCwd)!;
-          queue.enqueue(async () => {
-            try {
-              await this.execPackCommand(application, workspace, bump, packManifest, false);
-            } catch (error) {
+        for (let i = 0; i < level.length; i += concurrency) {
+          const chunk = level.slice(i, i + concurrency);
+          const chunkResults = await Promise.allSettled(chunk.map(async workspace => {
+            const bump = bumpManifest.bumps.find(b => b.packageRelativeCwd === workspace.relativeCwd)!;
+            await this.execPackCommand(application, workspace, bump, packManifest, false);
+          }));
+          for (const result of chunkResults) {
+            if (result.status === 'rejected') {
               hasErrors = true;
-              throw error;
             }
-          });
-        });
-        while (queue.shouldRun) {
-          await queue.dequeue();
+          }
+        }
+        if (hasErrors) {
+          break;
         }
       }
     }
@@ -134,33 +131,31 @@ export class PackCommand extends GitVersionCommand {
         const packFolder = join(configuration.stagingFolder, 'pack');
         await mkdir(packFolder, { recursive: true });
 
+        const concurrency = this.maxConcurrency ?? cpus().length;
         for (const level of topoSort(republishWorkspaces)) {
-          const queue = new Queue({
-            concurrent: this.maxConcurrency ?? cpus().length,
-            start: false,
-          });
-          level.forEach(workspace => {
-            queue.enqueue(async () => {
-              try {
-                const syntheticBump: Bump = {
-                  packageRelativeCwd: workspace.relativeCwd,
-                  packageName: workspace.packageName,
-                  version: workspace.version,
-                  previousVersion: workspace.version,
-                  tag: workspace.tagPrefix + workspace.version,
-                  private: false,
-                  commits: [],
-                  changeLog: { version: workspace.version, headerLine: '', body: '' },
-                };
-                await this.execPackCommand(application, workspace, syntheticBump, packManifest, true);
-              } catch (error) {
+          for (let i = 0; i < level.length; i += concurrency) {
+            const chunk = level.slice(i, i + concurrency);
+            const chunkResults = await Promise.allSettled(chunk.map(async workspace => {
+              const syntheticBump: Bump = {
+                packageRelativeCwd: workspace.relativeCwd,
+                packageName: workspace.packageName,
+                version: workspace.version,
+                previousVersion: workspace.version,
+                tag: workspace.tagPrefix + workspace.version,
+                private: false,
+                commits: [],
+                changeLog: { version: workspace.version, headerLine: '', body: '' },
+              };
+              await this.execPackCommand(application, workspace, syntheticBump, packManifest, true);
+            }));
+            for (const result of chunkResults) {
+              if (result.status === 'rejected') {
                 hasErrors = true;
-                throw error;
               }
-            });
-          });
-          while (queue.shouldRun) {
-            await queue.dequeue();
+            }
+          }
+          if (hasErrors) {
+            break;
           }
         }
       }
