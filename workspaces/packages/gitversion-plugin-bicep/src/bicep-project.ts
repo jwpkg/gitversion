@@ -110,6 +110,11 @@ export class BicepWorkspace implements IWorkspace {
       return this.config.options.versionTagPrefix;
     }
   }
+
+  get workspaceDependencies(): string[] {
+    return this.manifest.dependencies ?? [];
+  }
+
   constructor(project: BicepProjectImpl, relativeCwd: string, manifestContent: BicepManifestContent) {
     this.manifestContent = manifestContent;
 

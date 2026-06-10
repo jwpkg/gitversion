@@ -21,6 +21,9 @@ export const isNodeManifest = t.isPartial({
   name: t.isString(),
   private: t.isOptional(t.isBoolean()),
   workspaces: t.isOptional(t.isArray(t.isString())),
+  dependencies: t.isOptional(t.isRecord(t.isString())),
+  devDependencies: t.isOptional(t.isRecord(t.isString())),
+  peerDependencies: t.isOptional(t.isRecord(t.isString())),
 });
 
 export type NodeManifest = t.InferType<typeof isNodeManifest>;
@@ -98,6 +101,16 @@ export class NodeWorkspace implements IWorkspace {
     } else {
       return this.config.options.versionTagPrefix;
     }
+  }
+
+  get workspaceDependencies(): string[] {
+    const allWorkspaceNames = new Set(this.project.workspaces.map(w => w.packageName));
+    const allDeps = {
+      ...this.manifest.dependencies,
+      ...this.manifest.devDependencies,
+      ...this.manifest.peerDependencies,
+    };
+    return Object.keys(allDeps).filter(dep => allWorkspaceNames.has(dep));
   }
 
   constructor(project: NodeProject, relativeCwd: string, manifestContent: NodeManifestContent) {

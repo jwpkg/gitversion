@@ -3,13 +3,14 @@ import { colorize } from 'colorize-node';
 import { mkdir, stat } from 'fs/promises';
 import { cpus } from 'os';
 import { join, relative } from 'path';
-import Queue from 'queue-promise';
 import { cascade, isAtLeast, isNumber } from 'typanion';
 
 import { Application, IApplication } from '../core/application';
 import { Bump, BumpManifest } from '../core/bump-manifest';
 import { formatFileSize, formatPackageName } from '../core/format-utils';
-import { PackArtifact } from '../core/pack-artifact';
+import { PackArtifact, PackedPackage } from '../core/pack-artifact';
+import { PackFileResult, PackResult } from '../core/plugin-manager';
+import { topoSort } from '../core/topo-sort';
 import { IWorkspace } from '../core/workspace-utils';
 
 import { GitVersionCommand } from './context';
@@ -77,47 +78,45 @@ export class PackCommand extends GitVersionCommand {
       const packFolder = join(configuration.stagingFolder, 'pack');
       await mkdir(packFolder, { recursive: true });
 
-      const queue = new Queue({
-        concurrent: this.maxConcurrency ?? cpus().length,
-        start: false,
-      });
-
-      bumpManifest.bumps.forEach(bump => {
-        if (bump.packageRelativeCwd === '.' && project.childWorkspaces.length > 0) {
-          // Root project workspace is already added directly via packManifest.add(projectBump) above.
-          // Only update its version/changelog on disk; do not pack it again.
-          const rootWorkspace = project.workspaces.find(w => w.relativeCwd === '.');
-          if (rootWorkspace) {
-            queue.enqueue(async () => {
-              try {
-                await rootWorkspace.updateVersion(bump.version);
-                await rootWorkspace.updateChangelog(bump.changeLog);
-              } catch (error) {
-                hasErrors = true;
-                throw error;
-              }
-            });
-          }
-          return;
-        }
-
-        queue.enqueue(async () => {
+      // Phase 1: write all versions to disk in parallel so every package.json is
+      // up-to-date before any pack subprocess reads them.
+      await Promise.all(bumpManifest.bumps.map(async bump => {
+        const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
+        if (workspace) {
           try {
-            const workspace = project.workspaces.find(w => w.relativeCwd === bump.packageRelativeCwd);
-            if (workspace) {
-              await workspace.updateVersion(bump.version);
-              await workspace.updateChangelog(bump.changeLog);
-              await this.execPackCommand(application, workspace, bump, packManifest, false);
-            }
+            await workspace.updateVersion(bump.version);
+            await workspace.updateChangelog(bump.changeLog);
           } catch (error) {
             hasErrors = true;
             throw error;
           }
-        });
-      });
+        }
+      }));
 
-      while (queue.shouldRun) {
-        await queue.dequeue();
+      // Phase 2: pack in topological dependency order, parallel within each level.
+      // The root workspace (when it has children) is registered in packManifest above but not packed.
+      const workspacesToPack = bumpManifest.bumps
+        .filter(b => !(b.packageRelativeCwd === '.' && project.childWorkspaces.length > 0))
+        .map(b => project.workspaces.find(w => w.relativeCwd === b.packageRelativeCwd))
+        .filter((w): w is IWorkspace => !!w);
+
+      const concurrency = this.maxConcurrency ?? cpus().length;
+      for (const level of topoSort(workspacesToPack)) {
+        for (let i = 0; i < level.length; i += concurrency) {
+          const chunk = level.slice(i, i + concurrency);
+          const chunkResults = await Promise.allSettled(chunk.map(async workspace => {
+            const bump = bumpManifest.bumps.find(b => b.packageRelativeCwd === workspace.relativeCwd)!;
+            await this.execPackCommand(application, workspace, bump, packManifest, false);
+          }));
+          for (const result of chunkResults) {
+            if (result.status === 'rejected') {
+              hasErrors = true;
+            }
+          }
+        }
+        if (hasErrors) {
+          break;
+        }
       }
     }
 
@@ -132,14 +131,11 @@ export class PackCommand extends GitVersionCommand {
         const packFolder = join(configuration.stagingFolder, 'pack');
         await mkdir(packFolder, { recursive: true });
 
-        const queue = new Queue({
-          concurrent: this.maxConcurrency ?? cpus().length,
-          start: false,
-        });
-
-        republishWorkspaces.forEach(workspace => {
-          queue.enqueue(async () => {
-            try {
+        const concurrency = this.maxConcurrency ?? cpus().length;
+        for (const level of topoSort(republishWorkspaces)) {
+          for (let i = 0; i < level.length; i += concurrency) {
+            const chunk = level.slice(i, i + concurrency);
+            const chunkResults = await Promise.allSettled(chunk.map(async workspace => {
               const syntheticBump: Bump = {
                 packageRelativeCwd: workspace.relativeCwd,
                 packageName: workspace.packageName,
@@ -151,15 +147,16 @@ export class PackCommand extends GitVersionCommand {
                 changeLog: { version: workspace.version, headerLine: '', body: '' },
               };
               await this.execPackCommand(application, workspace, syntheticBump, packManifest, true);
-            } catch (error) {
-              hasErrors = true;
-              throw error;
+            }));
+            for (const result of chunkResults) {
+              if (result.status === 'rejected') {
+                hasErrors = true;
+              }
             }
-          });
-        });
-
-        while (queue.shouldRun) {
-          await queue.dequeue();
+          }
+          if (hasErrors) {
+            break;
+          }
         }
       }
     }
@@ -193,21 +190,46 @@ export class PackCommand extends GitVersionCommand {
             recursive: true,
           });
           const packFile = await packManager.pack(workspace, folder);
-          if (packFile) {
+          let fileEntry: Record<string, string | string[] | Record<string, string>> = {};
+          let metadataEntry: { ident: string, data: unknown } | null = null;
+          if (packFile !== null && typeof packFile === 'object' && 'files' in packFile && Array.isArray((packFile as PackResult).files)) {
+            // PackResult branch
+            const packResult = packFile as PackResult;
+            const fileNames: string[] = [];
+            const perFileMetadata: Record<string, unknown> = {};
+            for (const f of packResult.files as PackFileResult[]) {
+              fileNames.push(f.name);
+              if (f.metadata !== undefined) {
+                perFileMetadata[f.name] = f.metadata;
+              }
+              const fullName = join(folder, f.name);
+              const stats = await stat(fullName);
+              logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
+            }
+            fileEntry = {
+              [packManager.ident]: fileNames,
+            };
+            if (Object.keys(perFileMetadata).length > 0) {
+              metadataEntry = {
+                ident: packManager.ident,
+                data: perFileMetadata,
+              };
+            }
+          } else if (packFile) {
             if (Array.isArray(packFile)) {
               for (const file of packFile) {
                 const fullName = join(folder, file);
                 const stats = await stat(fullName);
                 logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
               }
-              return {
+              fileEntry = {
                 [packManager.ident]: packFile,
               };
-            } if (typeof packFile === 'string') {
+            } else if (typeof packFile === 'string') {
               const fullName = join(folder, packFile);
               const stats = await stat(fullName);
               logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
-              return {
+              fileEntry = {
                 [packManager.ident]: packFile,
               };
             } else if (typeof packFile === 'object' && packFile !== null) {
@@ -219,29 +241,38 @@ export class PackCommand extends GitVersionCommand {
                 logger.reportInfo(`Generated package: ./${relative(application.cwd, fullName)} (${formatFileSize(stats.size)})`);
                 files[key] = value;
               }
-              return {
+              fileEntry = {
                 [packManager.ident]: files,
               };
-            } else {
-              return {};
             }
-          } else {
-            return {};
           }
+
+          return { fileEntry, metadataEntry };
         });
 
-        const files = (await Promise.all(packCommands)).reduce((p: Record<string, string | string[] | Record<string, string>>, c) => {
+        const results = await Promise.all(packCommands);
+
+        const files = results.reduce((p: Record<string, string | string[] | Record<string, string>>, { fileEntry }) => {
           return {
             ...p,
-            ...c,
+            ...fileEntry,
           };
         }, {});
 
-        packManifest.add({
+        const packedPackage: PackedPackage = {
           packFiles: files,
           ...bump,
           republish: republish || undefined,
-        });
+        };
+
+        for (const { metadataEntry } of results) {
+          if (metadataEntry) {
+            packedPackage.pluginData ??= {};
+            packedPackage.pluginData[metadataEntry.ident] = metadataEntry.data;
+          }
+        }
+
+        packManifest.add(packedPackage);
       } catch (error) {
         logger.reportError(`Error during pack: ${colorize.redBright(`${error}`)}`);
         throw error;
